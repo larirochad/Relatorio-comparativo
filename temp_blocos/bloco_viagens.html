@@ -1,0 +1,1261 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Análise de Viagens</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@2.0.1"></script>
+    <style>
+    .chartjs-legend ul {
+        background-color: rgba(255, 255, 255, 0.8);
+        border-radius: 10px;
+        padding: 8px 12px;
+        display: inline-block;
+    }
+    .categoria {
+        margin-bottom: 40px;
+    }
+    .titulo-wrapper {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+    .titulo-categoria {
+        font-family: 'Saira', sans-serif;
+        font-size: 2.2em;
+        font-weight: 800;
+        color: transparent;
+        background-image: linear-gradient(to right, #764ba2, #667eea);
+        -webkit-background-clip: text;
+        background-clip: text;
+        text-align: center;
+        margin-bottom: 20px;
+        box-shadow: none;
+        border-radius: 0;
+        padding: 10px 20px;
+    }
+
+    .grupo-selector {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+    }
+    .btn-grupo {
+        padding: 8px 16px;
+        border: none;
+        border-radius: 20px;
+        background-color: #f0f0f0;
+        cursor: pointer;
+        transition: all 0.3s;
+        font-weight: bold;
+    }
+    .btn-grupo:hover {
+        background-color: #d0d0d0;
+    }
+    .btn-grupo.active {
+        background-color: #667eea;
+        color: white;
+    }
+    .grupo {
+        display: none;
+    }
+    .grupo.active {
+        display: block;
+    }
+    .grafico-container {
+        background: white;
+        border-radius: 15px;
+        padding: 20px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        margin-bottom: 20px;
+    }
+    .grafico-titulo-container {
+        text-align: center;
+        margin-bottom: 15px;
+    }
+    .grafico-titulo {
+        font-size: 18px;
+        font-weight: bold;
+        color: #333;
+    }
+    .chart-wrapper {
+        position: relative;
+        height: 400px;
+        width: 100%;
+    }
+    .zoom-controls {
+        text-align: center;
+        margin-top: 10px;
+    }
+    .zoom-instruction {
+        text-align: center;
+        font-size: 12px;
+        color: #666;
+        margin-top: 5px;
+    }
+    .metricas {
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        margin-bottom: 15px;
+        background-color: #0e0561;
+    }
+    .metrica-item {
+        background: #f8f9fa;
+        padding: 10px 15px;
+        border-radius: 10px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        text-align: center;
+    }
+    
+    /* Estilos para o hodômetro */
+    .titulo-odometro {
+        font-family: 'Saira', sans-serif;
+        font-size: 2.4em;
+        font-weight: 800;
+        color: transparent;
+        background-image: linear-gradient(to right, #764ba2, #667eea);
+        -webkit-background-clip: text;
+        background-clip: text;
+        text-align: center;
+        margin: 30px auto 20px auto;
+        display: block;
+        padding: 10px 20px;
+        box-shadow: none;
+        border-radius: 0;
+    }
+
+
+    .odometro-container {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 40px;
+        margin-top: 20px;
+    }
+    .odometro-item {
+        background: white;
+        padding: 20px;
+        border-radius: 15px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        text-align: center;
+        width: 320px;
+        position: relative;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .odometro-item:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+    }
+
+    .canvas-wrapper {
+        position: relative;
+        width: 100%;
+        height: auto;
+    }
+    .canvas-wrapper canvas {
+        display: block;
+        margin: 0 auto;
+    }
+    .escala-text {
+        position: absolute;
+        font-size: 11px;
+        color: #555;
+        top: 85%;
+        transform: translateY(-50%);
+    }
+    .escala-left {
+        left: 10px;
+    }
+    .escala-right {
+        right: 10px;
+    }
+    .valor {
+        font-size: 18px;
+        font-weight: bold;
+        margin-top: 10px;
+        color: #222;
+        text-shadow: 0.5px 0.5px 1px rgba(0,0,0,0.15);
+    }
+    
+    /* ESTILOS MELHORADOS PARA O BLOCO DE DIFERENÇA PERCENTUAL */
+    .metric-box {
+        background: rgba(255, 255, 255, 0.9);
+        padding: 25px 30px;
+        border-radius: 20px;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+        text-align: center;
+        margin-top: 25px;
+        width: 100%;
+        max-width: 700px;
+        margin-left: auto;
+        margin-right: auto;
+        border: 2px solid transparent;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .metric-box::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        border-radius: 18px;
+        padding: 2px;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+        mask-composite: exclude;
+        -webkit-mask-composite: xor;
+        opacity: 0.3;
+        transition: opacity 0.3s ease;
+    }
+    
+    .metric-box:hover::before {
+        opacity: 0.6;
+    }
+    
+    .metric-box h4 {
+        font-size: 22px;
+        font-weight: bold;
+        margin: 0 0 15px 0;
+        color: #2c3e50;
+        text-shadow: 0.5px 0.5px 1px rgba(0,0,0,0.1);
+        position: relative;
+        z-index: 1;
+    }
+    
+    .metric-box .valor-percentual {
+        font-size: 32px;
+        font-weight: 900;
+        margin: 0;
+        position: relative;
+        z-index: 1;
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        transition: all 0.3s ease;
+    }
+    
+    /* Classes dinâmicas para valores positivos e negativos */
+    .metric-box.positivo {
+        background: rgba(40, 167, 69, 0.15);
+        border-color: rgba(40, 167, 69, 0.3);
+    }
+    
+    .metric-box.positivo h4,
+    .metric-box.positivo .valor-percentual {
+        color: #155724;
+    }
+    
+    .metric-box.positivo::before {
+        background: linear-gradient(135deg, #28a745, #20c997);
+    }
+    
+    .metric-box.negativo {
+        background: rgba(220, 53, 69, 0.15);
+        border-color: rgba(220, 53, 69, 0.3);
+    }
+    
+    .metric-box.negativo h4,
+    .metric-box.negativo .valor-percentual {
+        color: #721c24;
+    }
+    
+    .metric-box.negativo::before {
+        background: linear-gradient(135deg, #dc3545, #e74c3c);
+    }
+    
+    /* Efeito hover para o bloco */
+    .metric-box:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 25px rgba(0,0,0,0.18);
+    }
+    
+    .metric-box.positivo:hover {
+        box-shadow: 0 12px 25px rgba(40, 167, 69, 0.25);
+    }
+    
+    .metric-box.negativo:hover {
+        box-shadow: 0 12px 25px rgba(220, 53, 69, 0.25);
+    }
+    .faixa-legenda {
+    text-align: center;
+    font-size: 14px;
+    color: #1010;
+    margin-top: 10px;
+    font-weight: 500;
+    }
+
+    </style>
+</head>
+<body>
+
+<div class='categoria'>
+    <div class='titulo-odometro'>Hodômetro - Progresso por Categoria</div>
+    
+    <!-- Botões para selecionar categoria -->
+    <div class='grupo-selector'>
+        <button onclick="mostrarGrupoHodometro('Total')" class='btn-grupo active' id='btn-hodometro-Total'>Total</button>
+        <button onclick="mostrarGrupoHodometro('Curta')" class='btn-grupo' id='btn-hodometro-Curta'>Curtas</button>
+        <button onclick="mostrarGrupoHodometro('Media')" class='btn-grupo' id='btn-hodometro-Media'>Médias</button>
+        <button onclick="mostrarGrupoHodometro('Longa')" class='btn-grupo' id='btn-hodometro-Longa'>Longas</button>
+    </div>
+
+    <!-- Grupo Total -->
+    <div class='grupo active' id='hodometro-Total'>
+        <div class='odometro-container'>
+            
+        <div class='odometro-item'>
+            <h4>Referência</h4>
+            <div class='canvas-wrapper'>
+                <canvas id='canvas_total_ref'></canvas>
+                <div class='escala-text escala-left'>0 km</div>
+                <div class='escala-text escala-right'>12.000 km</div>
+            </div>
+             <div class='valor'>2.634,30 km</div>
+        </div>
+
+        <script>
+        (function() {
+            const canvas = document.getElementById('canvas_total_ref');
+            const ctx = canvas.getContext('2d');
+
+            const chart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {"labels": ["Conclu\u00eddo", "Restante"], "datasets": [{"label": "Refer\u00eancia", "data": [21.952499999999993, 78.04750000000001], "backgroundColor": ["#12094A", "rgba(200,200,200,0.2)"], "borderColor": ["#fff", "#fff"], "circumference": 180, "rotation": -90}]},
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    cutout: '60%',
+                    circumference: 180,
+                    rotation: -90,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const km = (2634.2999999999993).toFixed(2);
+                                    return context.dataset.label + ': ' + context.raw.toFixed(2) + '% (' + km + ' km)';
+                                }
+                            }
+                        }
+                    },
+                    elements: {
+                        arc: {
+                            borderWidth: 1,
+                            borderColor: '#fff'
+                        }
+                    }
+                }
+            });
+
+            chart.update();
+
+            // === Linha de meta nos 10.000 km ===
+            function drawMetaLine() {
+                const centerX = canvas.width / 2;
+                const centerY = canvas.height;
+                const radius = Math.min(canvas.width, canvas.height) / 2 * 0.8;
+
+                const percentMeta = 10000 / 50000; // 10k sobre 50k => 20%
+                const angle = Math.PI * (1 - percentMeta);
+
+                ctx.beginPath();
+                ctx.moveTo(
+                    centerX + (radius - 5) * Math.cos(angle),
+                    centerY - (radius - 5) * Math.sin(angle)
+                );
+                ctx.lineTo(
+                    centerX + (radius + 10) * Math.cos(angle),
+                    centerY - (radius + 10) * Math.sin(angle)
+                );
+                ctx.strokeStyle = '#28a745';
+                ctx.lineWidth = 3;
+                ctx.setLineDash([4, 2]);
+                ctx.stroke();
+            }
+
+            drawMetaLine();
+        })();
+        </script>
+        
+            
+        <div class='odometro-item'>
+            <h4>Teste</h4>
+            <div class='canvas-wrapper'>
+                <canvas id='canvas_total_teste'></canvas>
+                <div class='escala-text escala-left'>0 km</div>
+                <div class='escala-text escala-right'>12.000 km</div>
+            </div>
+             <div class='valor'>2.624,10 km</div>
+        </div>
+
+        <script>
+        (function() {
+            const canvas = document.getElementById('canvas_total_teste');
+            const ctx = canvas.getContext('2d');
+
+            const chart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {"labels": ["Conclu\u00eddo", "Restante"], "datasets": [{"label": "Teste", "data": [21.867499999999996, 78.13250000000001], "backgroundColor": ["#17becf", "rgba(200,200,200,0.2)"], "borderColor": ["#fff", "#fff"], "circumference": 180, "rotation": -90}]},
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    cutout: '60%',
+                    circumference: 180,
+                    rotation: -90,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const km = (2624.0999999999995).toFixed(2);
+                                    return context.dataset.label + ': ' + context.raw.toFixed(2) + '% (' + km + ' km)';
+                                }
+                            }
+                        }
+                    },
+                    elements: {
+                        arc: {
+                            borderWidth: 1,
+                            borderColor: '#fff'
+                        }
+                    }
+                }
+            });
+
+            chart.update();
+
+            // === Linha de meta nos 10.000 km ===
+            function drawMetaLine() {
+                const centerX = canvas.width / 2;
+                const centerY = canvas.height;
+                const radius = Math.min(canvas.width, canvas.height) / 2 * 0.8;
+
+                const percentMeta = 10000 / 50000; // 10k sobre 50k => 20%
+                const angle = Math.PI * (1 - percentMeta);
+
+                ctx.beginPath();
+                ctx.moveTo(
+                    centerX + (radius - 5) * Math.cos(angle),
+                    centerY - (radius - 5) * Math.sin(angle)
+                );
+                ctx.lineTo(
+                    centerX + (radius + 10) * Math.cos(angle),
+                    centerY - (radius + 10) * Math.sin(angle)
+                );
+                ctx.strokeStyle = '#28a745';
+                ctx.lineWidth = 3;
+                ctx.setLineDash([4, 2]);
+                ctx.stroke();
+            }
+
+            drawMetaLine();
+        })();
+        </script>
+        
+        </div>
+        <div class='metric-box' id='metric-box-total'>
+            <h4>Diferença percentual entre os Hodômetros (%)</h4>
+            <div class='valor-percentual' data-valor='-0.39'>-0.39%</div>
+        </div>
+    </div>
+
+    <!-- Grupo Curta -->
+    <div class='grupo' id='hodometro-Curta'>
+        <div class='odometro-container'>
+            
+        <div class='odometro-item'>
+            <h4>Referência - Curta</h4>
+            <div class='canvas-wrapper'>
+                <canvas id='canvas_curta_ref'></canvas>
+                <div class='escala-text escala-left'>0 km</div>
+                <div class='escala-text escala-right'>12.000 km</div>
+            </div>
+             <div class='valor'>39,30 km</div>
+        </div>
+
+        <script>
+        (function() {
+            const canvas = document.getElementById('canvas_curta_ref');
+            const ctx = canvas.getContext('2d');
+
+            const chart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {"labels": ["Conclu\u00eddo", "Restante"], "datasets": [{"label": "Refer\u00eancia - Curta", "data": [0.32750000000000007, 99.6725], "backgroundColor": ["#12094A", "rgba(200,200,200,0.2)"], "borderColor": ["#fff", "#fff"], "circumference": 180, "rotation": -90}]},
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    cutout: '60%',
+                    circumference: 180,
+                    rotation: -90,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const km = (39.300000000000004).toFixed(2);
+                                    return context.dataset.label + ': ' + context.raw.toFixed(2) + '% (' + km + ' km)';
+                                }
+                            }
+                        }
+                    },
+                    elements: {
+                        arc: {
+                            borderWidth: 1,
+                            borderColor: '#fff'
+                        }
+                    }
+                }
+            });
+
+            chart.update();
+
+            // === Linha de meta nos 10.000 km ===
+            function drawMetaLine() {
+                const centerX = canvas.width / 2;
+                const centerY = canvas.height;
+                const radius = Math.min(canvas.width, canvas.height) / 2 * 0.8;
+
+                const percentMeta = 10000 / 50000; // 10k sobre 50k => 20%
+                const angle = Math.PI * (1 - percentMeta);
+
+                ctx.beginPath();
+                ctx.moveTo(
+                    centerX + (radius - 5) * Math.cos(angle),
+                    centerY - (radius - 5) * Math.sin(angle)
+                );
+                ctx.lineTo(
+                    centerX + (radius + 10) * Math.cos(angle),
+                    centerY - (radius + 10) * Math.sin(angle)
+                );
+                ctx.strokeStyle = '#28a745';
+                ctx.lineWidth = 3;
+                ctx.setLineDash([4, 2]);
+                ctx.stroke();
+            }
+
+            drawMetaLine();
+        })();
+        </script>
+        
+            
+        <div class='odometro-item'>
+            <h4>Teste - Curta</h4>
+            <div class='canvas-wrapper'>
+                <canvas id='canvas_curta_teste'></canvas>
+                <div class='escala-text escala-left'>0 km</div>
+                <div class='escala-text escala-right'>12.000 km</div>
+            </div>
+             <div class='valor'>39,80 km</div>
+        </div>
+
+        <script>
+        (function() {
+            const canvas = document.getElementById('canvas_curta_teste');
+            const ctx = canvas.getContext('2d');
+
+            const chart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {"labels": ["Conclu\u00eddo", "Restante"], "datasets": [{"label": "Teste - Curta", "data": [0.3316666666666667, 99.66833333333334], "backgroundColor": ["#17becf", "rgba(200,200,200,0.2)"], "borderColor": ["#fff", "#fff"], "circumference": 180, "rotation": -90}]},
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    cutout: '60%',
+                    circumference: 180,
+                    rotation: -90,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const km = (39.800000000000004).toFixed(2);
+                                    return context.dataset.label + ': ' + context.raw.toFixed(2) + '% (' + km + ' km)';
+                                }
+                            }
+                        }
+                    },
+                    elements: {
+                        arc: {
+                            borderWidth: 1,
+                            borderColor: '#fff'
+                        }
+                    }
+                }
+            });
+
+            chart.update();
+
+            // === Linha de meta nos 10.000 km ===
+            function drawMetaLine() {
+                const centerX = canvas.width / 2;
+                const centerY = canvas.height;
+                const radius = Math.min(canvas.width, canvas.height) / 2 * 0.8;
+
+                const percentMeta = 10000 / 50000; // 10k sobre 50k => 20%
+                const angle = Math.PI * (1 - percentMeta);
+
+                ctx.beginPath();
+                ctx.moveTo(
+                    centerX + (radius - 5) * Math.cos(angle),
+                    centerY - (radius - 5) * Math.sin(angle)
+                );
+                ctx.lineTo(
+                    centerX + (radius + 10) * Math.cos(angle),
+                    centerY - (radius + 10) * Math.sin(angle)
+                );
+                ctx.strokeStyle = '#28a745';
+                ctx.lineWidth = 3;
+                ctx.setLineDash([4, 2]);
+                ctx.stroke();
+            }
+
+            drawMetaLine();
+        })();
+        </script>
+        
+        </div>
+        <div class='metric-box' id='metric-box-curta'>
+            <h4>Diferença percentual - Curta (%)</h4>
+            <div class='valor-percentual' data-valor='1.27'>1.27%</div>
+        </div>
+    </div>
+
+    <!-- Grupo Media -->
+    <div class='grupo' id='hodometro-Media'>
+        <div class='odometro-container'>
+            
+        <div class='odometro-item'>
+            <h4>Referência - Media</h4>
+            <div class='canvas-wrapper'>
+                <canvas id='canvas_media_ref'></canvas>
+                <div class='escala-text escala-left'>0 km</div>
+                <div class='escala-text escala-right'>12.000 km</div>
+            </div>
+             <div class='valor'>453,60 km</div>
+        </div>
+
+        <script>
+        (function() {
+            const canvas = document.getElementById('canvas_media_ref');
+            const ctx = canvas.getContext('2d');
+
+            const chart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {"labels": ["Conclu\u00eddo", "Restante"], "datasets": [{"label": "Refer\u00eancia - Media", "data": [3.7800000000000002, 96.22], "backgroundColor": ["#12094A", "rgba(200,200,200,0.2)"], "borderColor": ["#fff", "#fff"], "circumference": 180, "rotation": -90}]},
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    cutout: '60%',
+                    circumference: 180,
+                    rotation: -90,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const km = (453.6).toFixed(2);
+                                    return context.dataset.label + ': ' + context.raw.toFixed(2) + '% (' + km + ' km)';
+                                }
+                            }
+                        }
+                    },
+                    elements: {
+                        arc: {
+                            borderWidth: 1,
+                            borderColor: '#fff'
+                        }
+                    }
+                }
+            });
+
+            chart.update();
+
+            // === Linha de meta nos 10.000 km ===
+            function drawMetaLine() {
+                const centerX = canvas.width / 2;
+                const centerY = canvas.height;
+                const radius = Math.min(canvas.width, canvas.height) / 2 * 0.8;
+
+                const percentMeta = 10000 / 50000; // 10k sobre 50k => 20%
+                const angle = Math.PI * (1 - percentMeta);
+
+                ctx.beginPath();
+                ctx.moveTo(
+                    centerX + (radius - 5) * Math.cos(angle),
+                    centerY - (radius - 5) * Math.sin(angle)
+                );
+                ctx.lineTo(
+                    centerX + (radius + 10) * Math.cos(angle),
+                    centerY - (radius + 10) * Math.sin(angle)
+                );
+                ctx.strokeStyle = '#28a745';
+                ctx.lineWidth = 3;
+                ctx.setLineDash([4, 2]);
+                ctx.stroke();
+            }
+
+            drawMetaLine();
+        })();
+        </script>
+        
+            
+        <div class='odometro-item'>
+            <h4>Teste - Media</h4>
+            <div class='canvas-wrapper'>
+                <canvas id='canvas_media_teste'></canvas>
+                <div class='escala-text escala-left'>0 km</div>
+                <div class='escala-text escala-right'>12.000 km</div>
+            </div>
+             <div class='valor'>445,80 km</div>
+        </div>
+
+        <script>
+        (function() {
+            const canvas = document.getElementById('canvas_media_teste');
+            const ctx = canvas.getContext('2d');
+
+            const chart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {"labels": ["Conclu\u00eddo", "Restante"], "datasets": [{"label": "Teste - Media", "data": [3.7149999999999994, 96.285], "backgroundColor": ["#17becf", "rgba(200,200,200,0.2)"], "borderColor": ["#fff", "#fff"], "circumference": 180, "rotation": -90}]},
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    cutout: '60%',
+                    circumference: 180,
+                    rotation: -90,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const km = (445.79999999999995).toFixed(2);
+                                    return context.dataset.label + ': ' + context.raw.toFixed(2) + '% (' + km + ' km)';
+                                }
+                            }
+                        }
+                    },
+                    elements: {
+                        arc: {
+                            borderWidth: 1,
+                            borderColor: '#fff'
+                        }
+                    }
+                }
+            });
+
+            chart.update();
+
+            // === Linha de meta nos 10.000 km ===
+            function drawMetaLine() {
+                const centerX = canvas.width / 2;
+                const centerY = canvas.height;
+                const radius = Math.min(canvas.width, canvas.height) / 2 * 0.8;
+
+                const percentMeta = 10000 / 50000; // 10k sobre 50k => 20%
+                const angle = Math.PI * (1 - percentMeta);
+
+                ctx.beginPath();
+                ctx.moveTo(
+                    centerX + (radius - 5) * Math.cos(angle),
+                    centerY - (radius - 5) * Math.sin(angle)
+                );
+                ctx.lineTo(
+                    centerX + (radius + 10) * Math.cos(angle),
+                    centerY - (radius + 10) * Math.sin(angle)
+                );
+                ctx.strokeStyle = '#28a745';
+                ctx.lineWidth = 3;
+                ctx.setLineDash([4, 2]);
+                ctx.stroke();
+            }
+
+            drawMetaLine();
+        })();
+        </script>
+        
+        </div>
+        <div class='metric-box' id='metric-box-media'>
+            <h4>Diferença percentual - Media (%)</h4>
+            <div class='valor-percentual' data-valor='-1.72'>-1.72%</div>
+        </div>
+    </div>
+
+    <!-- Grupo Longa -->
+    <div class='grupo' id='hodometro-Longa'>
+        <div class='odometro-container'>
+            
+        <div class='odometro-item'>
+            <h4>Referência - Longa</h4>
+            <div class='canvas-wrapper'>
+                <canvas id='canvas_longa_ref'></canvas>
+                <div class='escala-text escala-left'>0 km</div>
+                <div class='escala-text escala-right'>12.000 km</div>
+            </div>
+             <div class='valor'>2.141,40 km</div>
+        </div>
+
+        <script>
+        (function() {
+            const canvas = document.getElementById('canvas_longa_ref');
+            const ctx = canvas.getContext('2d');
+
+            const chart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {"labels": ["Conclu\u00eddo", "Restante"], "datasets": [{"label": "Refer\u00eancia - Longa", "data": [17.845, 82.155], "backgroundColor": ["#12094A", "rgba(200,200,200,0.2)"], "borderColor": ["#fff", "#fff"], "circumference": 180, "rotation": -90}]},
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    cutout: '60%',
+                    circumference: 180,
+                    rotation: -90,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const km = (2141.4).toFixed(2);
+                                    return context.dataset.label + ': ' + context.raw.toFixed(2) + '% (' + km + ' km)';
+                                }
+                            }
+                        }
+                    },
+                    elements: {
+                        arc: {
+                            borderWidth: 1,
+                            borderColor: '#fff'
+                        }
+                    }
+                }
+            });
+
+            chart.update();
+
+            // === Linha de meta nos 10.000 km ===
+            function drawMetaLine() {
+                const centerX = canvas.width / 2;
+                const centerY = canvas.height;
+                const radius = Math.min(canvas.width, canvas.height) / 2 * 0.8;
+
+                const percentMeta = 10000 / 50000; // 10k sobre 50k => 20%
+                const angle = Math.PI * (1 - percentMeta);
+
+                ctx.beginPath();
+                ctx.moveTo(
+                    centerX + (radius - 5) * Math.cos(angle),
+                    centerY - (radius - 5) * Math.sin(angle)
+                );
+                ctx.lineTo(
+                    centerX + (radius + 10) * Math.cos(angle),
+                    centerY - (radius + 10) * Math.sin(angle)
+                );
+                ctx.strokeStyle = '#28a745';
+                ctx.lineWidth = 3;
+                ctx.setLineDash([4, 2]);
+                ctx.stroke();
+            }
+
+            drawMetaLine();
+        })();
+        </script>
+        
+            
+        <div class='odometro-item'>
+            <h4>Teste - Longa</h4>
+            <div class='canvas-wrapper'>
+                <canvas id='canvas_longa_teste'></canvas>
+                <div class='escala-text escala-left'>0 km</div>
+                <div class='escala-text escala-right'>12.000 km</div>
+            </div>
+             <div class='valor'>2.138,50 km</div>
+        </div>
+
+        <script>
+        (function() {
+            const canvas = document.getElementById('canvas_longa_teste');
+            const ctx = canvas.getContext('2d');
+
+            const chart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {"labels": ["Conclu\u00eddo", "Restante"], "datasets": [{"label": "Teste - Longa", "data": [17.820833333333333, 82.17916666666667], "backgroundColor": ["#17becf", "rgba(200,200,200,0.2)"], "borderColor": ["#fff", "#fff"], "circumference": 180, "rotation": -90}]},
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    cutout: '60%',
+                    circumference: 180,
+                    rotation: -90,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const km = (2138.5).toFixed(2);
+                                    return context.dataset.label + ': ' + context.raw.toFixed(2) + '% (' + km + ' km)';
+                                }
+                            }
+                        }
+                    },
+                    elements: {
+                        arc: {
+                            borderWidth: 1,
+                            borderColor: '#fff'
+                        }
+                    }
+                }
+            });
+
+            chart.update();
+
+            // === Linha de meta nos 10.000 km ===
+            function drawMetaLine() {
+                const centerX = canvas.width / 2;
+                const centerY = canvas.height;
+                const radius = Math.min(canvas.width, canvas.height) / 2 * 0.8;
+
+                const percentMeta = 10000 / 50000; // 10k sobre 50k => 20%
+                const angle = Math.PI * (1 - percentMeta);
+
+                ctx.beginPath();
+                ctx.moveTo(
+                    centerX + (radius - 5) * Math.cos(angle),
+                    centerY - (radius - 5) * Math.sin(angle)
+                );
+                ctx.lineTo(
+                    centerX + (radius + 10) * Math.cos(angle),
+                    centerY - (radius + 10) * Math.sin(angle)
+                );
+                ctx.strokeStyle = '#28a745';
+                ctx.lineWidth = 3;
+                ctx.setLineDash([4, 2]);
+                ctx.stroke();
+            }
+
+            drawMetaLine();
+        })();
+        </script>
+        
+        </div>
+        <div class='metric-box' id='metric-box-longa'>
+            <h4>Diferença percentual - Longa (%)</h4>
+            <div class='valor-percentual' data-valor='-0.14'>-0.14%</div>
+        </div>
+    </div>
+
+</div>
+
+<div class='categoria'>
+    <div class='titulo-wrapper'>
+        <div class='titulo-categoria'>Análise de Hodômetro por dia</div>
+    </div>
+    <div class='grupo-selector'>
+        <button onclick="mostrarGrupo('Total','viagem', 'Total de Quilometragem por Dia')" class='btn-grupo active' id='btn-viagem-Total'>Total</button>
+        <button onclick="mostrarGrupo('Curta','viagem', 'Viagens Curtas')" class='btn-grupo' id='btn-viagem-Curta'>Curtas</button>
+        <button onclick="mostrarGrupo('Media','viagem', 'Viagens Médias')" class='btn-grupo' id='btn-viagem-Media'>Médias</button>
+        <button onclick="mostrarGrupo('Longa','viagem', 'Viagens Longas')" class='btn-grupo' id='btn-viagem-Longa'>Longas</button>
+    </div>
+
+    <div class='grupo active' data-categoria='viagem' data-grupo='Total'>
+        <div class='grafico-container'>
+            <div class='grafico-titulo-container'><h3 class='grafico-titulo'>Total de Quilometragem por Dia</h3></div>
+            <div class='metricas' id='metrics_viagem_total'></div>
+            <div class='chart-wrapper'>
+                <canvas id='canvas_viagem_total'></canvas>
+            </div>
+            <div class='zoom-controls'>
+                <button onclick="resetZoom('canvas_viagem_total')">Reset Zoom</button>
+            </div>
+            <div class='zoom-instruction'>Use o scroll do mouse para zoom ou duplo clique para resetar</div>
+        </div>
+    </div>
+    <script>
+    (function() {
+        const ctx = document.getElementById('canvas_viagem_total').getContext('2d');
+        const chart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ["12/06/2025", "13/06/2025", "14/06/2025", "15/06/2025", "16/06/2025", "18/06/2025", "19/06/2025", "20/06/2025", "22/06/2025", "23/06/2025", "24/06/2025", "25/06/2025", "26/06/2025", "27/06/2025", "30/06/2025"],
+                datasets: [{"label": "Teste - Total", "data": [464.09999999999997, 406.3, 18.0, 14.9, 215.0, 152.29999999999998, 0.3, 0.1, 0.0, 325.1, 455.29999999999995, 0.0, 261.6, 225.6, 85.5], "borderColor": "#17becf", "backgroundColor": "#17becf", "tension": 0.3, "fill": false, "pointRadius": 4, "pointHoverRadius": 6}, {"label": "Refer\u00eancia - Total", "data": [465.59999999999997, 407.2, 17.3, 14.7, 218.4, 152.3, 0.1, 0.1, 0.0, 325.4, 455.79999999999995, 0.2, 260.90000000000003, 230.7, 85.60000000000001], "borderColor": "#12094A", "backgroundColor": "#12094A", "tension": 0.3, "fill": false, "pointRadius": 4, "pointHoverRadius": 6}]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: { mode: 'nearest', intersect: false },
+                plugins: {
+                    legend: { display: true, position: 'top' },
+                    zoom: {
+                        pan: { enabled: true, mode: 'xy', speed: 10, threshold: 10 },
+                        zoom: {
+                            wheel: { enabled: true, speed: 0.1 },
+                            pinch: { enabled: true },
+                            drag: { enabled: true, backgroundColor: 'rgba(225,225,225,0.3)', borderWidth: 2 },
+                            mode: 'xy'
+                        }
+                    }
+                },
+                scales: {
+                    x: { type: 'category', title: { display: true, text: 'DIAS', font: { weight: 'bold', size: 14 }, color: '#222',  family: 'Saira, sans-serif' } },
+                    y: { title: { display: true, text: 'QUILOMETRAGEM (km)', font: { weight: 'bold', size: 14 }, color: '#222',  family: 'Saira, sans-serif' } }
+                }
+            }
+        });
+        window.charts = window.charts || {};
+        window.charts['canvas_viagem_total'] = chart;
+        document.getElementById('canvas_viagem_total').addEventListener('dblclick', function() {
+            chart.resetZoom();
+        });
+    })();
+    </script>
+    
+        <div class='grupo' data-categoria='viagem' data-grupo='Curta'>
+            <div class='grafico-container'>
+                <div class='grafico-titulo-container'><h3 class='grafico-titulo'>Viagens Curtas por DiaFaixa de distância: 0 km até 2 km</h3></div>
+                <div class="metricas" id="metrics_viagem_total"><p>Faixa de distância: 0 km até 2 km</p></div>
+                <div class='faixa-legenda' id='faixa_curta'>Faixa de distância: 0 km até 2 km</div>
+                <div class='chart-wrapper'>
+                    <canvas id='canvas_viagem_0'></canvas>
+                </div>
+                <div class='zoom-controls'>
+                    <button onclick="resetZoom('canvas_viagem_0')">Reset Zoom</button>
+                </div>
+                <div class='zoom-instruction'>Use o scroll do mouse para zoom ou duplo clique para resetar</div>
+            </div>
+        </div>
+        <script>
+        (function() {
+            const ctx = document.getElementById('canvas_viagem_0').getContext('2d');
+            const chart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ["12/06/2025", "13/06/2025", "14/06/2025", "15/06/2025", "16/06/2025", "18/06/2025", "19/06/2025", "20/06/2025", "22/06/2025", "23/06/2025", "24/06/2025", "25/06/2025", "26/06/2025", "27/06/2025", "30/06/2025"],
+                    datasets: [{"label": "Teste - Curta", "data": [3.2, 2.5, 6.3, 10.5, 2.1, 0.7, 0.3, 0.1, 0.0, 3.2, 6.7, 0.0, 2.5, 1.5, 0.2], "borderColor": "#17becf", "backgroundColor": "#17becf", "tension": 0.3, "fill": false, "pointRadius": 4, "pointHoverRadius": 6}, {"label": "Refer\u00eancia - Curta", "data": [3.1, 2.7, 7.8, 10.4, 2.2, 0.3, 0.1, 0.1, 0.0, 3.0, 6.6, 0.2, 2.5, 0.1, 0.2], "borderColor": "#12094A", "backgroundColor": "#12094A", "tension": 0.3, "fill": false, "pointRadius": 4, "pointHoverRadius": 6}]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: { mode: 'nearest', intersect: false },
+                    plugins: {
+                        legend: { display: true, position: 'top' },
+                        zoom: {
+                            pan: { enabled: true, mode: 'xy', speed: 10, threshold: 10 },
+                            zoom: {
+                                wheel: { enabled: true, speed: 0.1 },
+                                pinch: { enabled: true },
+                                drag: { enabled: true, backgroundColor: 'rgba(225,225,225,0.3)', borderWidth: 2 },
+                                mode: 'xy'
+                            }
+                        }
+                    },
+                    scales: {
+                        x: { type: 'category', title: { display: true, text: 'DIAS', font: { weight: 'bold', size: 14 }, color: '#222',  family: 'Saira, sans-serif' } },
+                        y: { title: { display: true, text: 'QUILOMETRAGEM (km)', font: { weight: 'bold', size: 14 }, color: '#222',  family: 'Saira, sans-serif' } }
+                    }
+                }
+            });
+            window.charts = window.charts || {};
+            window.charts['canvas_viagem_0'] = chart;
+            document.getElementById('canvas_viagem_0').addEventListener('dblclick', function() {
+                chart.resetZoom();
+            });
+        })();
+        </script>
+    
+        <div class='grupo' data-categoria='viagem' data-grupo='Media'>
+            <div class='grafico-container'>
+                <div class='grafico-titulo-container'><h3 class='grafico-titulo'>Viagens Medias por DiaFaixa de distância: 2 km até 50 km</h3></div>
+                <div class="metricas" id="metrics_viagem_total"><p>Faixa de distância: 2 km até 50 km</p></div>
+                <div class='faixa-legenda' id='faixa_media'>Faixa de distância: 2 km até 50 km</div>
+                <div class='chart-wrapper'>
+                    <canvas id='canvas_viagem_1'></canvas>
+                </div>
+                <div class='zoom-controls'>
+                    <button onclick="resetZoom('canvas_viagem_1')">Reset Zoom</button>
+                </div>
+                <div class='zoom-instruction'>Use o scroll do mouse para zoom ou duplo clique para resetar</div>
+            </div>
+        </div>
+        <script>
+        (function() {
+            const ctx = document.getElementById('canvas_viagem_1').getContext('2d');
+            const chart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ["12/06/2025", "13/06/2025", "14/06/2025", "15/06/2025", "16/06/2025", "18/06/2025", "19/06/2025", "20/06/2025", "22/06/2025", "23/06/2025", "24/06/2025", "25/06/2025", "26/06/2025", "27/06/2025", "30/06/2025"],
+                    datasets: [{"label": "Teste - Media", "data": [87.0, 39.7, 11.7, 4.4, 43.5, 24.5, 0.0, 0.0, 0.0, 67.5, 62.4, 0.0, 55.5, 42.9, 6.7], "borderColor": "#17becf", "backgroundColor": "#17becf", "tension": 0.3, "fill": false, "pointRadius": 4, "pointHoverRadius": 6}, {"label": "Refer\u00eancia - Media", "data": [87.8, 39.8, 9.5, 4.3, 46.3, 24.6, 0.0, 0.0, 0.0, 67.5, 62.5, 0.0, 55.1, 49.5, 6.7], "borderColor": "#12094A", "backgroundColor": "#12094A", "tension": 0.3, "fill": false, "pointRadius": 4, "pointHoverRadius": 6}]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: { mode: 'nearest', intersect: false },
+                    plugins: {
+                        legend: { display: true, position: 'top' },
+                        zoom: {
+                            pan: { enabled: true, mode: 'xy', speed: 10, threshold: 10 },
+                            zoom: {
+                                wheel: { enabled: true, speed: 0.1 },
+                                pinch: { enabled: true },
+                                drag: { enabled: true, backgroundColor: 'rgba(225,225,225,0.3)', borderWidth: 2 },
+                                mode: 'xy'
+                            }
+                        }
+                    },
+                    scales: {
+                        x: { type: 'category', title: { display: true, text: 'DIAS', font: { weight: 'bold', size: 14 }, color: '#222',  family: 'Saira, sans-serif' } },
+                        y: { title: { display: true, text: 'QUILOMETRAGEM (km)', font: { weight: 'bold', size: 14 }, color: '#222',  family: 'Saira, sans-serif' } }
+                    }
+                }
+            });
+            window.charts = window.charts || {};
+            window.charts['canvas_viagem_1'] = chart;
+            document.getElementById('canvas_viagem_1').addEventListener('dblclick', function() {
+                chart.resetZoom();
+            });
+        })();
+        </script>
+    
+        <div class='grupo' data-categoria='viagem' data-grupo='Longa'>
+            <div class='grafico-container'>
+                <div class='grafico-titulo-container'><h3 class='grafico-titulo'>Viagens Longas por DiaFaixa de distância: acima de 50 km</h3></div>
+                <div class="metricas" id="metrics_viagem_total"><p>Faixa de distância: acima de 50 km</p></div>
+                <div class='faixa-legenda' id='faixa_longa'>Faixa de distância: acima de 50 km</div>
+                <div class='chart-wrapper'>
+                    <canvas id='canvas_viagem_2'></canvas>
+                </div>
+                <div class='zoom-controls'>
+                    <button onclick="resetZoom('canvas_viagem_2')">Reset Zoom</button>
+                </div>
+                <div class='zoom-instruction'>Use o scroll do mouse para zoom ou duplo clique para resetar</div>
+            </div>
+        </div>
+        <script>
+        (function() {
+            const ctx = document.getElementById('canvas_viagem_2').getContext('2d');
+            const chart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ["12/06/2025", "13/06/2025", "14/06/2025", "15/06/2025", "16/06/2025", "18/06/2025", "19/06/2025", "20/06/2025", "22/06/2025", "23/06/2025", "24/06/2025", "25/06/2025", "26/06/2025", "27/06/2025", "30/06/2025"],
+                    datasets: [{"label": "Teste - Longa", "data": [373.9, 364.1, 0.0, 0.0, 169.4, 127.1, 0.0, 0.0, 0.0, 254.4, 386.2, 0.0, 203.6, 181.2, 78.6], "borderColor": "#17becf", "backgroundColor": "#17becf", "tension": 0.3, "fill": false, "pointRadius": 4, "pointHoverRadius": 6}, {"label": "Refer\u00eancia - Longa", "data": [374.7, 364.7, 0.0, 0.0, 169.9, 127.4, 0.0, 0.0, 0.0, 254.9, 386.7, 0.0, 203.3, 181.1, 78.7], "borderColor": "#12094A", "backgroundColor": "#12094A", "tension": 0.3, "fill": false, "pointRadius": 4, "pointHoverRadius": 6}]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: { mode: 'nearest', intersect: false },
+                    plugins: {
+                        legend: { display: true, position: 'top' },
+                        zoom: {
+                            pan: { enabled: true, mode: 'xy', speed: 10, threshold: 10 },
+                            zoom: {
+                                wheel: { enabled: true, speed: 0.1 },
+                                pinch: { enabled: true },
+                                drag: { enabled: true, backgroundColor: 'rgba(225,225,225,0.3)', borderWidth: 2 },
+                                mode: 'xy'
+                            }
+                        }
+                    },
+                    scales: {
+                        x: { type: 'category', title: { display: true, text: 'DIAS', font: { weight: 'bold', size: 14 }, color: '#222',  family: 'Saira, sans-serif' } },
+                        y: { title: { display: true, text: 'QUILOMETRAGEM (km)', font: { weight: 'bold', size: 14 }, color: '#222',  family: 'Saira, sans-serif' } }
+                    }
+                }
+            });
+            window.charts = window.charts || {};
+            window.charts['canvas_viagem_2'] = chart;
+            document.getElementById('canvas_viagem_2').addEventListener('dblclick', function() {
+                chart.resetZoom();
+            });
+        })();
+        </script>
+    
+</div>
+
+<script>
+// Função para aplicar estilos dinâmicos aos blocos de diferença percentual
+function aplicarEstilosDinamicos() {
+    // Seleciona todos os blocos de diferença percentual
+    const metricBoxes = document.querySelectorAll('.metric-box');
+    
+    metricBoxes.forEach(box => {
+        const valorElement = box.querySelector('.valor-percentual');
+        if (valorElement) {
+            const valor = parseFloat(valorElement.getAttribute('data-valor'));
+            
+            // Remove classes anteriores
+            box.classList.remove('positivo', 'negativo');
+            
+            // Aplica classe baseada no valor
+            if (valor >= 0) {
+                box.classList.add('positivo');
+            } else {
+                box.classList.add('negativo');
+            }
+        }
+    });
+}
+
+// Função para mostrar grupos do hodômetro
+function mostrarGrupoHodometro(categoria) {
+    // Remove classe active de todos os botões do hodômetro
+    document.querySelectorAll('[id^="btn-hodometro-"]').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    
+    // Adiciona classe active ao botão selecionado
+    document.getElementById(`btn-hodometro-${categoria}`).classList.add('active');
+    
+    // Esconde todos os grupos do hodômetro
+    document.querySelectorAll('[id^="hodometro-"]').forEach(grupo => {
+        grupo.classList.remove('active');
+    });
+    
+    // Mostra o grupo selecionado
+    document.getElementById(`hodometro-${categoria}`).classList.add('active');
+    
+    // Reaplica os estilos dinâmicos após mudança de grupo
+    setTimeout(aplicarEstilosDinamicos, 100);
+}
+
+// Função para mostrar grupos dos gráficos de linha
+function mostrarGrupo(grupo, categoria, titulo) {
+    // Remove classe active de todos os botões da categoria viagem
+    document.querySelectorAll('[id^="btn-viagem-"]').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    
+    // Adiciona classe active ao botão selecionado
+    document.getElementById(`btn-viagem-${grupo}`).classList.add('active');
+    
+    // Esconde todos os grupos da mesma categoria
+    document.querySelectorAll(`.grupo[data-categoria='${categoria}']`).forEach(el => {
+        el.classList.remove('active');
+    });
+    
+    // Mostra o grupo selecionado
+    document.querySelector(`.grupo[data-categoria='${categoria}'][data-grupo='${grupo}']`).classList.add('active');
+    
+    // Atualiza o título do gráfico se necessário
+    const tituloElement = document.querySelector(`.grupo[data-categoria='${categoria}'][data-grupo='${grupo}'] .grafico-titulo`);
+    if (tituloElement && titulo) {
+        tituloElement.textContent = titulo;
+    }
+}
+
+function resetZoom(chartId) {
+    if (window.charts && window.charts[chartId]) {
+        window.charts[chartId].resetZoom();
+    }
+}
+
+// Aplica os estilos dinâmicos quando a página carrega
+document.addEventListener('DOMContentLoaded', function() {
+    aplicarEstilosDinamicos();
+});
+
+// Também aplica quando a janela é redimensionada (para garantir)
+window.addEventListener('resize', function() {
+    setTimeout(aplicarEstilosDinamicos, 200);
+});
+</script>
+</body>
+</html>
