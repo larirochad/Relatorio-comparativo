@@ -126,8 +126,8 @@
     <script>
     (function() {
         const ctx = document.getElementById('canvas_sat_line').getContext('2d');
-        const valRef = [244, 221, 78, 86, 147, 23, 110, 30, 31, 24, 25, 190, 256, 39, 127, 150, 23, 23, 44];
-        const valTeste = [885, 841, 260, 269, 634, 24, 403, 36, 37, 24, 26, 681, 977, 65, 497, 368, 24, 24, 155];
+        const valRef = [244, 221, 78, 86, 147, 23, 110, 30, 31, 24, 25, 190, 256, 39, 127, 150, 23, 23, 189, 225, 48];
+        const valTeste = [885, 841, 260, 269, 634, 24, 403, 36, 37, 24, 26, 681, 977, 65, 497, 368, 24, 24, 639, 916, 205];
 
         // Variável para controlar o filtro ativo
         let filtroAtivo = 'Válidos';
@@ -135,8 +135,8 @@
         const chart = new Chart(ctx, {
             type: 'line',
             data: {
-                labels: ["12/06/2025", "13/06/2025", "14/06/2025", "15/06/2025", "16/06/2025", "17/06/2025", "18/06/2025", "19/06/2025", "20/06/2025", "21/06/2025", "22/06/2025", "23/06/2025", "24/06/2025", "25/06/2025", "26/06/2025", "27/06/2025", "28/06/2025", "29/06/2025", "30/06/2025"],
-                datasets: [{"label": "V\u00e1lidos Refer\u00eancia", "data": [244, 221, 78, 86, 147, 23, 110, 30, 31, 24, 25, 190, 256, 39, 127, 150, 23, 23, 44], "borderColor": "#12094A", "backgroundColor": "#12094A", "tension": 0.3, "fill": false, "pointRadius": 4, "pointHoverRadius": 6, "pointBackgroundColor": "#12094A", "pointBorderColor": "#12094A", "pointBorderWidth": 1, "hidden": false}, {"label": "V\u00e1lidos Teste", "data": [885, 841, 260, 269, 634, 24, 403, 36, 37, 24, 26, 681, 977, 65, 497, 368, 24, 24, 155], "borderColor": "#17becf", "backgroundColor": "#17becf", "tension": 0.3, "fill": false, "pointRadius": 4, "pointHoverRadius": 6, "pointBackgroundColor": "#17becf", "pointBorderColor": "#17becf", "pointBorderWidth": 1, "hidden": false}, {"label": "Inv\u00e1lidos Refer\u00eancia", "data": [0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 0, 0], "borderColor": "red", "backgroundColor": "red", "tension": 0.3, "fill": false, "pointRadius": 4, "pointHoverRadius": 6, "pointBackgroundColor": "red", "pointBorderColor": "red", "pointBorderWidth": 1, "hidden": true}, {"label": "Inv\u00e1lidos Teste", "data": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], "borderColor": "darkorange", "backgroundColor": "darkorange", "tension": 0.3, "fill": false, "pointRadius": 4, "pointHoverRadius": 6, "pointBackgroundColor": "darkorange", "pointBorderColor": "darkorange", "pointBorderWidth": 1, "hidden": true}]
+                labels: ["12/06/2025", "13/06/2025", "14/06/2025", "15/06/2025", "16/06/2025", "17/06/2025", "18/06/2025", "19/06/2025", "20/06/2025", "21/06/2025", "22/06/2025", "23/06/2025", "24/06/2025", "25/06/2025", "26/06/2025", "27/06/2025", "28/06/2025", "29/06/2025", "30/06/2025", "01/07/2025", "02/07/2025"],
+                datasets: [{"label": "V\u00e1lidos Refer\u00eancia", "data": [244, 221, 78, 86, 147, 23, 110, 30, 31, 24, 25, 190, 256, 39, 127, 150, 23, 23, 189, 225, 48], "borderColor": "#12094A", "backgroundColor": "#12094A", "tension": 0.3, "fill": false, "pointRadius": 4, "pointHoverRadius": 6, "pointBackgroundColor": "#12094A", "pointBorderColor": "#12094A", "pointBorderWidth": 1, "hidden": false}, {"label": "V\u00e1lidos Teste", "data": [885, 841, 260, 269, 634, 24, 403, 36, 37, 24, 26, 681, 977, 65, 497, 368, 24, 24, 639, 916, 205], "borderColor": "#17becf", "backgroundColor": "#17becf", "tension": 0.3, "fill": false, "pointRadius": 4, "pointHoverRadius": 6, "pointBackgroundColor": "#17becf", "pointBorderColor": "#17becf", "pointBorderWidth": 1, "hidden": false}, {"label": "Inv\u00e1lidos Refer\u00eancia", "data": [0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 0, 2, 0, 0], "borderColor": "red", "backgroundColor": "red", "tension": 0.3, "fill": false, "pointRadius": 4, "pointHoverRadius": 6, "pointBackgroundColor": "red", "pointBorderColor": "red", "pointBorderWidth": 1, "hidden": true}, {"label": "Inv\u00e1lidos Teste", "data": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], "borderColor": "darkorange", "backgroundColor": "darkorange", "tension": 0.3, "fill": false, "pointRadius": 4, "pointHoverRadius": 6, "pointBackgroundColor": "darkorange", "pointBorderColor": "darkorange", "pointBorderWidth": 1, "hidden": true}]
             },
             options: {
                 responsive: true,
@@ -264,7 +264,7 @@
             <canvas id='canvas_sat_barras_validos'></canvas>
         </div>
         <div class='diferenca-container'>
-            Diferença percentual: <span class='diferenca-valor'>232.98%</span>
+            Diferença percentual: <span class='diferenca-valor'>242.29%</span>
             <br>
             <small>Teste em relação ao Referência</small>
         </div>
@@ -279,7 +279,7 @@
                 labels: ['Válidos Referência', 'Válidos Teste'],
                 datasets: [{
                     label: 'Quantidade',
-                    data: [1871, 6230],
+                    data: [2289, 7835],
                     backgroundColor: ['#12094A', '#17becf'],
                     borderColor: ['#12094A', '#14a9b8'],
                     borderWidth: 1,
@@ -298,8 +298,8 @@
                                 return context.dataset.label + ': ' + context.raw;
                             },
                             afterLabel: function(context) {
-                                const refValue = 1871;
-                                const testValue = 6230;
+                                const refValue = 2289;
+                                const testValue = 7835;
                                 const diff = ((testValue - refValue) / refValue * 100).toFixed(2);
                                 
                                 if (context.dataIndex === 0) {
