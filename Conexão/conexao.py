@@ -23,15 +23,16 @@ def conexao(df1, df2):
     def contar_conexoes(df, dispositivo):
         mapa = None
         if dispositivo == 'TM07':
-            mapa = {'00': 'Sem conexão', '01': '2G', '10': '4G' }
+            mapa = {'00': '2G', '01': '3G', '10': '4G' }
         elif dispositivo == 'TM08':
             mapa = {'0': 'Sem conexão', '1': '2G', '2': '4G', '3': '4G'}
         elif dispositivo == 'TM10':
             mapa = {'0': 'Sem conexão', '1': '2G', '4': '4G' }
         else:
-            return {'Sem conexão': 0, '2G': 0, '4G': 0}
+            return {'Sem conexão': 0, '2G': 0, '3G': 0, '4G': 0}
 
-        contagem = {'Sem conexão': 0, '2G': 0, '4G': 0}
+        # Sempre inclua '3G' no dicionário de contagem
+        contagem = {'Sem conexão': 0, '2G': 0, '3G': 0, '4G': 0}
 
         if mapa and 'RAT' in df.columns:
             df_filtrado = df[df['RAT'].notna() & (df['RAT'].astype(str).str.strip() != '')]
@@ -58,23 +59,25 @@ def conexao(df1, df2):
 
     # Monta o DataFrame final no formato esperado pelo HTML, mantendo as contagens separadas
     resultado = pd.DataFrame({
-        'Tipo de Rede': ['Sem conexão', '2G', '4G'],
+        'Tipo de Rede': ['Sem conexão', '2G', '3G', '4G'],
         'Teste': [
             contagem1['Sem conexão'],
             contagem1['2G'],
+            contagem1['3G'],
             contagem1['4G']
         ],
         'Referencia': [
             contagem2['Sem conexão'],
-            contagem2['2G'],
+            contagem2['2G'],    
+            contagem2['3G'],
             contagem2['4G']
         ]
     })
-    # print(resultado)
+    print(resultado)
     return resultado
 
 
-# if __name__ == "__main__":
-#     df1 = pd.read_csv('logs/analise_par09.csv')
-#     df2 = pd.read_csv('logs/TM08-PAR09.csv')
-#     conexao(df1, df2)
+if __name__ == "__main__":
+    df1 = pd.read_csv('logs/analise_par09.csv')
+    df2 = pd.read_csv('logs/TM08-PAR09.csv')
+    conexao(df1, df2)

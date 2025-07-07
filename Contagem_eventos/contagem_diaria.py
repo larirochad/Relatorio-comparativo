@@ -74,19 +74,17 @@ def analise_diaria(df1, df2):
                 if dispositivo in ['802003', '385349']:
                     if evento == 'GTIGN':
                         ign_on += 1
-                        modo_eco_ativo = False
-                        periodicas = True
+                        # modo_eco_ativo = False
 
                     elif evento == 'GTIGF':
                         ign_off += 1
-                        modo_eco_ativo = True
-                        periodicas = False
+                        # modo_eco_ativo = True
 
                     elif evento == 'GTERI':
                         if motion_prefix == '1':
                             eco += 1
                             continue
-                        elif (motion_prefix == '2' and report_type == '10') or (periodicas and report_type == '10') or codigo == '30':
+                        elif (motion_prefix == '2' and report_type == '10') or  codigo == '30':
                             peri += 1
                         elif pd.isna(motion) or motion_str == '':
                             peri += 1
@@ -96,22 +94,22 @@ def analise_diaria(df1, df2):
                 else:
                     if evento == 'GTIGN':
                         ign_on += 1
-                        modo_eco_ativo = False
-                        periodicas = True
+                        # modo_eco_ativo = False
+                        # periodicas = True
 
                     elif evento == 'GTIGF':
                         ign_off += 1
-                        modo_eco_ativo = True
-                        periodicas = False
+                        # modo_eco_ativo = True
+                        # periodicas = False
 
                     elif evento == 'GTERI':
                         if motion_prefix == '1':
                             eco += 1
                             continue
-                        if motion == '11' or modo_eco_ativo or codigo == '27':
+                        if motion_prefix == '1'  or codigo == '27':
                             eco += 1
                         else:
-                            if motion_prefix == '2' or periodicas or codigo == '30':
+                            if motion_prefix == '2'  or codigo == '30':
                                 peri += 1
                             elif pd.isna(motion) or motion_str == '':
                                 peri += 1
@@ -143,8 +141,13 @@ def analise_diaria(df1, df2):
         'Ignição ligada referencia', 'Ignição ligada teste',
         'Ignição desligada referencia', 'Ignição desligada teste'
     ]
-
+    # print(df_final)
     df_final = df_final.reindex(columns=colunas)
     # print(df_final.head())
 
     return df_final
+
+# if __name__ == "__main__":
+#     df1 = pd.read_csv('logs/analise_par09.csv')
+#     df2 = pd.read_csv('logs/TM08-PAR09 - Copia.csv')
+#     analise_diaria(df1, df2)    
