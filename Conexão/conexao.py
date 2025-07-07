@@ -10,17 +10,27 @@ def conexao(df1, df2):
 
     def identificar_dispositivo(df):
         tipo_dispositivo = df['Tipo Dispositivo'].dropna().astype(str).unique()
-        if any('346911' in x for x in tipo_dispositivo):
+        # print(tipo_dispositivo)
+        if any('385349' in x for x in tipo_dispositivo):
             return 'TM08'
         elif any('802003' in x for x in tipo_dispositivo):
             return 'TM10'
+        elif any('83' in x for x in tipo_dispositivo):
+            return 'TM07'
         else:
             return 'Desconhecido'
 
     def contar_conexoes(df, dispositivo):
-        mapa_tm08 = {'0': 'Sem conexão', '1': '2G', '2': '4G', '3': '4G'}
-        mapa_tm10 = {'0': 'Sem conexão', '1': '2G', '4': '4G'}
-        mapa = mapa_tm08 if dispositivo == 'TM08' else mapa_tm10 if dispositivo == 'TM10' else None
+        mapa = None
+        if dispositivo == 'TM07':
+            mapa = {'00': 'Sem conexão', '01': '2G', '10': '4G' }
+        elif dispositivo == 'TM08':
+            mapa = {'0': 'Sem conexão', '1': '2G', '2': '4G', '3': '4G'}
+        elif dispositivo == 'TM10':
+            mapa = {'0': 'Sem conexão', '1': '2G', '4': '4G' }
+        else:
+            return {'Sem conexão': 0, '2G': 0, '4G': 0}
+
         contagem = {'Sem conexão': 0, '2G': 0, '4G': 0}
 
         if mapa and 'RAT' in df.columns:
@@ -39,12 +49,14 @@ def conexao(df1, df2):
     df1 = limpar_colunas(df1)
     df2 = limpar_colunas(df2)
 
+    # Identifica o tipo de dispositivo de cada DataFrame separadamente
     dispositivo1 = identificar_dispositivo(df1)
     dispositivo2 = identificar_dispositivo(df2)
 
-    contagem1 = contar_conexoes(df1, dispositivo1)
-    contagem2 = contar_conexoes(df2, dispositivo2)
+    contagem1 = contar_conexoes(df1, dispositivo1)  # Para Teste
+    contagem2 = contar_conexoes(df2, dispositivo2)  # Para Referencia
 
+    # Monta o DataFrame final no formato esperado pelo HTML, mantendo as contagens separadas
     resultado = pd.DataFrame({
         'Tipo de Rede': ['Sem conexão', '2G', '4G'],
         'Teste': [
@@ -58,5 +70,11 @@ def conexao(df1, df2):
             contagem2['4G']
         ]
     })
-
+    # print(resultado)
     return resultado
+
+
+# if __name__ == "__main__":
+#     df1 = pd.read_csv('logs/analise_par09.csv')
+#     df2 = pd.read_csv('logs/TM08-PAR09.csv')
+#     conexao(df1, df2)

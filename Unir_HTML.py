@@ -79,8 +79,9 @@ def get_device_info(df, device_function):
     # Mapeamento de tipos de dispositivo
     tipo_mapping = {
         '802003': 'TM-10',
-        '379526': 'TM-08',
-        '385349': 'TM-08'
+        # '379526': 'TM-08',
+        '385349': 'TM-08',
+        '83': 'TM-07'
     }
     
     # Extrair tipo de dispositivo

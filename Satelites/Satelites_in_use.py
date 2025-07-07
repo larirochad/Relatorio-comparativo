@@ -4,21 +4,64 @@ from datetime import timedelta
 def analise_estabilidade_satelite(df_teste, df_ref):
     def processar_dispositivo(df):
         # Verifica e padroniza os nomes das colunas
-        tipo_col = 'Tipo Mensagem' if 'Tipo Mensagem' in df.columns else 'Event Code'
-        satelite_col = 'Satélites' if 'Satélites' in df.columns else 'Satélite'
+        tipo_col = None
+        for col in df.columns:
+            if 'Tipo Mensagem' in col:
+                tipo_col = col
+                break
         
-        df = df[df[tipo_col].isin(['Modo Econômico', 'GTERI', 'GTIGN', 'GTIGF'])].copy()
+        # Procura por colunas que contenham "Event Code"
+        event_code_col = None
+        for col in df.columns:
+            if 'Event Code' in col:
+                event_code_col = col
+                break
+        
+        if tipo_col is None and event_code_col is None:
+            print(f"Colunas disponíveis: {list(df.columns)}")
+            raise ValueError("Coluna 'Tipo Mensagem' ou 'Event Code' não encontrada no DataFrame")
+        
+        # Procura por colunas que contenham "Satélites" ou "Satélite"
+        satelite_col = None
+        for col in df.columns:
+            if 'Satélites' in col or 'Satélite' in col:
+                satelite_col = col
+                break
+        
+        if satelite_col is None:
+            print(f"Colunas disponíveis: {list(df.columns)}")
+            raise ValueError("Coluna 'Satélites' não encontrada no DataFrame")
+        
+        # Mapeamento de códigos para tipos de mensagem
+        codigo_para_tipo = {
+            '20': 'GTIGF',
+            '21': 'GTIGN',
+            '30': 'GTERI',
+            '27': 'GTERI'
+        }
+        
+        def get_tipo(row):
+            tipo = str(row.get(tipo_col, '') if tipo_col else '').strip().upper()
+            codigo = str(row.get(event_code_col, '') if event_code_col else '').strip()
+            if tipo:
+                if 'MODO ECONÔMICO' in tipo:
+                    return 'MODOECO'
+                return tipo
+            elif codigo:
+                return codigo_para_tipo.get(codigo, '')
+            return ''
+        
+        df = df.copy()
+        df['TipoFiltrado'] = df.apply(get_tipo, axis=1)
+        df = df[df['TipoFiltrado'].isin(['MODOECO', 'GTERI', 'GTIGN', 'GTIGF'])].copy()
         
         if df.empty:
             return {}
         
         df['Data'] = pd.to_datetime(df['Data/Hora Evento']).dt.date
-        
         df['Valido'] = df[satelite_col] > 0
-        
         resultado = df.groupby('Data')['Valido'].value_counts().unstack(fill_value=0)
         resultado = resultado.rename(columns={True: 'validos', False: 'invalidos'})
-        
         return resultado.to_dict('index')
     
     # Processa ambos dispositivos

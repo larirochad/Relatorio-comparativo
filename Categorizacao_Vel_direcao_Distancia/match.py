@@ -15,6 +15,7 @@ def match(path: str) -> pd.DataFrame:
                 engine='python',
                 dtype=str
             )
+            df.columns = df.columns.str.strip()  # <- REMOVE espaços extras
             df = df.loc[:, ~df.columns.str.contains('^Unnamed')]
 
             if 'Data/Hora Evento' not in df.columns:
@@ -43,6 +44,7 @@ def match(path: str) -> pd.DataFrame:
             continue
 
     raise ValueError(f"Não foi possível ler o arquivo {path} corretamente")
+
 
 def classify_message(message: str) -> str:
     message = str(message).strip().upper()

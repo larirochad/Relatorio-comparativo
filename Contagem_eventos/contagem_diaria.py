@@ -57,16 +57,21 @@ def analise_diaria(df1, df2):
 
             for _, row in grupo.iterrows():
                 evento = get_evento(row)
-                motion = str(row.get('Motion Status', '')).strip()
+                motion = row.get('Motion Status', '')
+                motion_str = str(motion) if pd.notna(motion) else ''
+                motion_prefix = motion_str[0] if len(motion_str) > 0 else None
                 codigo = str(row.get('Event Code', '')).strip()
 
                 report_type_raw = row.get('Position Report Type', '')
                 if pd.notna(report_type_raw) and str(report_type_raw).strip() != '':
-                    report_type = str(int(float(report_type_raw)))
+                    try:
+                        report_type = str(int(float(report_type_raw)))
+                    except ValueError:
+                        report_type = ''
                 else:
                     report_type = ''
 
-                if dispositivo == '802003':
+                if dispositivo in ['802003', '385349']:
                     if evento == 'GTIGN':
                         ign_on += 1
                         modo_eco_ativo = False
@@ -78,11 +83,12 @@ def analise_diaria(df1, df2):
                         periodicas = False
 
                     elif evento == 'GTERI':
-                        if motion == '11' or modo_eco_ativo:
+                        if motion_prefix == '1':
                             eco += 1
-                        elif (motion == '22' and report_type == '10') or (periodicas and report_type == '10') or codigo == '30':
+                            continue
+                        elif (motion_prefix == '2' and report_type == '10') or (periodicas and report_type == '10') or codigo == '30':
                             peri += 1
-                        elif pd.isna(motion) or motion == '':
+                        elif pd.isna(motion) or motion_str == '':
                             peri += 1
                     elif evento == 'MODOECO':
                         eco += 1
@@ -99,12 +105,15 @@ def analise_diaria(df1, df2):
                         periodicas = False
 
                     elif evento == 'GTERI':
+                        if motion_prefix == '1':
+                            eco += 1
+                            continue
                         if motion == '11' or modo_eco_ativo or codigo == '27':
                             eco += 1
                         else:
-                            if motion == '22' or periodicas or codigo == '30':
+                            if motion_prefix == '2' or periodicas or codigo == '30':
                                 peri += 1
-                            elif pd.isna(motion) or motion == '':
+                            elif pd.isna(motion) or motion_str == '':
                                 peri += 1
                     elif evento == 'MODOECO':
                         eco += 1

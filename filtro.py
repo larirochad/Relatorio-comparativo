@@ -76,9 +76,15 @@ def gerar_estatisticas_de_medias(df, dataframes):
     for _, coluna_resultado in dataframes:
         resultado = {}
         for grupo in sorted(df['Match_Type'].unique()):
-            valores = pd.to_numeric(df[df['Match_Type'] == grupo][coluna_resultado], errors='coerce').dropna()
-            if len(valores):
-                resultado[grupo] = valores.mean()
+            # Primeiro filtra os dados por grupo
+            dados_grupo = df[df['Match_Type'] == grupo][coluna_resultado]
+            # Converte para numérico e remove valores NaN
+            valores = pd.to_numeric(dados_grupo, errors='coerce')
+            # Garante que valores seja uma Series do pandas
+            if isinstance(valores, pd.Series):
+                valores = valores.dropna()
+                if len(valores) > 0:
+                    resultado[grupo] = valores.mean()
         if resultado:
             medias_por_tipo[coluna_resultado] = resultado
 
@@ -153,5 +159,5 @@ if __name__ == "__main__":
     executar_analise_completa(
         tipo='todas',
         input1='logs/analise_par09.csv',
-        input2='logs/TM08-PAR09.csv'
+        input2='logs/TM08-PAR09 - Copia.csv'
     )
