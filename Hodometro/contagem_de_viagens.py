@@ -3,10 +3,19 @@ import pandas as pd
 def viagens(df_teste, df_ref):
     def get_evento(row):
         tipo = str(row.get('Tipo Mensagem', '')).strip().upper()
-        codigo = str(row.get('Event Code', '')).strip()
+        codigo = str(row.get('Event Code', '')).strip().upper()
         if tipo:
-            return tipo
-        elif codigo:
+            # Se já for GTIGN ou GTIGF, retorna direto
+            if tipo in ['GTIGN', 'GTIGF']:
+                return tipo
+            # Se for modo econômico, retorna padronizado
+            if 'MODO ECONÔMICO' in tipo:
+                return 'MODOECO'
+        if codigo:
+            # Se já for GTIGN ou GTIGF, retorna direto
+            if codigo in ['GTIGN', 'GTIGF']:
+                return codigo
+            # Se for numérico, faz o mapeamento
             mapa = {'20': 'GTIGF', '21': 'GTIGN'}
             return mapa.get(codigo, '')
         return ''
@@ -46,6 +55,7 @@ def viagens(df_teste, df_ref):
 
                 if pd.notna(ign_odometro) and pd.notna(igf_odometro):
                     km = igf_odometro - ign_odometro
+                    #print(f'nome do dispositivo: {nome_dispositivo}')
                     # print(f"➡️ IGN: {ign_time} | Odom IGN: {ign_odometro} | Próximo IGF: {igf_time} | Odom IGF: {igf_odometro} = {km}")
 
                     viagens.append({
@@ -70,9 +80,12 @@ def viagens(df_teste, df_ref):
 
     viagens_teste = extrair_viagens(df_teste, 'Teste')
     viagens_ref = extrair_viagens(df_ref, 'Referencia')
-
+    # print(viagens_ref)
+    
     viagens_teste['Categoria'] = viagens_teste['Distancia_km'].apply(classificar)
     viagens_ref['Categoria'] = viagens_ref['Distancia_km'].apply(classificar)
+
+
 
     dias_todos = sorted(
         set(viagens_teste['Dia'].unique()).union(set(viagens_ref['Dia'].unique())),
@@ -102,3 +115,8 @@ def viagens(df_teste, df_ref):
 
     # print("\n✅ Viagens finalizadas. Total de dias processados:", len(resultado_df))
     return resultado_df
+
+if __name__ == '__main__':
+    df_teste = pd.read_csv('logs/867488061438387_decoded_par2.csv', encoding='latin1')
+    df_ref = pd.read_csv('logs/Par2.csv', encoding='utf-8')
+    viagens(df_teste, df_ref)   

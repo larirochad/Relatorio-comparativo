@@ -1,6 +1,21 @@
 import pandas as pd
 from datetime import timedelta
 
+# Função para identificar o tipo de dispositivo
+def identificar_dispositivo(df):
+    if 'Tipo Dispositivo' not in df.columns:
+        return 'Desconhecido'
+    tipo_dispositivo = df['Tipo Dispositivo'].dropna().astype(str).unique()
+    if any('385349' in x for x in tipo_dispositivo):
+        return 'TM08'
+    elif any('802003' in x for x in tipo_dispositivo):
+        return 'TM10'
+    elif any('83' in x for x in tipo_dispositivo):
+        return 'TM07'
+    else:
+        return 'Desconhecido'
+
+
 def analise_estabilidade_satelite(df_teste, df_ref):
     def processar_dispositivo(df):
         # Verifica e padroniza os nomes das colunas
@@ -59,10 +74,35 @@ def analise_estabilidade_satelite(df_teste, df_ref):
             return {}
         
         df['Data'] = pd.to_datetime(df['Data/Hora Evento']).dt.date
-        df['Valido'] = df[satelite_col] > 0
-        resultado = df.groupby('Data')['Valido'].value_counts().unstack(fill_value=0)
-        resultado = resultado.rename(columns={True: 'validos', False: 'invalidos'})
-        return resultado.to_dict('index')
+        
+        dispositivo = identificar_dispositivo(df)
+        if dispositivo == 'TM10':
+
+            # Para TM10, usar a coluna 'Precisão GNSS' para definir válido/inválido
+            precisao_col = None
+            for col in df.columns:
+                if 'Precisão GNSS' in col:
+                    precisao_col = col
+                    break
+            if precisao_col is None:
+                print(f"Colunas disponíveis: {list(df.columns)}")
+                raise ValueError("Coluna 'Precisão GNSS' não encontrada para TM10")
+            # Remove espaços e converte para número, erros viram NaN
+            df[precisao_col + '_num'] = pd.to_numeric(df[precisao_col].astype(str).str.strip(), errors='coerce')
+            df_validos = df[df[precisao_col + '_num'] > 0]
+          
+            df_invalidos = df[df[precisao_col].astype(str).isin(["0", "00"])]
+            resultado_validos = df_validos.groupby('Data')[satelite_col].sum().to_frame('validos')
+
+       
+            resultado_invalidos = df_invalidos.groupby('Data')[satelite_col].sum().to_frame('invalidos')
+            resultado = resultado_validos.join(resultado_invalidos, how='outer').fillna(0).astype(int)
+            return resultado.to_dict('index')
+        else:
+            df['Valido'] = df[satelite_col] > 0
+            resultado = df.groupby('Data')['Valido'].value_counts().unstack(fill_value=0)
+            resultado = resultado.rename(columns={True: 'validos', False: 'invalidos'})
+            return resultado.to_dict('index')
     
     # Processa ambos dispositivos
     dados_teste = processar_dispositivo(df_teste)
@@ -88,8 +128,3 @@ def analise_estabilidade_satelite(df_teste, df_ref):
 
     return pd.DataFrame(registros)
 
-# Exemplo de uso:
-# df_teste = pd.read_csv('analise_par09.csv')
-# df_ref = pd.read_csv('analise_referencia.csv')
-# resultado = analise_estabilidade_satelite(df_teste, df_ref)
-# print(resultado)

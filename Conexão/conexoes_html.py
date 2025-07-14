@@ -12,7 +12,7 @@ def gerar_bloco_grafico_conexao(df, filename='bloco_conexao_gprs.html'):
     dados_teste = df['Teste'].tolist()
     dados_ref = df['Referencia'].tolist()
     dados_total = [(t + r) for t, r in zip(dados_teste, dados_ref)]
-    cores = ['#FF6384', '#36A2EB', "#00870D"]
+    cores = ['#FF0000', '#8B008B', '#00CED1', '#32CD32']
 
     html = f"""
 <div class='categoria'>

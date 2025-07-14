@@ -31,17 +31,17 @@
             Chart.register(ChartZoom);
         }
 
-        var cores = ["#FF6384", "#36A2EB", "#00870D"];
+        var cores = ["#FF0000", "#8B008B", "#00CED1", "#32CD32"];
 
         // Gráfico de barras - Teste
         var ctxTeste = document.getElementById('barrasTeste').getContext('2d');
         window.charts['barrasTeste'] = new Chart(ctxTeste, {
             type: 'bar',
             data: {
-                labels: ["Sem conex\u00e3o", "2G", "4G"],
+                labels: ["Sem conex\u00e3o", "2G", "3G", "4G"],
                 datasets: [{
                     label: 'Teste',
-                    data: [14, 102, 9152],
+                    data: [460, 819, 0, 5486],
                     backgroundColor: cores,
                     borderColor: cores,
                     borderWidth: 1
@@ -64,10 +64,10 @@
         window.charts['barrasRef'] = new Chart(ctxRef, {
             type: 'bar',
             data: {
-                labels: ["Sem conex\u00e3o", "2G", "4G"],
+                labels: ["Sem conex\u00e3o", "2G", "3G", "4G"],
                 datasets: [{
                     label: 'Referência',
-                    data: [830, 229, 2078],
+                    data: [0, 0, 0, 2685],
                     backgroundColor: cores,
                     borderColor: cores,
                     borderWidth: 1
@@ -90,10 +90,10 @@
         window.charts['pizzaTotal'] = new Chart(ctxPizza, {
             type: 'doughnut',
             data: {
-                labels: ["Sem conex\u00e3o", "2G", "4G"],
+                labels: ["Sem conex\u00e3o", "2G", "3G", "4G"],
                 datasets: [{
                     label: 'Total Geral',
-                    data: [844, 331, 11230],
+                    data: [460, 819, 0, 8171],
                     backgroundColor: cores,
                     borderColor: cores,
                     borderWidth: 1

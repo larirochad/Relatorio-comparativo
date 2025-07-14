@@ -3,6 +3,15 @@ import pandas as pd
 import os
 import sys
 
+# Adicionando função para ler CSV com múltiplos encodings
+def ler_csv_multiplos_encodings(caminho, **kwargs):
+    for encoding in ['utf-8', 'latin1', 'cp1252']:
+        try:
+            return pd.read_csv(caminho, encoding=encoding, **kwargs)
+        except UnicodeDecodeError:
+            continue
+    raise UnicodeDecodeError(f"Não foi possível ler o arquivo {caminho} com os encodings testados.")
+
 from Categorizacao_Vel_direcao_Distancia.distancia import *
 from Categorizacao_Vel_direcao_Distancia.diff_vel import *
 from Categorizacao_Vel_direcao_Distancia.Direção import *
@@ -109,13 +118,13 @@ def gerar_estatisticas_de_medias(df, dataframes):
 def executar_analise_completa(tipo, input1, input2):
     match1, match2, _ = analisar_match(input1=input1, input2=input2)
 
-    df1 = pd.read_csv(match1)
-    df2 = pd.read_csv(match2)
+    df1 = ler_csv_multiplos_encodings(match1)
+    df2 = ler_csv_multiplos_encodings(match2)
 
     # Filtro
     output_geral, dataframes = filtro(tipo=tipo, df1=df1, df2=df2)
 
-    df_output = pd.read_csv(output_geral)
+    df_output = ler_csv_multiplos_encodings(output_geral)
     medias_por_tipo = gerar_estatisticas_de_medias(df_output, dataframes)
     # print(medias_por_tipo)
     # Gera HTML dos gráficos de distancia/vel/direcao
@@ -129,10 +138,10 @@ def executar_analise_completa(tipo, input1, input2):
         save_blocks=True
     )
 
-    df_raw1 = pd.read_csv(input1, low_memory=False)
+    df_raw1 = ler_csv_multiplos_encodings(input1, low_memory=False)
     df_raw1 = df_raw1.loc[:, ~df_raw1.columns.str.contains('^Unnamed')]
 
-    df_raw2 = pd.read_csv(input2, low_memory=False)
+    df_raw2 = ler_csv_multiplos_encodings(input2, low_memory=False)
     df_raw2 = df_raw2.loc[:, ~df_raw2.columns.str.contains('^Unnamed')]
 
 
@@ -158,6 +167,6 @@ def executar_analise_completa(tipo, input1, input2):
 if __name__ == "__main__":
     executar_analise_completa(
         tipo='todas',
-        input1='logs/analise_par09.csv',
-        input2='logs/TM08-PAR09 - Copia.csv'
+        input1='logs/867488061438387_decoded_par2.csv',
+        input2='logs/Par2.csv'
     )

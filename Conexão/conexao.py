@@ -73,7 +73,7 @@ def conexao(df1, df2):
             contagem2['4G']
         ]
     })
-    print(resultado)
+    # print(resultado)
     return resultado
 
 
