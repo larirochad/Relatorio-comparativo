@@ -28,7 +28,7 @@ from Satelites.html import gerar_bloco_satellite_estabilidade
 from Unir_HTML import unir_blocos
 
 
-def filtro(tipo, df1, df2, output_dir=None):
+def filtro(tipo='todas', df1=None, df2=None, output_dir=None):
     if output_dir is None:
         output_dir = os.getcwd()
 
@@ -115,7 +115,7 @@ def gerar_estatisticas_de_medias(df, dataframes):
 
 
 
-def executar_analise_completa(tipo, input1, input2):
+def executar_analise_completa(tipo='todas', input1=None, input2=None):
     match1, match2, _ = analisar_match(input1=input1, input2=input2)
 
     df1 = ler_csv_multiplos_encodings(match1)
@@ -166,7 +166,6 @@ def executar_analise_completa(tipo, input1, input2):
 
 if __name__ == "__main__":
     executar_analise_completa(
-        tipo='todas',
         input1='logs/867488061438387_decoded_par2.csv',
         input2='logs/Par2.csv'
     )
