@@ -67,8 +67,10 @@ def calcular_distancia(df1: pd.DataFrame, df2: pd.DataFrame):
     return df1, df2
 
 
-# if __name__ == "__main__":
-#     calcular_distancia(
-#         input1='logs/test_1nv_match1.csv',
-#         input2='logs/test_2NV_match2.csv'
-#     )
+if __name__ == "__main__":
+    df1 = pd.read_csv('logs/match1.csv')
+    df2 = pd.read_csv('logs/match2.csv')
+    df1_out, df2_out = calcular_distancia(df1, df2)
+    # Exemplo: salvar os resultados se desejar
+    df1_out.to_csv('logs/match1_distancia.csv', index=False)
+    df2_out.to_csv('logs/match2_distancia.csv', index=False)

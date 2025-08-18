@@ -157,6 +157,7 @@ def analisar_match(input1: str, input2: str, output_dir: str = None) -> Dict[str
     return output1, output2, counts
 
 # if __name__ == "__main__":
+#     df =
 #     analisar_match(
 #         input1='logs/test_1nv.csv',
 #         input2='logs/test_2NV.csv'
