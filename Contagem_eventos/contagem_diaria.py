@@ -4,19 +4,27 @@ def analise_diaria(df1, df2):
     def get_evento(row):
         tipo = str(row.get('Tipo Mensagem', '')).strip().upper()
         codigo = str(row.get('Event Code', '')).strip()
+        tipo_disp = str(row.get('Tipo Dispositivo', '')).strip()
 
-        if tipo:
-            if 'MODO ECONÔMICO' in tipo:
-                return 'MODOECO'
+        # Normaliza modo econômico por texto
+        if tipo and 'MODO ECONÔMICO' in tipo:
+            return 'MODOECO'
+
+        # Se o campo já vier com as tags, usa direto
+        if tipo in {'GTERI', 'GTIGN', 'GTIGF'}:
             return tipo
-        elif codigo:
+
+        # Para TM07 (tipo 83) e para casos em que 'Tipo Mensagem' é numérico (ex.: '01','02'),
+        # usa mapeamento pelo Event Code
+        if codigo:
             mapa = {
-                '20': 'GTIGF',
-                '21': 'GTIGN',
-                '30': 'GTERI',
-                '27': 'GTERI'
+                '20': 'GTIGF',  # ignição desligada
+                '21': 'GTIGN',  # ignição ligada
+                '30': 'GTERI',  # relatório temporizado
+                '27': 'GTERI'   # relatório temporizado
             }
             return mapa.get(codigo, '')
+
         return ''
     
     def tipo_dispositivo(df):
@@ -35,8 +43,22 @@ def analise_diaria(df1, df2):
         df = df.copy()
         df.columns = [col.strip() for col in df.columns]
 
-
-        df['Data/Hora Evento'] = pd.to_datetime(df['Data/Hora Evento'], errors='coerce')
+        # Parser robusto para datas: tenta YYYY-MM-DD HH:MM[:SS] e depois YY-MM-DD HH:MM[:SS]
+        serie_data = df['Data/Hora Evento'].astype(str).str.strip()
+        dt1 = pd.to_datetime(serie_data, format='%Y-%m-%d %H:%M:%S', errors='coerce')
+        faltantes = dt1.isna()
+        if faltantes.any():
+            dt2 = pd.to_datetime(serie_data, format='%Y-%m-%d %H:%M', errors='coerce')
+            dt1 = dt1.fillna(dt2)
+        faltantes = dt1.isna()
+        if faltantes.any():
+            dt3 = pd.to_datetime(serie_data, format='%y-%m-%d %H:%M:%S', errors='coerce')
+            dt1 = dt1.fillna(dt3)
+        faltantes = dt1.isna()
+        if faltantes.any():
+            dt4 = pd.to_datetime(serie_data, format='%y-%m-%d %H:%M', errors='coerce')
+            dt1 = dt1.fillna(dt4)
+        df['Data/Hora Evento'] = dt1
         df = df.dropna(subset=['Data/Hora Evento'])
         df = df.sort_values('Data/Hora Evento')
         df['Dia'] = df['Data/Hora Evento'].dt.strftime('%d/%m/%Y')
@@ -57,7 +79,7 @@ def analise_diaria(df1, df2):
 
             for _, row in grupo.iterrows():
                 evento = get_evento(row)
-                motion = row.get('Motion Status', '')
+                motion = row.get('Motion Status', row.get('Motion', ''))
                 motion_str = str(motion) if pd.notna(motion) else ''
                 motion_prefix = motion_str[0] if len(motion_str) > 0 else None
                 codigo = str(row.get('Event Code', '')).strip()
@@ -71,7 +93,7 @@ def analise_diaria(df1, df2):
                 else:
                     report_type = ''
 
-                if dispositivo in ['802003', '385349']:
+                if dispositivo in ['802003']:
                     if evento == 'GTIGN':
                         ign_on += 1
                         # modo_eco_ativo = False
@@ -91,6 +113,30 @@ def analise_diaria(df1, df2):
                     elif evento == 'MODOECO':
                         eco += 1
 
+                elif dispositivo in ['385349']:
+                    if evento == 'GTIGN':
+                        ign_on += 1
+                        # modo_eco_ativo = False
+                        # periodicas = True
+
+                    elif evento == 'GTIGF':
+                        ign_off += 1
+                        # modo_eco_ativo = True
+                        # periodicas = False
+
+                    elif evento == 'GTERI':
+                        if motion_prefix == '1':
+                            eco += 1
+                            continue
+                        if motion_prefix == '1'  or codigo == '27':
+                            eco += 1
+                        else:
+                            if motion_prefix == '2'  or codigo == '30':
+                                peri += 1
+                            elif pd.isna(motion) or motion_str == '':
+                                peri += 1
+                    elif evento == 'MODOECO':
+                        eco += 1
                 else:
                     if evento == 'GTIGN':
                         ign_on += 1

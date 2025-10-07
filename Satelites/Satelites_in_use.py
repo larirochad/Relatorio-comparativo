@@ -25,6 +25,7 @@ def analise_estabilidade_satelite(df_teste, df_ref):
                 tipo_col = col
                 break
         
+        
         # Procura por colunas que contenham "Event Code"
         event_code_col = None
         for col in df.columns:
@@ -32,20 +33,43 @@ def analise_estabilidade_satelite(df_teste, df_ref):
                 event_code_col = col
                 break
         
+        
         if tipo_col is None and event_code_col is None:
             print(f"Colunas disponíveis: {list(df.columns)}")
             raise ValueError("Coluna 'Tipo Mensagem' ou 'Event Code' não encontrada no DataFrame")
         
-        # Procura por colunas que contenham "Satélites" ou "Satélite"
+        # Procura robustamente a coluna de satélites (considera acentos/mojibake e alternativas como MS Satellite Number)
         satelite_col = None
-        for col in df.columns:
-            if 'Satélites' in col or 'Satélite' in col:
-                satelite_col = col
-                break
+        # Mapeia colunas para uma versão normalizada (sem acentos e minúsculas)
+        colunas_norm = {col: (str(col)
+                               .strip()
+                               .encode('latin1', 'ignore')
+                               .decode('latin1', 'ignore')
+                               ) for col in df.columns}
+        colunas_simpl = {orig: (val
+                                 .encode('utf-8', 'ignore')
+                                 .decode('utf-8', 'ignore')
+                                 .lower()) for orig, val in colunas_norm.items()}
+
+        candidatos = []
+        palavras_chave = [
+            'satelites', 'satélites', 'satellite number', 'satellite'
+        ]
+        for orig, simple in colunas_simpl.items():
+            tem_chave = any(pc in simple for pc in palavras_chave)
+            if tem_chave and 'status' not in simple:
+                candidatos.append(orig)
         
+
+        # Prioriza coluna sem prefixo "MS"; se não houver, usa a primeira disponível
+        if candidatos:
+            preferidos = [c for c in candidatos if 'ms ' not in c.lower()]
+            satelite_col = preferidos[0] if preferidos else candidatos[0]
+
         if satelite_col is None:
             print(f"Colunas disponíveis: {list(df.columns)}")
-            raise ValueError("Coluna 'Satélites' não encontrada no DataFrame")
+            raise ValueError("Coluna de satélites não encontrada (ex.: 'Satélites' ou 'MS Satellite Number')")
+        
         
         # Mapeamento de códigos para tipos de mensagem
         codigo_para_tipo = {
@@ -58,22 +82,48 @@ def analise_estabilidade_satelite(df_teste, df_ref):
         def get_tipo(row):
             tipo = str(row.get(tipo_col, '') if tipo_col else '').strip().upper()
             codigo = str(row.get(event_code_col, '') if event_code_col else '').strip()
+
+            # Prioriza detecção explícita por texto
             if tipo:
                 if 'MODO ECONÔMICO' in tipo:
                     return 'MODOECO'
-                return tipo
-            elif codigo:
+                # Se já vier com as tags conhecidas, usa-as; caso contrário (ex.: '01','02' no TM07),
+                # tenta mapear pelo Event Code abaixo
+                if tipo in {'GTERI', 'GTIGN', 'GTIGF'}:
+                    return tipo
+
+            if codigo:
                 return codigo_para_tipo.get(codigo, '')
             return ''
         
         df = df.copy()
+        # Exclui mensagens GTSTT e GTIGL do cálculo de satélites
+        if tipo_col is not None:
+            mascara_excluir = df[tipo_col].astype(str).str.upper().str.contains(r'\bGTSTT\b|\bGTIGL\b', na=False)
+            df = df[~mascara_excluir]
+
         df['TipoFiltrado'] = df.apply(get_tipo, axis=1)
         df = df[df['TipoFiltrado'].isin(['MODOECO', 'GTERI', 'GTIGN', 'GTIGF'])].copy()
         
         if df.empty:
             return {}
         
-        df['Data'] = pd.to_datetime(df['Data/Hora Evento']).dt.date
+        # Padroniza a data/hora aceitando YYYY-MM-DD HH:MM[:SS] e YY-MM-DD HH:MM[:SS]
+        serie_data = df['Data/Hora Evento'].astype(str).str.strip()
+        dt1 = pd.to_datetime(serie_data, format='%Y-%m-%d %H:%M:%S', errors='coerce')
+        faltantes = dt1.isna()
+        if faltantes.any():
+            dt2 = pd.to_datetime(serie_data, format='%Y-%m-%d %H:%M', errors='coerce')
+            dt1 = dt1.fillna(dt2)
+        faltantes = dt1.isna()
+        if faltantes.any():
+            dt3 = pd.to_datetime(serie_data, format='%y-%m-%d %H:%M:%S', errors='coerce')
+            dt1 = dt1.fillna(dt3)
+        faltantes = dt1.isna()
+        if faltantes.any():
+            dt4 = pd.to_datetime(serie_data, format='%y-%m-%d %H:%M', errors='coerce')
+            dt1 = dt1.fillna(dt4)
+        df['Data'] = dt1.dt.date
         
         dispositivo = identificar_dispositivo(df)
         if dispositivo == 'TM10':
@@ -87,21 +137,29 @@ def analise_estabilidade_satelite(df_teste, df_ref):
             if precisao_col is None:
                 print(f"Colunas disponíveis: {list(df.columns)}")
                 raise ValueError("Coluna 'Precisão GNSS' não encontrada para TM10")
-            # Remove espaços e converte para número, erros viram NaN
+            # Converte no DF base (evita SettingWithCopyWarning)
             df[precisao_col + '_num'] = pd.to_numeric(df[precisao_col].astype(str).str.strip(), errors='coerce')
-            df_validos = df[df[precisao_col + '_num'] > 0]
-          
-            df_invalidos = df[df[precisao_col].astype(str).isin(["0", "00"])]
-            resultado_validos = df_validos.groupby('Data')[satelite_col].sum().to_frame('validos')
+            df[satelite_col + '_num'] = pd.to_numeric(df[satelite_col].astype(str).str.strip(), errors='coerce')
 
-       
-            resultado_invalidos = df_invalidos.groupby('Data')[satelite_col].sum().to_frame('invalidos')
-            resultado = resultado_validos.join(resultado_invalidos, how='outer').fillna(0).astype(int)
+            # Filtra em cópias
+            df_validos = df[df[precisao_col + '_num'] > 0].copy()
+            df_invalidos = df[df[precisao_col].astype(str).isin(["0", "00"]).fillna(False)].copy()
+
+            # Soma por dia usando a coluna numérica já criada
+            resultado_validos = df_validos.groupby('Data')[satelite_col + '_num'].sum().to_frame('validos')
+            resultado_invalidos = df_invalidos.groupby('Data')[satelite_col + '_num'].sum().to_frame('invalidos')
+            # Total diário (somar toda a coluna, independente de válido/inválido)
+            total_por_dia = df.groupby('Data')[satelite_col + '_num'].sum().to_frame('total')
+            resultado = total_por_dia.join(resultado_validos, how='outer').join(resultado_invalidos, how='outer').fillna(0).astype(int)
             return resultado.to_dict('index')
         else:
-            df['Valido'] = df[satelite_col] > 0
-            resultado = df.groupby('Data')['Valido'].value_counts().unstack(fill_value=0)
-            resultado = resultado.rename(columns={True: 'validos', False: 'invalidos'})
+            df[satelite_col + '_num'] = pd.to_numeric(df[satelite_col].astype(str).str.strip(), errors='coerce')
+            # Soma de válidos (sat > 0) e inválidos (sat == 0)
+            validos = df[df[satelite_col + '_num'] > 0].groupby('Data')[satelite_col + '_num'].sum().to_frame('validos')
+            invalidos = df[df[satelite_col + '_num'] == 0].groupby('Data')[satelite_col + '_num'].sum().to_frame('invalidos')
+            # Total diário somando toda a coluna
+            total_por_dia = df.groupby('Data')[satelite_col + '_num'].sum().to_frame('total')
+            resultado = total_por_dia.join(validos, how='left').join(invalidos, how='left').fillna(0).astype(int)
             return resultado.to_dict('index')
     
     # Processa ambos dispositivos

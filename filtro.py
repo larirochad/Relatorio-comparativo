@@ -144,6 +144,28 @@ def executar_analise_completa(tipo='todas', input1=None, input2=None):
     df_raw2 = ler_csv_multiplos_encodings(input2, low_memory=False)
     df_raw2 = df_raw2.loc[:, ~df_raw2.columns.str.contains('^Unnamed')]
 
+    # Normalização centralizada para TM07: garantir 'Event Code' como inteiro em string ('20','21','27','30')
+    def normalizar_event_code_tm07(df):
+        if 'Tipo Dispositivo' in df.columns and 'Event Code' in df.columns:
+            try:
+                is_tm07 = df['Tipo Dispositivo'].astype(str).str.contains('83', na=False).any()
+            except Exception:
+                is_tm07 = False
+            if is_tm07:
+                def conv(v):
+                    s = str(v).strip()
+                    if s == '' or s.lower() == 'nan':
+                        return s
+                    try:
+                        return str(int(float(s)))
+                    except Exception:
+                        return s
+                df['Event Code'] = df['Event Code'].map(conv)
+        return df
+
+    df_raw1 = normalizar_event_code_tm07(df_raw1)
+    df_raw2 = normalizar_event_code_tm07(df_raw2)
+
 
     df_conexao = conexao(df_raw1, df_raw2)
     gerar_bloco_grafico_conexao(df_conexao)
@@ -166,6 +188,6 @@ def executar_analise_completa(tipo='todas', input1=None, input2=None):
 
 if __name__ == "__main__":
     executar_analise_completa(
-        input1='logs/867488061438387_decoded_par2.csv',
-        input2='logs/Par2.csv'
+        input1='logs/ENG_004.csv', #teste 
+        input2='logs/BDB3D78.csv'
     )

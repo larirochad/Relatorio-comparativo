@@ -79,13 +79,13 @@ def get_device_info(df, device_function):
     # Mapeamento de tipos de dispositivo
     tipo_mapping = {
         '802003': 'TM-10',
-        # '379526': 'TM-08',
         '385349': 'TM-08',
         '83': 'TM-07'
     }
     
     # Extrair tipo de dispositivo
     tipo_dispositivo = 'N/A'
+    tipo_raw = None
     if 'Tipo Dispositivo' in df.columns:
         tipos_unicos = df['Tipo Dispositivo'].dropna().unique()
         if len(tipos_unicos) > 0:
@@ -99,22 +99,67 @@ def get_device_info(df, device_function):
     # print(tipo_dispositivo)
 
     
-    # Extrair IMEI
+    # Extrair IMEI (robusto): considera colunas equivalentes e aceita 10 dígitos para TM07
     imei = 'N/A'
-    if 'IMEI' in df.columns:
-        imeis_unicos = df['IMEI'].dropna().unique()
-        if len(imeis_unicos) > 0:
-            imei = ', '.join([
-                str(int(float(i))) if isinstance(i, (str, float, int)) and str(i).replace('.', '', 1).isdigit()
-                else str(i)
-                for i in imeis_unicos
-            ])
+    # Detecta a coluna de IMEI de forma tolerante
+    imei_col = None
+    for col in df.columns:
+        nome_norm = str(col).strip().lower()
+        if 'imei' in nome_norm:
+            imei_col = col
+            break
+    if imei_col is None and 'IMEI' in df.columns:
+        imei_col = 'IMEI'
+
+    if imei_col is not None:
+        import re
+        imeis_unicos = df[imei_col].dropna().astype(str).unique()
+        candidatos = set()
+        # Para TM07, alguns arquivos têm 10 dígitos
+        min_len = 10 if (tipo_raw == '83') else 12
+        for val in imeis_unicos:
+            for m in re.findall(r"\d{9,17}", val):  # captura sequências longas
+                candidatos.add(m.lstrip('0') or m)
+        candidatos = {c for c in candidatos if min_len <= len(c) <= 17}
+        if candidatos:
+            imei = ', '.join(sorted(candidatos, key=lambda x: (-len(x), x)))
    
-    # Extrair Versão Firmware
+    # Extrair Versão Firmware: converter formato hexa '0xHHLL' para 'H.LL' decimal (ex.: 0x0915 -> 9.21)
     versao_firmware = 'N/A'
     if 'Versão Firmware' in df.columns:
-        versoes_unicas = df['Versão Firmware'].dropna().unique()
-        if len(versoes_unicas) > 0:
+        import re
+        def fw_hex_to_decimal_str(token):
+            s = str(token).strip()
+            m = re.search(r"0x([0-9a-fA-F]+)", s)
+            if not m:
+                return None
+            hx = m.group(1)
+            # usa os últimos 4 dígitos para major/minor (2 bytes)
+            hx = hx[-4:].rjust(4, '0')
+            major_hex, minor_hex = hx[:2], hx[2:]
+            try:
+                major = int(major_hex, 16)
+                minor = int(minor_hex, 16)
+                return f"{major}.{minor}"
+            except ValueError:
+                return None
+
+        versoes_unicas = df['Versão Firmware'].dropna().astype(str).unique()
+        convertidas = []
+        for v in versoes_unicas:
+            conv = fw_hex_to_decimal_str(v)
+            if conv:
+                convertidas.append(conv)
+        if convertidas:
+            # remove duplicatas mantendo ordem
+            seen = set()
+            dedup = []
+            for c in convertidas:
+                if c not in seen:
+                    seen.add(c)
+                    dedup.append(c)
+            versao_firmware = ', '.join(dedup)
+        elif len(versoes_unicas) > 0:
             versao_firmware = ', '.join([str(v) for v in versoes_unicas])
     
     return {

@@ -30,11 +30,42 @@ def match(path: str) -> pd.DataFrame:
             if 'Tipo Mensagem' not in df.columns:
                 continue
 
-            df['Data/Hora Evento'] = pd.to_datetime(df['Data/Hora Evento'], format='mixed', dayfirst=True, errors='coerce')
-            df = df.dropna(subset=['Latitude', 'Longitude', 'Data/Hora Evento'])
+            # Parser robusto: tenta YYYY-MM-DD HH:MM[:SS] e depois YY-MM-DD HH:MM[:SS]
+            serie_evento = df['Data/Hora Evento'].astype(str).str.strip()
+            dt_evento = pd.to_datetime(serie_evento, format='%Y-%m-%d %H:%M:%S', errors='coerce')
+            falt = dt_evento.isna()
+            if falt.any():
+                dt_aux = pd.to_datetime(serie_evento, format='%Y-%m-%d %H:%M', errors='coerce')
+                dt_evento = dt_evento.fillna(dt_aux)
+            falt = dt_evento.isna()
+            if falt.any():
+                dt_aux = pd.to_datetime(serie_evento, format='%y-%m-%d %H:%M:%S', errors='coerce')
+                dt_evento = dt_evento.fillna(dt_aux)
+            falt = dt_evento.isna()
+            if falt.any():
+                dt_aux = pd.to_datetime(serie_evento, format='%y-%m-%d %H:%M', errors='coerce')
+                dt_evento = dt_evento.fillna(dt_aux)
+            df['Data/Hora Evento'] = dt_evento
 
             if 'GNSS UTC Time' in df.columns:
-                df['GNSS UTC Time'] = pd.to_datetime(df['GNSS UTC Time'], errors='coerce')
+                serie_gnss = df['GNSS UTC Time'].astype(str).str.strip()
+                dt_gnss = pd.to_datetime(serie_gnss, format='%Y-%m-%d %H:%M:%S', errors='coerce')
+                falt = dt_gnss.isna()
+                if falt.any():
+                    dt_aux = pd.to_datetime(serie_gnss, format='%Y-%m-%d %H:%M', errors='coerce')
+                    dt_gnss = dt_gnss.fillna(dt_aux)
+                falt = dt_gnss.isna()
+                if falt.any():
+                    dt_aux = pd.to_datetime(serie_gnss, format='%y-%m-%d %H:%M:%S', errors='coerce')
+                    dt_gnss = dt_gnss.fillna(dt_aux)
+                falt = dt_gnss.isna()
+                if falt.any():
+                    dt_aux = pd.to_datetime(serie_gnss, format='%y-%m-%d %H:%M', errors='coerce')
+                    dt_gnss = dt_gnss.fillna(dt_aux)
+                df['GNSS UTC Time'] = dt_gnss
+
+            df = df.dropna(subset=['Latitude', 'Longitude', 'Data/Hora Evento'])
+            df = df.sort_values('Data/Hora Evento')
 
             if len(df.columns) > len(set(df.columns)):
                 df = df.loc[:, ~df.columns.duplicated()]
@@ -51,6 +82,21 @@ def classify_message(message: str) -> str:
     if message == "GTERI":
         return "T"
     return "X"
+
+# Classificação que considera regras específicas do TM07 (Tipo Dispositivo '83')
+def classify_row(row) -> str:
+    tipo_mensagem = str(row.get('Tipo Mensagem', '')).strip().upper()
+    if tipo_mensagem == 'GTERI':
+        return 'T'
+
+    tipo_dispositivo = str(row.get('Tipo Dispositivo', '')).strip()
+    event_code = str(row.get('Event Code', '')).strip().upper()
+
+    # TM07 (tipo 83) utiliza Event Code 30 e 27 para mensagens temporizadas (equivalente a GTERI)
+    if tipo_dispositivo == '83' and event_code in {'30', '27'}:
+        return 'T'
+
+    return 'X'
 
 def time_difference_category(delta: float) -> str:
     try:
@@ -71,8 +117,9 @@ def find_matches(df1: pd.DataFrame, df2: pd.DataFrame) -> Tuple[pd.DataFrame, pd
     df1 = df1.copy()
     df2 = df2.copy()
 
-    df1['Message_Category'] = df1['Tipo Mensagem'].apply(classify_message)
-    df2['Message_Category'] = df2['Tipo Mensagem'].apply(classify_message)
+    # Considera tanto 'Tipo Mensagem' (GTERI) quanto regras TM07 (tipo '83')
+    df1['Message_Category'] = df1.apply(classify_row, axis=1)
+    df2['Message_Category'] = df2.apply(classify_row, axis=1)
     df1['Match_Type'] = 'NA'
     df2['Match_Type'] = 'NA'
     df1['Match_ID'] = 0
@@ -139,7 +186,21 @@ def analisar_match(input1: str, input2: str, output_dir: str = None) -> Dict[str
     df1, df2, counts = find_matches(df1, df2)
 
     for df in [df1, df2]:
-        df['GNSS UTC Time'] = pd.to_datetime(df['GNSS UTC Time'], errors='coerce')
+        serie_gnss = df['GNSS UTC Time'].astype(str).str.strip()
+        dt_gnss = pd.to_datetime(serie_gnss, format='%Y-%m-%d %H:%M:%S', errors='coerce')
+        falt = dt_gnss.isna()
+        if falt.any():
+            dt_aux = pd.to_datetime(serie_gnss, format='%Y-%m-%d %H:%M', errors='coerce')
+            dt_gnss = dt_gnss.fillna(dt_aux)
+        falt = dt_gnss.isna()
+        if falt.any():
+            dt_aux = pd.to_datetime(serie_gnss, format='%y-%m-%d %H:%M:%S', errors='coerce')
+            dt_gnss = dt_gnss.fillna(dt_aux)
+        falt = dt_gnss.isna()
+        if falt.any():
+            dt_aux = pd.to_datetime(serie_gnss, format='%y-%m-%d %H:%M', errors='coerce')
+            dt_gnss = dt_gnss.fillna(dt_aux)
+        df['GNSS UTC Time'] = dt_gnss
         df['Tempo de fix'] = (df['Data/Hora Evento'] - df['GNSS UTC Time']).dt.total_seconds()
         df['Match_Complete'] = df['Match_Type'].astype(str) + '_' + df['Match_ID'].astype(str)
 

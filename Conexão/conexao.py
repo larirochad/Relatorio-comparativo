@@ -23,6 +23,8 @@ def conexao(df1, df2):
     def contar_conexoes(df, dispositivo):
         mapa = None
         if dispositivo == 'TM07':
+            # Para TM07, os 2 primeiros bits do campo 'Comm State' (hex) determinam o tipo de rede
+            # 00 -> 2G, 01 -> 3G, 10 -> 4G (mantém compatibilidade com mapeamento anterior)
             mapa = {'00': '2G', '01': '3G', '10': '4G' }
         elif dispositivo == 'TM08':
             mapa = {'0': 'Sem conexão', '1': '2G', '2': '4G', '3': '4G'}
@@ -34,16 +36,46 @@ def conexao(df1, df2):
         # Sempre inclua '3G' no dicionário de contagem
         contagem = {'Sem conexão': 0, '2G': 0, '3G': 0, '4G': 0}
 
-        if mapa and 'RAT' in df.columns:
-            df_filtrado = df[df['RAT'].notna() & (df['RAT'].astype(str).str.strip() != '')]
-            for valor in df_filtrado['RAT']:
-                try:
-                    valor_int = int(float(valor))
-                    tipo_rede = mapa.get(str(valor_int), None)
-                    if tipo_rede:
-                        contagem[tipo_rede] += 1
-                except:
-                    continue
+        if dispositivo == 'TM07':
+            # Preferir 'Comm State' quando disponível
+            col = 'Comm State' if 'Comm State' in df.columns else None
+            if col:
+                serie = df[col].astype(str).str.strip()
+                for v in serie:
+                    if v == '' or v.lower() == 'nan':
+                        continue
+                    try:
+                        # Converte hex -> bin e padroniza 8 bits
+                        b = bin(int(v, 16))[2:].zfill(8)
+                        prefixo = b[:2]
+                        tipo_rede = mapa.get(prefixo, None)
+                        if tipo_rede:
+                            contagem[tipo_rede] += 1
+                    except Exception:
+                        continue
+            else:
+                # Fallback antigo por 'RAT' caso 'Comm State' não exista
+                if 'RAT' in df.columns:
+                    df_filtrado = df[df['RAT'].notna() & (df['RAT'].astype(str).str.strip() != '')]
+                    for valor in df_filtrado['RAT']:
+                        try:
+                            valor_int = int(float(valor))
+                            tipo_rede = mapa.get(str(valor_int), None)
+                            if tipo_rede:
+                                contagem[tipo_rede] += 1
+                        except:
+                            continue
+        else:
+            if mapa and 'RAT' in df.columns:
+                df_filtrado = df[df['RAT'].notna() & (df['RAT'].astype(str).str.strip() != '')]
+                for valor in df_filtrado['RAT']:
+                    try:
+                        valor_int = int(float(valor))
+                        tipo_rede = mapa.get(str(valor_int), None)
+                        if tipo_rede:
+                            contagem[tipo_rede] += 1
+                    except:
+                        continue
         return contagem
 
     # Limpa os DataFrames
