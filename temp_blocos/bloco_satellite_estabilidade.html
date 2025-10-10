@@ -93,7 +93,7 @@
     }
     .diferenca-valor {
         font-weight: bold;
-        color: green;
+        color: red;
     }
     </style>
 </head>
@@ -126,8 +126,8 @@
     <script>
     (function() {
         const ctx = document.getElementById('canvas_sat_line').getContext('2d');
-        const valRef = [168, 172, 175, 240, 321, 163, 103, 184];
-        const valTeste = [110, 512, 391, 338, 410, 341, 131, 201];
+        const valRef = [1786, 3472, 3134, 4063, 2682, 2746, 481, 2923, 2612, 1650, 1406];
+        const valTeste = [1320, 2792, 2255, 3077, 2079, 2236, 361, 1872, 1683, 1044, 631];
 
         // Variável para controlar o filtro ativo
         let filtroAtivo = 'Válidos';
@@ -135,8 +135,8 @@
         const chart = new Chart(ctx, {
             type: 'line',
             data: {
-                labels: ["29/09/2025", "30/09/2025", "01/10/2025", "02/10/2025", "03/10/2025", "04/10/2025", "05/10/2025", "06/10/2025"],
-                datasets: [{"label": "V\u00e1lidos Refer\u00eancia", "data": [168, 172, 175, 240, 321, 163, 103, 184], "borderColor": "#12094A", "backgroundColor": "#12094A", "tension": 0.3, "fill": false, "pointRadius": 4, "pointHoverRadius": 6, "pointBackgroundColor": "#12094A", "pointBorderColor": "#12094A", "pointBorderWidth": 1, "hidden": false}, {"label": "V\u00e1lidos Teste", "data": [110, 512, 391, 338, 410, 341, 131, 201], "borderColor": "#17becf", "backgroundColor": "#17becf", "tension": 0.3, "fill": false, "pointRadius": 4, "pointHoverRadius": 6, "pointBackgroundColor": "#17becf", "pointBorderColor": "#17becf", "pointBorderWidth": 1, "hidden": false}, {"label": "Inv\u00e1lidos Refer\u00eancia", "data": [0, 0, 0, 0, 0, 0, 0, 0], "borderColor": "red", "backgroundColor": "red", "tension": 0.3, "fill": false, "pointRadius": 4, "pointHoverRadius": 6, "pointBackgroundColor": "red", "pointBorderColor": "red", "pointBorderWidth": 1, "hidden": true}, {"label": "Inv\u00e1lidos Teste", "data": [0, 0, 0, 0, 0, 0, 0, 0], "borderColor": "darkorange", "backgroundColor": "darkorange", "tension": 0.3, "fill": false, "pointRadius": 4, "pointHoverRadius": 6, "pointBackgroundColor": "darkorange", "pointBorderColor": "darkorange", "pointBorderWidth": 1, "hidden": true}]
+                labels: ["29/09/2025", "30/09/2025", "01/10/2025", "02/10/2025", "03/10/2025", "04/10/2025", "05/10/2025", "06/10/2025", "07/10/2025", "08/10/2025", "09/10/2025"],
+                datasets: [{"label": "V\u00e1lidos Refer\u00eancia", "data": [1786, 3472, 3134, 4063, 2682, 2746, 481, 2923, 2612, 1650, 1406], "borderColor": "#12094A", "backgroundColor": "#12094A", "tension": 0.3, "fill": false, "pointRadius": 4, "pointHoverRadius": 6, "pointBackgroundColor": "#12094A", "pointBorderColor": "#12094A", "pointBorderWidth": 1, "hidden": false}, {"label": "V\u00e1lidos Teste", "data": [1320, 2792, 2255, 3077, 2079, 2236, 361, 1872, 1683, 1044, 631], "borderColor": "#17becf", "backgroundColor": "#17becf", "tension": 0.3, "fill": false, "pointRadius": 4, "pointHoverRadius": 6, "pointBackgroundColor": "#17becf", "pointBorderColor": "#17becf", "pointBorderWidth": 1, "hidden": false}, {"label": "Inv\u00e1lidos Refer\u00eancia", "data": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], "borderColor": "red", "backgroundColor": "red", "tension": 0.3, "fill": false, "pointRadius": 4, "pointHoverRadius": 6, "pointBackgroundColor": "red", "pointBorderColor": "red", "pointBorderWidth": 1, "hidden": true}, {"label": "Inv\u00e1lidos Teste", "data": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], "borderColor": "darkorange", "backgroundColor": "darkorange", "tension": 0.3, "fill": false, "pointRadius": 4, "pointHoverRadius": 6, "pointBackgroundColor": "darkorange", "pointBorderColor": "darkorange", "pointBorderWidth": 1, "hidden": true}]
             },
             options: {
                 responsive: true,
@@ -264,7 +264,7 @@
             <canvas id='canvas_sat_barras_validos'></canvas>
         </div>
         <div class='diferenca-container'>
-            Diferença percentual: <span class='diferenca-valor'>59.50%</span>
+            Diferença percentual: <span class='diferenca-valor'>-28.21%</span>
             <br>
             <small>Teste em relação ao Referência</small>
         </div>
@@ -279,7 +279,7 @@
                 labels: ['Válidos Referência', 'Válidos Teste'],
                 datasets: [{
                     label: 'Quantidade',
-                    data: [1526, 2434],
+                    data: [26955, 19350],
                     backgroundColor: ['#12094A', '#17becf'],
                     borderColor: ['#12094A', '#14a9b8'],
                     borderWidth: 1,
@@ -298,8 +298,8 @@
                                 return context.dataset.label + ': ' + context.raw;
                             },
                             afterLabel: function(context) {
-                                const refValue = 1526;
-                                const testValue = 2434;
+                                const refValue = 26955;
+                                const testValue = 19350;
                                 const diff = ((testValue - refValue) / refValue * 100).toFixed(2);
                                 
                                 if (context.dataIndex === 0) {

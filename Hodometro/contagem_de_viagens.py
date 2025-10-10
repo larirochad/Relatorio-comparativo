@@ -1,5 +1,5 @@
 import pandas as pd
-
+## exemploo de como é a contagem correta 
 def viagens(df_teste, df_ref):
     def get_evento(row):
         tipo = str(row.get('Tipo Mensagem', '')).strip().upper()
@@ -54,7 +54,7 @@ def viagens(df_teste, df_ref):
                 mapa = {'20': 'GTIGF', '21': 'GTIGN'}
                 return mapa.get(c, '')
             return ''
-        # print(f'começou a contagem de viagens do {nome_dispositivo}')
+        print(f'começou a contagem de viagens do {nome_dispositivo}')
         # Parse robusto: tenta YYYY-MM-DD HH:MM[:SS]; se falhar, aceita YY-MM-DD e expande para 20YY
         serie_data = df['Data/Hora Evento'].astype(str).str.strip()
         dt1 = pd.to_datetime(serie_data, format='%Y-%m-%d %H:%M:%S', errors='coerce')
@@ -115,7 +115,7 @@ def viagens(df_teste, df_ref):
 
         # Garante schema mesmo quando não houver viagens
         df_out = pd.DataFrame(viagens, columns=['Dia', 'IGN', 'IGF', 'Distancia_km'])
-       # print(f"[viagens] {nome_dispositivo}: viagens_encontradas={len(df_out)}")
+        print(f"[viagens] {nome_dispositivo}: viagens_encontradas={len(df_out)}")
         return df_out
 
 
@@ -174,6 +174,6 @@ def viagens(df_teste, df_ref):
     return resultado_df
 
 if __name__ == '__main__':
-    df_teste = pd.read_csv('logs/867488061438387_decoded_par2.csv', encoding='latin1')
-    df_ref = pd.read_csv('logs/Par2.csv', encoding='utf-8')
+    df_teste = pd.read_csv('logs/ENG_146.csv', encoding='latin1')
+    df_ref = pd.read_csv('logs/A474999.csv', encoding='latin1')
     viagens(df_teste, df_ref)   

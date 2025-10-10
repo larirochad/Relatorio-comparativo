@@ -204,17 +204,19 @@ def analisar_match(input1: str, input2: str, output_dir: str = None) -> Dict[str
         df['Tempo de fix'] = (df['Data/Hora Evento'] - df['GNSS UTC Time']).dt.total_seconds()
         df['Match_Complete'] = df['Match_Type'].astype(str) + '_' + df['Match_ID'].astype(str)
 
+    # Salva na mesma pasta onde está o script Python
     if output_dir is None:
-        output_dir = os.path.dirname(input1)
+        output_dir = os.path.dirname(os.path.abspath(__file__))
 
     output1 = os.path.join(output_dir, 'match1.csv')
     output2 = os.path.join(output_dir, 'match2.csv')
 
-
     df1.to_csv(output1, index=False, encoding='utf-8', errors='replace')
     df2.to_csv(output2, index=False, encoding='utf-8', errors='replace')
 
-    print(f"✅ Arquivos salvos")
+    # print(f"✅ Arquivos salvos em: {output_dir}")
+    # print(f"   - {output1}")
+    # print(f"   - {output2}")
     return output1, output2, counts
 
 # if __name__ == "__main__":
