@@ -42,6 +42,12 @@ def analise_diaria(df1, df2):
     def processar_dispositivo(df, nome_dispositivo):
         df = df.copy()
         df.columns = [col.strip() for col in df.columns]
+        
+        # Debug: verificar se a coluna Sequência existe
+        # print(f"Colunas disponíveis: {list(df.columns)}")
+        if 'Sequência' not in df.columns:
+            print("ERRO: Coluna 'Sequência' não encontrada!")
+            return pd.DataFrame()
 
         # Parser robusto para datas: tenta YYYY-MM-DD HH:MM[:SS] e depois YY-MM-DD HH:MM[:SS]
         serie_data = df['Data/Hora Evento'].astype(str).str.strip()
@@ -194,6 +200,6 @@ def analise_diaria(df1, df2):
     return df_final
 
 # if __name__ == "__main__":
-#     df1 = pd.read_csv('logs/analise_par09.csv')
-#     df2 = pd.read_csv('logs/TM08-PAR09 - Copia.csv')
+#     df1 = pd.read_csv('logs/ENG_009.csv', encoding='latin1')
+#     df2 = pd.read_csv('logs/BAA1364.csv', encoding='latin1')
 #     analise_diaria(df1, df2)    

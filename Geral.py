@@ -19,7 +19,10 @@ class Analises_geral:
         self.pares_analise = [
             # Par 1
             {'nome': 'Par_01_ENG_146_vs_A474999', 'csv1': 'ENG_146.csv', 'csv2': 'A474999.csv', 'problema': 'TM-08'},
-            
+
+            #par 2
+            {'nome': 'Par_02_ENG_111_vs_A475104', 'csv1': 'ENG_111.csv', 'csv2': 'A475104.csv', 'problema': 'TM-08'},
+
             # Par 4
             {'nome': 'Par_04_ENG_048_vs_AYL2486', 'csv1': 'ENG_048.csv', 'csv2': 'AYL2486.csv', 'problema': 'TM-07'},
             

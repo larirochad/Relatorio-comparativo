@@ -364,6 +364,74 @@ def gerar_bloco_viagens(df, filename='bloco_viagens.html'):
     font-weight: 500;
     }
 
+    /* Estilos para maximização de gráficos */
+    .btn-maximizar {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        background: rgba(102, 126, 234, 0.9);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        padding: 8px 12px;
+        font-size: 12px;
+        font-weight: bold;
+        cursor: pointer;
+        z-index: 10;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        transition: all 0.3s ease;
+    }
+
+    .btn-maximizar:hover {
+        transform: scale(1.05);
+    }
+
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0,0,0,0.8);
+        backdrop-filter: blur(5px);
+    }
+
+    .modal-content {
+        background: white;
+        margin: 2% auto;
+        padding: 30px;
+        border-radius: 20px;
+        width: 90%;
+        max-width: 1200px;
+        max-height: 90vh;
+        overflow-y: auto;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+
+    .close-modal {
+        color: #aaa;
+        font-size: 28px;
+        font-weight: bold;
+        cursor: pointer;
+        float: right;
+    }
+
+    .modal-chart-container {
+        width: 100%;
+        height: 70vh;
+        position: relative;
+        margin-top: 20px;
+    }
+
+    .modal-titulo {
+        margin: 0 0 20px 0;
+        font-size: 1.5em;
+        color: #333;
+        text-align: center;
+    }
+
     </style>
 </head>
 <body>
@@ -547,6 +615,7 @@ def gerar_bloco_viagens(df, filename='bloco_viagens.html'):
     html += f"""
     <div class='grupo active' data-categoria='viagem' data-grupo='Total'>
         <div class='grafico-container'>
+            <button class='btn-maximizar' onclick="maximizeChart('canvas_viagem_total')">🔍 Maximizar</button>
             <div class='grafico-titulo-container'><h3 class='grafico-titulo'>Total de Quilometragem por Dia</h3></div>
             <div class='metricas' id='metrics_viagem_total'></div>
             <div class='chart-wrapper'>
@@ -614,6 +683,7 @@ def gerar_bloco_viagens(df, filename='bloco_viagens.html'):
         html += f"""
         <div class='grupo' data-categoria='viagem' data-grupo='{cat}'>
             <div class='grafico-container'>
+                <button class='btn-maximizar' onclick="maximizeChart('{chart_id}')">🔍 Maximizar</button>
                 <div class='grafico-titulo-container'><h3 class='grafico-titulo'>{titulo}{legenda_texto}</h3></div>
                 <div class="metricas" id="metrics_viagem_total"><p>{legenda_texto}</p></div>
                 <div class='faixa-legenda' id='faixa_{cat.lower()}'>{legenda_texto}</div>
@@ -671,6 +741,106 @@ def gerar_bloco_viagens(df, filename='bloco_viagens.html'):
 </div>
 
 <script>
+// Variáveis globais para maximização
+let maximizedChartInstance = null;
+
+// Função para maximizar gráficos
+function maximizeChart(chartId) {
+    const originalChart = window.charts[chartId];
+    if (!originalChart) return console.error('Gráfico não encontrado:', chartId);
+
+    const canvasElem = document.getElementById(chartId);
+    let titulo = '';
+    
+    // Tenta obter o título do gráfico
+    if (canvasElem.closest('.grafico-container')) {
+        const tituloElement = canvasElem.closest('.grafico-container').querySelector('.grafico-titulo');
+        if (tituloElement) {
+            titulo = tituloElement.textContent;
+        }
+    } else if (canvasElem.closest('.odometro-item')) {
+        const tituloElement = canvasElem.closest('.odometro-item').querySelector('h4');
+        if (tituloElement) {
+            titulo = tituloElement.textContent;
+        }
+    }
+    
+    let modal = document.getElementById('maximizedModal');
+    if (!modal) {
+        modal = document.createElement('div');
+        modal.id = 'maximizedModal';
+        modal.className = 'modal';
+        modal.innerHTML = `
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal()">&times;</span>
+            <h2 class="modal-titulo">${titulo}</h2>
+            <div class="modal-chart-container">
+                <canvas id="maximizedChart"></canvas>
+            </div>
+            <div style="text-align: center; margin-top: 15px;">
+                <button onclick="mostrarTodosMaximizado()">Mostrar Todos</button>
+                <button onclick="ocultarTodosMaximizado()">Ocultar Todos</button>
+            </div>
+        </div>`;
+        document.body.appendChild(modal);
+    } else {
+        modal.querySelector('.modal-titulo').textContent = titulo;
+    }
+
+    modal.style.display = 'block';
+
+    const ctx = document.getElementById('maximizedChart').getContext('2d');
+    
+    // Destroi o gráfico anterior se existir
+    if (maximizedChartInstance) {
+        maximizedChartInstance.destroy();
+    }
+
+    // Cria o novo gráfico maximizado
+    maximizedChartInstance = new Chart(ctx, {
+        type: originalChart.config.type,
+        data: JSON.parse(JSON.stringify(originalChart.data)),
+        options: {
+            ...originalChart.options,
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                ...originalChart.options.plugins,
+                legend: { display: true, position: 'top' }
+            }
+        }
+    });
+}
+
+function closeModal() {
+    const modal = document.getElementById('maximizedModal');
+    if (modal) {
+        modal.style.display = 'none';
+    }
+    if (maximizedChartInstance) {
+        maximizedChartInstance.destroy();
+        maximizedChartInstance = null;
+    }
+}
+
+function mostrarTodosMaximizado() {
+    if (maximizedChartInstance) {
+        maximizedChartInstance.data.datasets.forEach((ds, i) => {
+            maximizedChartInstance.setDatasetVisibility(i, true);
+        });
+        maximizedChartInstance.update();
+    }
+}
+
+function ocultarTodosMaximizado() {
+    if (maximizedChartInstance) {
+        maximizedChartInstance.data.datasets.forEach((ds, i) => {
+            maximizedChartInstance.setDatasetVisibility(i, false);
+        });
+        maximizedChartInstance.update();
+    }
+}
+
 // Função para aplicar estilos dinâmicos aos blocos de diferença percentual
 function aplicarEstilosDinamicos() {
     // Seleciona todos os blocos de diferença percentual
@@ -755,6 +925,22 @@ document.addEventListener('DOMContentLoaded', function() {
 // Também aplica quando a janela é redimensionada (para garantir)
 window.addEventListener('resize', function() {
     setTimeout(aplicarEstilosDinamicos, 200);
+});
+
+// Event listeners para o modal
+document.addEventListener('DOMContentLoaded', function() {
+    window.onclick = function(event) {
+        const modal = document.getElementById('maximizedModal');
+        if (event.target === modal) {
+            closeModal();
+        }
+    };
+    
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape') {
+            closeModal();
+        }
+    });
 });
 </script>
 </body>

@@ -7,6 +7,83 @@ from preprocessamento.pre_processo_TM08 import normalizar_TM08
 from preprocessamento.pre_processo_TM07 import normalizar_TM07
 from preprocessamento.pre_processo_LC03 import normalizar_LC03
 
+def criar_mapeamento_cores_pareadas():
+    """
+    Cria um dicionário que mapeia cada veículo à sua cor específica.
+    Veículos que formam pares terão a mesma cor.
+    """
+    # Definição dos pares de análise
+    pares_analise = [
+        {'csv1': 'ENG_146.csv', 'csv2': 'A474999.csv', 'problema': 'TM-08'},
+        {'csv1': 'ENG_048.csv', 'csv2': 'AYL2486.csv', 'problema': 'TM-07'},
+        {'csv1': 'ENG_046.csv', 'csv2': 'JAP8F64.csv', 'problema': 'TM-07'},
+        {'csv1': 'ENG_042.csv', 'csv2': 'A474038.csv', 'problema': 'TM-08'},
+        {'csv1': 'ENG_039.csv', 'csv2': 'RHH4B26.csv', 'problema': 'TM-07'},
+        {'csv1': 'ENG_004.csv', 'csv2': 'BDB3D78.csv', 'problema': 'TM-07'},
+        {'csv1': 'ENG_014.csv', 'csv2': 'TYA9C79.csv', 'problema': 'TM-08'},
+        {'csv1': 'ENG_009.csv', 'csv2': 'BAA1364.csv', 'problema': 'TM-08'},
+        {'csv1': 'ENG_111.csv', 'csv2': 'A475104.csv', 'problema': 'TM-08'},
+    ]
+    
+    # Paleta de cores distintas para cada par (tons harmoniosos)
+    cores_pares = [
+        '#00FFFF',  # olive gray
+        '#5F9EA0',  # sage
+        '#483D8B',  # taupe light
+        '#7B68EE',  # sand
+        '#4B0082',  # pale sand
+        '#483D8B',  # camel
+        '#FFC0CB',  # slate
+        '#FF00FF',  # grey muted
+        '#1E90FF',  # mauve gray
+        '#1E90FF'   # pale olive
+
+    ]
+    
+    # Cria o mapeamento veículo -> cor
+    mapeamento_cores = {}
+    
+    for idx, par in enumerate(pares_analise):
+        # Remove extensão .csv dos nomes
+        veiculo1 = par['csv1'].replace('.csv', '')
+        veiculo2 = par['csv2'].replace('.csv', '')
+        
+        # Atribui a mesma cor para ambos os veículos do par
+        cor_par = cores_pares[idx % len(cores_pares)]
+        mapeamento_cores[veiculo1] = cor_par
+        mapeamento_cores[veiculo2] = cor_par
+    
+    return mapeamento_cores
+
+
+def gerar_cores_para_veiculos(labels, mapeamento_cores_pareadas, cores_padrao):
+    """
+    Gera a lista de cores para os veículos, usando cores pareadas quando disponível
+    e cores padrão para os demais.
+    
+    Args:
+        labels: Lista de nomes dos veículos
+        mapeamento_cores_pareadas: Dicionário {nome_veiculo: cor}
+        cores_padrao: Lista de cores padrão para veículos não pareados
+    
+    Returns:
+        Lista de cores na mesma ordem dos labels
+    """
+    cores_finais = []
+    indice_cor_padrao = 0
+    
+    for label in labels:
+        if label in mapeamento_cores_pareadas:
+            # Usa cor do par
+            cores_finais.append(mapeamento_cores_pareadas[label])
+        else:
+            # Usa cor padrão
+            cores_finais.append(cores_padrao[indice_cor_padrao % len(cores_padrao)])
+            indice_cor_padrao += 1
+    
+    return cores_finais
+
+
 def identificar_tipo_dispositivo(df):
     """
     Identifica o tipo de dispositivo.
@@ -109,7 +186,6 @@ def analisar_distancia(df):
     col_hodometro = encontrar_coluna(df, possiveis_nomes)
     
     if col_hodometro is None:
-        # print(f"⚠ Coluna de hodômetro não encontrada. Colunas disponíveis: {list(df.columns)[:10]}...")
         return 0
     
     try:
@@ -139,7 +215,7 @@ def contar_viagens(df, nome_veiculo=""):
     
     if col_tipo_msg is None:
         print(f"❌ Coluna de tipo mensagem não encontrada!")
-        print(f"   Colunas disponíveis: {list(df.columns)[:10]}...")
+        # print(f"   Colunas disponíveis: {list(df.columns)[:10]}...")
         return 0
     
     print(f"✓ Coluna encontrada: '{col_tipo_msg}'")
@@ -175,8 +251,8 @@ def contar_viagens(df, nome_veiculo=""):
         print(f"📊 Total de mensagens no arquivo: {len(mensagens)}")
         
         # Conta eventos de ignição (agora comparando com int)
-        total_667 = sum(1 for v in mensagens if v == 667)  # 🔧 Compara com int
-        total_668 = sum(1 for v in mensagens if v == 668)  # 🔧 Compara com int
+        total_667 = sum(1 for v in mensagens if v == 667)
+        total_668 = sum(1 for v in mensagens if v == 668)
         
         print(f"   • Eventos 667 (ignição ligada): {total_667}")
         print(f"   • Eventos 668 (ignição desligada): {total_668}")
@@ -197,36 +273,23 @@ def contar_viagens(df, nome_veiculo=""):
 
         print(f"\n🔄 Processando sequência de eventos...")
         for idx, valor in enumerate(mensagens):
-            if valor == 667:  # 🔧 Compara com int
+            if valor == 667:
                 if aguardando_desligar:
                     print(f"   ⚠️ Posição {idx}: Encontrado 667 sem fechar o anterior (duplo ligar)")
                 aguardando_desligar = True
                 continue
-            if valor == 668 and aguardando_desligar:  # 🔧 Compara com int
+            if valor == 668 and aguardando_desligar:
                 count += 1
                 pares_encontrados.append(f"Par {count} finalizado na posição {idx}")
                 aguardando_desligar = False
-
-        # print(f"\n✅ Viagens contadas pela máquina de estados: {count}")
-        # if pares_encontrados:
-        #     print(f"   Pares encontrados:")
-        #     for par in pares_encontrados[:5]:  # Mostra os 5 primeiros
-        #         print(f"   • {par}")
-        #     if len(pares_encontrados) > 5:
-        #         # print(f"   ... e mais {len(pares_encontrados) - 5} pares")
 
         # Heurística de correção
         if ignicoes:
             primeiro = ignicoes[0]
             if primeiro == 668 and total_667 == total_668 and count + 1 == total_667:
                 count_corrigido = min(total_667, total_668)
-                # print(f"\n🔧 Aplicando heurística de correção:")
-                # print(f"   • Arquivo começa com 668 (desligar)")
-                # print(f"   • Total 667 == Total 668 ({total_667} == {total_668})")
-                # print(f"   • Viagens corrigidas: {count} → {count_corrigido}")
                 return count_corrigido
 
-        # print(f"\n✅ RESULTADO FINAL: {count} viagens")
         return count
         
     except Exception as e:
@@ -235,6 +298,7 @@ def contar_viagens(df, nome_veiculo=""):
         traceback.print_exc()
     
     return 0
+
 def processar_dados(pasta_csv):
     """
     Processa todos os CSVs da pasta e retorna dados organizados por tipo de dispositivo.
@@ -248,8 +312,6 @@ def processar_dados(pasta_csv):
     
     # Inicializa estrutura para cada tipo de dispositivo
     dados_por_tipo = {}
-    
-    # print("\n🔍 Processando arquivos...\n")
     
     for arquivo in arquivos:
         try:
@@ -276,18 +338,12 @@ def processar_dados(pasta_csv):
             nome_arquivo = os.path.basename(arquivo)
             nome_veiculo = nome_arquivo.replace('.csv', '')
             
-            # print(f"\n{'#'*60}")
-            # print(f"📁 Processando: {nome_veiculo}")
-            # print(f"{'#'*60}")
-            
             # Identifica o tipo de dispositivo pela coluna 'Tipo Dispositivo'
             codigo_tipo = identificar_tipo_dispositivo(df)
             
             if codigo_tipo is None:
                 print(f"⚠ Tipo não identificado (ignorado)")
                 continue
-            
-            # print(f"🏷️  Tipo identificado: {obter_nome_dispositivo(codigo_tipo)} (código: {codigo_tipo})")
             
             # Aplica normalização baseada no tipo de dispositivo
             if codigo_tipo == '802003':  # TM-10
@@ -300,29 +356,22 @@ def processar_dados(pasta_csv):
                     print(f"❌ Falha na normalização TM-10")
                     continue
             elif codigo_tipo == '385349':  # TM-08
-                # print(f"🔄 Aplicando normalização TM-08...")
                 df_normalizado = normalizar_TM08(df)
                 if df_normalizado is not None:
                     df = df_normalizado
-                    # print(f"✅ Normalização TM-08 concluída")
                 else:
-                    # print(f"❌ Falha na normalização TM-08")
                     continue
             elif codigo_tipo == '83':  # TM-07
-                # print(f"🔄 Aplicando normalização TM-07...")
                 df_normalizado = normalizar_TM07(df)
                 if df_normalizado is not None:
                     df = df_normalizado
-                    # print(f"✅ Normalização TM-07 concluída")
                 else:
-                    # print(f"❌ Falha na normalização TM-07")
                     continue
-            # elif codigo_tipo == '77':  # LC03
+            elif codigo_tipo == '77':  # LC03
                 print(f"🔄 Aplicando normalização LC03...")
                 df_normalizado = normalizar_LC03(df)
                 if df_normalizado is not None:
                     df = df_normalizado
-                    # print(f"✅ Normalização LC03 concluída")
                 else:
                     print(f"❌ Falha na normalização LC03") 
                     continue
@@ -333,7 +382,6 @@ def processar_dados(pasta_csv):
             
             # Analisa distância
             dist = analisar_distancia(df)
-            # print(f"\n📏 Distância calculada: {dist:.2f} km")
             
             # Analisa viagens (COM DEBUG)
             qtd_viagens = contar_viagens(df, nome_veiculo)
@@ -363,10 +411,12 @@ def gerar_dashboard_completo(pasta_csv, arquivo_saida="dashboard_frotas.html", m
     print("="*60)
     
     # ===== Configuração de agrupamento =====
-    # modos: 'single' (um dispositivo) ou 'pares_de_teste' (somar referências)
     MODO_RELATORIO = (modo_relatorio or 'pares_de_teste').strip()
     CODIGO_TESTE = (codigo_teste or '802003').strip()
     CODIGOS_REFERENCIA = codigos_referencia if codigos_referencia is not None else ['83', '385349']
+    
+    # Cria mapeamento de cores para pares
+    mapeamento_cores_pareadas = criar_mapeamento_cores_pareadas()
     
     # Processa os dados
     dados_por_tipo = processar_dados(pasta_csv)
@@ -401,19 +451,16 @@ def gerar_dashboard_completo(pasta_csv, arquivo_saida="dashboard_frotas.html", m
     # Seleciona apenas TM-10 e REF para o dashboard
     dados_para_dashboard = {}
     if MODO_RELATORIO == 'single':
-        # Apenas um dispositivo (teste). Se ausente, mostra todos os disponíveis.
         if CODIGO_TESTE in dados_por_tipo:
             dados_para_dashboard[CODIGO_TESTE] = dados_por_tipo[CODIGO_TESTE]
         else:
             for codigo, dados in dados_por_tipo.items():
                 dados_para_dashboard[codigo] = dados
     else:
-        # pares_de_teste: comparar teste vs referência somada e mostrar outros sozinhos
         if dados_ref is not None:
             dados_para_dashboard['REF'] = dados_ref
         if CODIGO_TESTE in dados_por_tipo:
             dados_para_dashboard[CODIGO_TESTE] = dados_por_tipo[CODIGO_TESTE]
-        # inclui outros tipos existentes que não são teste nem referência
         excluidos = set(CODIGOS_REFERENCIA + [CODIGO_TESTE])
         for codigo, dados in dados_por_tipo.items():
             if codigo not in excluidos:
@@ -421,9 +468,7 @@ def gerar_dashboard_completo(pasta_csv, arquivo_saida="dashboard_frotas.html", m
 
     # Verifica se há dados para processar e calcula resumo
     print(f"\n📊 Resumo:")
-    # Prepara nomes dinâmicos para os blocos
     nomes_dinamicos = {}
-    # Título do grupo de referência com os nomes efetivamente presentes
     codigos_ref_presentes = [c for c in CODIGOS_REFERENCIA if c in dados_por_tipo]
     if 'REF' in dados_para_dashboard:
         if len(codigos_ref_presentes) > 0:
@@ -431,7 +476,6 @@ def gerar_dashboard_completo(pasta_csv, arquivo_saida="dashboard_frotas.html", m
             nomes_dinamicos['REF'] = "Dispositivos referência " + " e ".join(nomes_ref)
         else:
             nomes_dinamicos['REF'] = "Dispositivos referência"
-    # Título do dispositivo de teste
     if CODIGO_TESTE in dados_para_dashboard:
         nomes_dinamicos[CODIGO_TESTE] = f"Analise dispositivo teste ({obter_nome_dispositivo(CODIGO_TESTE)})"
 
@@ -441,17 +485,40 @@ def gerar_dashboard_completo(pasta_csv, arquivo_saida="dashboard_frotas.html", m
         total_viagens = int(sum(dados['viagens'].values()))
         print(f"   {nome_dispositivo}: {len(dados['distancias'])} veículos ({total_km:.2f} km, {total_viagens} viagens)")
     
-    # Prepara dados para Chart.js
+    # Cores padrão para veículos não pareados
+    cores_padrao = [
+        '#00FFFF',  # cyan
+        '#5F9EA0',  # cadet blue
+        '#483D8B',  # dark slate blue
+        '#7B68EE',  # medium slate blue
+        '#4B0082',  # indigo
+        '#FFC0CB',  # pink
+        '#FF00FF',  # magenta
+        '#1E90FF',  # dodger blue
+    ]
+    
+    # Prepara dados para Chart.js COM CORES PERSONALIZADAS
     def preparar_dados_chart(dados):
         labels_dist = list(dados['distancias'].keys())
-        # Garante tipos Python nativos para JSON (evita numpy.int64/float64)
         values_dist = [float(v) for v in dados['distancias'].values()]
         labels_viagens = list(dados['viagens'].keys())
         values_viagens = [int(v) for v in dados['viagens'].values()]
         
+        # Gera cores específicas para cada dataset
+        cores_dist = gerar_cores_para_veiculos(labels_dist, mapeamento_cores_pareadas, cores_padrao)
+        cores_viagens = gerar_cores_para_veiculos(labels_viagens, mapeamento_cores_pareadas, cores_padrao)
+        
         return {
-            'distancias': {'labels': labels_dist, 'values': values_dist},
-            'viagens': {'labels': labels_viagens, 'values': values_viagens}
+            'distancias': {
+                'labels': labels_dist, 
+                'values': values_dist,
+                'cores': cores_dist
+            },
+            'viagens': {
+                'labels': labels_viagens, 
+                'values': values_viagens,
+                'cores': cores_viagens
+            }
         }
     
     # Prepara dados de gráficos para todos os tipos
@@ -459,23 +526,11 @@ def gerar_dashboard_completo(pasta_csv, arquivo_saida="dashboard_frotas.html", m
     for codigo_tipo, dados in dados_para_dashboard.items():
         chart_data_por_tipo[codigo_tipo] = preparar_dados_chart(dados)
 
-    # Se não houver dados, ainda gera o HTML com containers vazios
     if len(chart_data_por_tipo) == 0:
-        chart_data_por_tipo['REF'] = {'distancias': {'labels': [], 'values': []}, 'viagens': {'labels': [], 'values': []}}
-    
-    # Cores para os gráficos (paleta terrosa e neutra, sem cores "semáforo")
-    cores = [
-        '#00FFFF',  # olive gray
-        '#5F9EA0',  # sage
-        '#483D8B',  # taupe light
-        '#7B68EE',  # sand
-        '#4B0082',  # pale sand
-        '#483D8B',  # camel
-        '#FFC0CB',  # slate
-        '#FF00FF',  # grey muted
-        '#1E90FF',  # mauve gray
-        '#1E90FF'   # pale olive
-    ]
+        chart_data_por_tipo['REF'] = {
+            'distancias': {'labels': [], 'values': [], 'cores': []}, 
+            'viagens': {'labels': [], 'values': [], 'cores': []}
+        }
     
     # Cores específicas para cada tipo de dispositivo (tons neutros/terrosos)
     cores_dispositivos = {
@@ -493,7 +548,6 @@ def gerar_dashboard_completo(pasta_csv, arquivo_saida="dashboard_frotas.html", m
         cor_dispositivo = cores_dispositivos.get(codigo_tipo, '#6C757D')
         dispositivos_usados = set()
         for veiculo in dados['distancias'].keys():
-            # usa o código do tipo para nome amigável
             dispositivos_usados.add(obter_nome_dispositivo(codigo_tipo))
         nome_dispositivo = " / ".join(sorted(dispositivos_usados))
         
@@ -726,10 +780,7 @@ def gerar_dashboard_completo(pasta_csv, arquivo_saida="dashboard_frotas.html", m
                 cutout: '60%'
             }};
             
-            // Cores
-            const cores = {json.dumps(cores)};
-            
-            // Dados dos gráficos por tipo
+            // Dados dos gráficos por tipo (AGORA COM CORES PERSONALIZADAS)
             const chartDataPorTipo = {json.dumps(chart_data_por_tipo)};
 
             // Para o grupo de referência, garante valores inteiros nas viagens
@@ -741,7 +792,7 @@ def gerar_dashboard_completo(pasta_csv, arquivo_saida="dashboard_frotas.html", m
             Object.keys(chartDataPorTipo).forEach(codigoTipo => {{
                 const dados = chartDataPorTipo[codigoTipo];
                 
-                // Gráfico de KM
+                // Gráfico de KM (USANDO CORES PERSONALIZADAS)
                 if (dados.distancias.values.length > 0) {{
                     new Chart(document.getElementById('chart' + codigoTipo + 'Km'), {{
                         type: 'doughnut',
@@ -749,7 +800,7 @@ def gerar_dashboard_completo(pasta_csv, arquivo_saida="dashboard_frotas.html", m
                             labels: dados.distancias.labels,
                             datasets: [{{
                                 data: dados.distancias.values,
-                                backgroundColor: cores,
+                                backgroundColor: dados.distancias.cores,
                                 borderWidth: 2,
                                 borderColor: '#fff'
                             }}]
@@ -758,7 +809,7 @@ def gerar_dashboard_completo(pasta_csv, arquivo_saida="dashboard_frotas.html", m
                     }});
                 }}
                 
-                // Gráfico de Viagens
+                // Gráfico de Viagens (USANDO CORES PERSONALIZADAS)
                 if (dados.viagens.values.length > 0) {{
                     new Chart(document.getElementById('chart' + codigoTipo + 'Viagens'), {{
                         type: 'doughnut',
@@ -766,7 +817,7 @@ def gerar_dashboard_completo(pasta_csv, arquivo_saida="dashboard_frotas.html", m
                             labels: dados.viagens.labels,
                             datasets: [{{
                                 data: dados.viagens.values,
-                                backgroundColor: cores,
+                                backgroundColor: dados.viagens.cores,
                                 borderWidth: 2,
                                 borderColor: '#fff'
                             }}]

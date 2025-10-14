@@ -1,6 +1,6 @@
 import pandas as pd
-## exemploo de como é a contagem correta 
-def viagens(df_teste, df_ref):
+## exemplo de como é a contagem correta 
+def viagens(df_teste, df_ref, salvar_detalhes=True):
     def get_evento(row):
         tipo = str(row.get('Tipo Mensagem', '')).strip().upper()
         codigo = str(row.get('Event Code', '')).strip().upper()
@@ -78,7 +78,6 @@ def viagens(df_teste, df_ref):
 
         ignicoes = df[df.apply(lambda row: get_evento_row(row) == 'GTIGN', axis=1)].reset_index(drop=True)
         desligamentos = df[df.apply(lambda row: get_evento_row(row) == 'GTIGF', axis=1)].reset_index(drop=True)
-       # print(f"[viagens] {nome_dispositivo}: IGN={len(ignicoes)} IGF={len(desligamentos)} linhas_total={len(df)})")
 
         viagens = []
 
@@ -103,18 +102,23 @@ def viagens(df_teste, df_ref):
 
                 if pd.notna(ign_odometro) and pd.notna(igf_odometro):
                     km = igf_odometro - ign_odometro
-                    #print(f'nome do dispositivo: {nome_dispositivo}')
-                    # print(f"➡️ IGN: {ign_time} | Odom IGN: {ign_odometro} | Próximo IGF: {igf_time} | Odom IGF: {igf_odometro} = {km}")
 
                     viagens.append({
+                        'Dispositivo': nome_dispositivo,
                         'Dia': dia_formatado,
-                        'IGN': ign_time,
-                        'IGF': igf_time,
+                        'Hora_Ignicao': ign_time.strftime('%H:%M:%S'),
+                        'Hora_Desligamento': igf_time.strftime('%H:%M:%S'),
+                        'Data_Hora_IGN': ign_time,
+                        'Data_Hora_IGF': igf_time,
+                        'Hodometro_IGN': ign_odometro,
+                        'Hodometro_IGF': igf_odometro,
                         'Distancia_km': km
                     })
 
         # Garante schema mesmo quando não houver viagens
-        df_out = pd.DataFrame(viagens, columns=['Dia', 'IGN', 'IGF', 'Distancia_km'])
+        df_out = pd.DataFrame(viagens, columns=['Dispositivo', 'Dia', 'Hora_Ignicao', 'Hora_Desligamento', 
+                                                 'Data_Hora_IGN', 'Data_Hora_IGF', 'Hodometro_IGN', 
+                                                 'Hodometro_IGF', 'Distancia_km'])
         print(f"[viagens] {nome_dispositivo}: viagens_encontradas={len(df_out)}")
         return df_out
 
@@ -131,7 +135,13 @@ def viagens(df_teste, df_ref):
 
     viagens_teste = extrair_viagens(df_teste, 'Teste')
     viagens_ref = extrair_viagens(df_ref, 'Referencia')
-    #print(f"[viagens] TESTE linhas={len(viagens_teste)} | REF linhas={len(viagens_ref)}")
+    
+    # Salvar detalhes de todas as viagens se solicitado
+    if salvar_detalhes:
+        # Combina viagens de teste e referência
+        todas_viagens = pd.concat([viagens_teste, viagens_ref], ignore_index=True)
+        todas_viagens.to_csv('viagens_detalhes.csv', index=False, encoding='utf-8')
+        print(f"✅ Arquivo 'viagens_detalhes.csv' salvo com {len(todas_viagens)} viagens")
     
     # Evita KeyError quando não houver viagens (ex.: ausência de pares IGN/IGF válidos)
     if 'Distancia_km' not in viagens_teste.columns:
@@ -141,8 +151,6 @@ def viagens(df_teste, df_ref):
 
     viagens_teste['Categoria'] = viagens_teste['Distancia_km'].apply(classificar)
     viagens_ref['Categoria'] = viagens_ref['Distancia_km'].apply(classificar)
-
-
 
     dias_todos = sorted(
         set(viagens_teste['Dia'].unique()).union(set(viagens_ref['Dia'].unique())),
@@ -170,10 +178,10 @@ def viagens(df_teste, df_ref):
     resultado_df = resultado_df.sort_values(by='Dia')
     resultado_df['Dia'] = resultado_df['Dia'].dt.strftime('%d/%m/%Y')
 
-    # print("\n✅ Viagens finalizadas. Total de dias processados:", len(resultado_df))
+    print("\n✅ Viagens finalizadas. Total de dias processados:", len(resultado_df))
     return resultado_df
 
 if __name__ == '__main__':
     df_teste = pd.read_csv('logs/ENG_146.csv', encoding='latin1')
-    df_ref = pd.read_csv('logs/A474999.csv', encoding='latin1')
-    viagens(df_teste, df_ref)   
+    df_ref = pd.read_csv('logs/A474038.csv', encoding='latin1')
+    viagens(df_teste, df_ref, salvar_detalhes=True)

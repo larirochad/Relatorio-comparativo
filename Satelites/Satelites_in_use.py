@@ -18,6 +18,7 @@ def identificar_dispositivo(df):
 
 def analise_estabilidade_satelite(df_teste, df_ref):
     def processar_dispositivo(df):
+        debug_file = open('debug_processamento_detalhado.txt', 'w', encoding='utf-8')
         # Verifica e padroniza os nomes das colunas
         tipo_col = None
         for col in df.columns:
@@ -35,7 +36,7 @@ def analise_estabilidade_satelite(df_teste, df_ref):
         
         
         if tipo_col is None and event_code_col is None:
-            print(f"Colunas disponíveis: {list(df.columns)}")
+            # print(f"Colunas disponíveis: {list(df.columns)}")
             raise ValueError("Coluna 'Tipo Mensagem' ou 'Event Code' não encontrada no DataFrame")
         
         # Procura robustamente a coluna de satélites (considera acentos/mojibake e alternativas como MS Satellite Number)
@@ -67,7 +68,7 @@ def analise_estabilidade_satelite(df_teste, df_ref):
             satelite_col = preferidos[0] if preferidos else candidatos[0]
 
         if satelite_col is None:
-            print(f"Colunas disponíveis: {list(df.columns)}")
+            # print(f"Colunas disponíveis: {list(df.columns)}")
             raise ValueError("Coluna de satélites não encontrada (ex.: 'Satélites' ou 'MS Satellite Number')")
         
         
@@ -81,7 +82,7 @@ def analise_estabilidade_satelite(df_teste, df_ref):
         
         def get_tipo(row):
             tipo = str(row.get(tipo_col, '') if tipo_col else '').strip().upper()
-            codigo = str(row.get(event_code_col, '') if event_code_col else '').strip()
+            codigo = row.get(event_code_col, '') if event_code_col else ''
 
             # Prioriza detecção explícita por texto
             if tipo:
@@ -92,8 +93,10 @@ def analise_estabilidade_satelite(df_teste, df_ref):
                 if tipo in {'GTERI', 'GTIGN', 'GTIGF'}:
                     return tipo
 
-            if codigo:
-                return codigo_para_tipo.get(codigo, '')
+            if not pd.isna(codigo):
+                # Converte para string e remove .0 se for float
+                codigo_str = str(codigo).replace('.0', '').strip()
+                return codigo_para_tipo.get(codigo_str, '')
             return ''
         
         df = df.copy()
@@ -135,30 +138,104 @@ def analise_estabilidade_satelite(df_teste, df_ref):
                     precisao_col = col
                     break
             if precisao_col is None:
-                print(f"Colunas disponíveis: {list(df.columns)}")
+                # print(f"Colunas disponíveis: {list(df.columns)}")
                 raise ValueError("Coluna 'Precisão GNSS' não encontrada para TM10")
             # Converte no DF base (evita SettingWithCopyWarning)
             df[precisao_col + '_num'] = pd.to_numeric(df[precisao_col].astype(str).str.strip(), errors='coerce')
             df[satelite_col + '_num'] = pd.to_numeric(df[satelite_col].astype(str).str.strip(), errors='coerce')
 
-            # Filtra em cópias
+            # Filtra em cópias - usa a versão numérica para comparação
             df_validos = df[df[precisao_col + '_num'] > 0].copy()
-            df_invalidos = df[df[precisao_col].astype(str).isin(["0", "00"]).fillna(False)].copy()
+            df_invalidos = df[df[precisao_col + '_num'] == 0].copy()
 
-            # Soma por dia usando a coluna numérica já criada
-            resultado_validos = df_validos.groupby('Data')[satelite_col + '_num'].sum().to_frame('validos')
-            resultado_invalidos = df_invalidos.groupby('Data')[satelite_col + '_num'].sum().to_frame('invalidos')
-            # Total diário (somar toda a coluna, independente de válido/inválido)
-            total_por_dia = df.groupby('Data')[satelite_col + '_num'].sum().to_frame('total')
+            # Conta mensagens por dia
+            resultado_validos = df_validos.groupby('Data').size().to_frame('validos')
+            resultado_invalidos = df_invalidos.groupby('Data').size().to_frame('invalidos')
+            # Total diário (contar todas as mensagens)
+            total_por_dia = df.groupby('Data').size().to_frame('total')
             resultado = total_por_dia.join(resultado_validos, how='outer').join(resultado_invalidos, how='outer').fillna(0).astype(int)
             return resultado.to_dict('index')
-        else:
+
+        elif dispositivo == 'TM07':
+            # Para TM07, usar a coluna 'Fix Status' para definir válido/inválido
+            fix_status_col = None
+            for col in df.columns:
+                if 'Fix Status' in col:
+                    fix_status_col = col
+                    break
+
+            if fix_status_col is None:
+                # print(f"Colunas disponíveis: {list(df.columns)}")
+                raise ValueError("Coluna 'Fix Status' não encontrada para TM07")
+            # print(f"Coluna de Fix Status detectada: {fix_status_col}")
+            # print(df[fix_status_col].head(50))
+
             df[satelite_col + '_num'] = pd.to_numeric(df[satelite_col].astype(str).str.strip(), errors='coerce')
-            # Soma de válidos (sat > 0) e inválidos (sat == 0)
-            validos = df[df[satelite_col + '_num'] > 0].groupby('Data')[satelite_col + '_num'].sum().to_frame('validos')
-            invalidos = df[df[satelite_col + '_num'] == 0].groupby('Data')[satelite_col + '_num'].sum().to_frame('invalidos')
-            # Total diário somando toda a coluna
-            total_por_dia = df.groupby('Data')[satelite_col + '_num'].sum().to_frame('total')
+
+            # Função para converter hex para binário e analisar o bit 4 (2D Fix)
+            def analisar_fix_status(valor):
+                if pd.isna(valor):
+                    return False
+
+                try:
+                    # Garante que seja inteiro (mesmo que venha como float)
+                    valor_int = int(float(valor))
+                except Exception:
+                    return False
+
+                # Extrai o bit 3 (InvalidFix)
+                bit3_invalid_fix = (valor_int >> 3) & 1
+
+                # bit3 == 0 → fix válido
+                return bit3_invalid_fix == 0
+
+
+
+            # Aplica a análise do Fix Status
+            df['fix_valido'] = df[fix_status_col].apply(analisar_fix_status)
+
+
+            
+            # Filtra em cópias baseado na validade do fix
+            df_validos = df[df['fix_valido'] == True].copy()
+            df_invalidos = df[df['fix_valido'] == False].copy()
+
+
+
+            # Conta mensagens por dia
+            resultado_validos = df_validos.groupby('Data').size().to_frame('validos')
+            resultado_invalidos = df_invalidos.groupby('Data').size().to_frame('invalidos')
+            # Total diário (contar todas as mensagens)
+            total_por_dia = df.groupby('Data').size().to_frame('total')
+            resultado = total_por_dia.join(resultado_validos, how='outer').join(resultado_invalidos, how='outer').fillna(0).astype(int)
+            return resultado.to_dict('index')
+      
+        else:
+            # Debug: verificar valores antes da conversão
+            # print(f"Dispositivo: {dispositivo}")
+            # print(f"Coluna satélites: {satelite_col}")
+            # print(f"Valores únicos ANTES da conversão: {df[satelite_col].astype(str).unique()}")
+            
+            df[satelite_col + '_num'] = pd.to_numeric(df[satelite_col].astype(str).str.strip(), errors='coerce')
+            
+            # Debug: verificar valores após a conversão
+            # print(f"Valores únicos APÓS conversão: {df[satelite_col + '_num'].unique()}")
+            # print(f"Contagem de zeros: {(df[satelite_col + '_num'] == 0).sum()}")
+            # print(f"Contagem de <= 0: {(df[satelite_col + '_num'] <= 0).sum()}")
+            # print(f"Contagem de NaN: {pd.isna(df[satelite_col + '_num']).sum()}")
+            # print(f"Contagem de inválidos (<=0 ou NaN): {((df[satelite_col + '_num'] <= 0) | pd.isna(df[satelite_col + '_num'])).sum()}")
+            # print(f"Contagem de válidos (>0): {(df[satelite_col + '_num'] > 0).sum()}")
+            
+            # Debug: verificar alguns exemplos específicos
+            zeros_mask = df[satelite_col + '_num'] == 0
+            # if zeros_mask.any():
+            #      print(f"Exemplos de linhas com zero: {df[zeros_mask][[satelite_col, satelite_col + '_num']].head()}")
+            
+            # Conta mensagens válidas (sat > 0) e inválidas (sat <= 0 ou NaN) - contando mensagens, não somando valores
+            validos = df[df[satelite_col + '_num'] > 0].groupby('Data').size().to_frame('validos')
+            invalidos = df[( (df[satelite_col + '_num'] <= 0) | pd.isna(df[satelite_col + '_num']) )].groupby('Data').size().to_frame('invalidos')
+            # Total diário contando todas as mensagens
+            total_por_dia = df.groupby('Data').size().to_frame('total')
             resultado = total_por_dia.join(validos, how='left').join(invalidos, how='left').fillna(0).astype(int)
             return resultado.to_dict('index')
     
@@ -175,7 +252,8 @@ def analise_estabilidade_satelite(df_teste, df_ref):
     for data in datas_ordenadas:
         ref = dados_referencia.get(data, {'validos': 0, 'invalidos': 0})
         teste = dados_teste.get(data, {'validos': 0, 'invalidos': 0})
-        
+        # print("ref:", ref)
+        # print("teste:",teste)
         registros.append({
             'Dia': data.strftime('%d/%m/%Y'),
             'Validos referencia': ref.get('validos', 0),
@@ -186,3 +264,8 @@ def analise_estabilidade_satelite(df_teste, df_ref):
 
     return pd.DataFrame(registros)
 
+if __name__ == "__main__":
+    df_teste = pd.read_csv('logs/ENG_048.csv', encoding='latin1')
+    df_ref = pd.read_csv('logs/AYL2486.csv', encoding='latin1')
+    resultado = analise_estabilidade_satelite(df_teste, df_ref)
+    # print(resultado)

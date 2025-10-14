@@ -98,7 +98,7 @@ class ChartJSDashboardGenerator:
                     f"<div class='zoom-controls'>"
                     f"<button class='reset-btn' onclick=\"resetZoom('{c['canvas_id']}')\">Reset Zoom</button>"
                     f"</div>"
-                    f"<div class='zoom-instruction'>Use o scroll do mouse para zoom ou duplo clique para resetar</div>"
+                    f"<div class='zoom-instruction'>Use o scroll do mouse para zoom, duplo clique para resetar ou clique direito em um ponto para copiar dados</div>"
                     f"</div>"
                 )
             html += "</div>"
@@ -125,12 +125,14 @@ class ChartJSDashboardGenerator:
             }}
             
             const ctx = canvas.getContext('2d');
+            const labels = {labels};
+            const datasets = {ds};
             
             const {c['chart_var']} = new Chart(ctx, {{
                 type: 'line',
                 data: {{
-                    labels: {labels},
-                    datasets: {ds}
+                    labels: labels,
+                    datasets: datasets
                 }},
                 options: {{
                     responsive: true,
@@ -190,7 +192,6 @@ class ChartJSDashboardGenerator:
                 }}
             }});
             
-            // Adiciona ao objeto global de gráficos
             window.charts = window.charts || {{}};
             window.charts['{c['canvas_id']}'] = {c['chart_var']};
 
@@ -198,16 +199,108 @@ class ChartJSDashboardGenerator:
             canvas.addEventListener('dblclick', function() {{
                 {c['chart_var']}.resetZoom();
             }});
+
+            // Adiciona evento de clique direito para copiar dados
+            canvas.addEventListener('contextmenu', function(event) {{
+                event.preventDefault();
+                
+                const canvasPosition = Chart.helpers.getRelativePosition(event, {c['chart_var']});
+                const dataX = {c['chart_var']}.scales.x.getValueForPixel(canvasPosition.x);
+                const dataY = {c['chart_var']}.scales.y.getValueForPixel(canvasPosition.y);
+                
+                if (dataX !== undefined && dataX !== null && dataX >= 0 && dataX < labels.length) {{
+                    const dataIndex = Math.round(dataX);
+                    const label = labels[dataIndex];
+                    
+                    // Coleta dados de todos os datasets para este ponto
+                    const dadosPonto = [];
+                    datasets.forEach((dataset, datasetIndex) => {{
+                        if (dataset.data && dataset.data[dataIndex] !== undefined) {{
+                            dadosPonto.push(dataset.label + ': ' + dataset.data[dataIndex]);
+                        }}
+                    }});
+                    
+                    const textoCompleto = 'Data/Hora: ' + label + '\\n' + dadosPonto.join('\\n');
+                    
+                    // Copia para clipboard
+                    navigator.clipboard.writeText(textoCompleto).then(() => {{
+                        showCopyNotification(event.pageX, event.pageY, 'Dados copiados!' + '\\n' + dadosPonto.length + ' valores');
+                    }}).catch(err => {{
+                        console.error('Erro ao copiar:', err);
+                        showCopyNotification(event.pageX, event.pageY, 'Erro ao copiar', true);
+                    }});
+                }}
+            }});
         }})();
         """
 
     def get_required_scripts(self):
         return """
-        // Inicialização das variáveis globais
         window.charts = {};
         let maximizedChartInstance = null;
 
-        // Função para mostrar grupo
+        function showCopyNotification(x, y, message = '✓', isError = false) {
+            const notification = document.createElement('div');
+            notification.className = 'copy-notification';
+            notification.style.position = 'fixed';
+            notification.style.left = (x - 50) + 'px';
+            notification.style.top = (y - 40) + 'px';
+            notification.style.minWidth = '100px';
+            notification.style.maxWidth = '200px';
+            notification.style.padding = '12px 16px';
+            notification.style.backgroundColor = isError ? '#f44336' : '#4CAF50';
+            notification.style.color = '#fff';
+            notification.style.borderRadius = '25px';
+            notification.style.display = 'flex';
+            notification.style.alignItems = 'center';
+            notification.style.justifyContent = 'center';
+            notification.style.fontSize = '14px';
+            notification.style.fontWeight = 'bold';
+            notification.style.zIndex = '99999';
+            notification.style.pointerEvents = 'none';
+            notification.style.boxShadow = isError ? '0 4px 20px rgba(244, 67, 54, 0.6)' : '0 4px 20px rgba(76, 175, 80, 0.6)';
+            notification.style.border = isError ? '2px solid #d32f2f' : '2px solid #45a049';
+            notification.style.textAlign = 'center';
+            notification.style.lineHeight = '1.3';
+            notification.style.whiteSpace = 'pre-line';
+            
+            if (message === '✓') {
+                notification.innerHTML = '✓';
+                notification.style.fontSize = '28px';
+                notification.style.width = '50px';
+                notification.style.height = '50px';
+                notification.style.left = (x - 15) + 'px';
+                notification.style.top = (y - 15) + 'px';
+            } else {
+                notification.innerHTML = message;
+            }
+            
+            document.body.appendChild(notification);
+            
+            // Força reflow para ativar a animação
+            void notification.offsetWidth;
+            
+            notification.style.transition = 'all 0.8s cubic-bezier(0.34, 1.56, 0.64, 1)';
+            notification.style.transform = 'scale(0)';
+            notification.style.opacity = '1';
+            
+            // Primeira animação: expande
+            setTimeout(() => {
+                notification.style.transform = 'scale(1)';
+            }, 10);
+            
+            // Segunda animação: sobe e desaparece
+            setTimeout(() => {
+                notification.style.transform = 'scale(1.1) translateY(-60px)';
+                notification.style.opacity = '0';
+            }, message === '✓' ? 400 : 800);
+            
+            // Remove do DOM
+            setTimeout(() => {
+                notification.remove();
+            }, message === '✓' ? 1200 : 1600);
+        }
+
         function mostrarGrupo(grupo, categoria, descricao = '') {
             const grupos = document.querySelectorAll(`.grupo[data-categoria="${categoria}"]`);
             grupos.forEach(g => g.classList.remove('active'));
@@ -223,7 +316,6 @@ class ChartJSDashboardGenerator:
             }
         }
 
-        // Função para maximizar gráficos
         function maximizeChart(chartId) {
             const originalChart = window.charts[chartId];
             if (!originalChart) return console.error('Gráfico não encontrado:', chartId);
@@ -250,7 +342,6 @@ class ChartJSDashboardGenerator:
                 </div>`;
                 document.body.appendChild(modal);
             } else {
-                // Atualiza o título se o modal já existir
                 modal.querySelector('.modal-titulo').textContent = titulo;
             }
 
@@ -294,16 +385,46 @@ class ChartJSDashboardGenerator:
                 }
             });
             
-            // Adiciona evento de duplo clique ao gráfico maximizado para resetar o zoom
             const maximizedCanvas = document.getElementById('maximizedChart');
             maximizedCanvas.addEventListener('dblclick', function() {
                 if (maximizedChartInstance) {
                     maximizedChartInstance.resetZoom();
                 }
             });
+
+            // Adiciona evento de clique direito para copiar dados no gráfico maximizado
+            maximizedCanvas.addEventListener('contextmenu', function(event) {
+                event.preventDefault();
+                
+                const canvasPosition = Chart.helpers.getRelativePosition(event, maximizedChartInstance);
+                const dataX = maximizedChartInstance.scales.x.getValueForPixel(canvasPosition.x);
+                const dataY = maximizedChartInstance.scales.y.getValueForPixel(canvasPosition.y);
+                
+                if (dataX !== undefined && dataX !== null && dataX >= 0 && dataX < maximizedChartInstance.data.labels.length) {
+                    const dataIndex = Math.round(dataX);
+                    const label = maximizedChartInstance.data.labels[dataIndex];
+                    
+                    // Coleta dados de todos os datasets para este ponto
+                    const dadosPonto = [];
+                    maximizedChartInstance.data.datasets.forEach((dataset, datasetIndex) => {
+                        if (dataset.data && dataset.data[dataIndex] !== undefined) {
+                            dadosPonto.push(dataset.label + ': ' + dataset.data[dataIndex]);
+                        }
+                    });
+                    
+                    const textoCompleto = 'Data/Hora: ' + label + '\\n' + dadosPonto.join('\\n');
+                    
+                    // Copia para clipboard
+                    navigator.clipboard.writeText(textoCompleto).then(() => {
+                        showCopyNotification(event.pageX, event.pageY, 'Dados copiados!' + '\\n' + dadosPonto.length + ' valores');
+                    }).catch(err => {
+                        console.error('Erro ao copiar:', err);
+                        showCopyNotification(event.pageX, event.pageY, 'Erro ao copiar', true);
+                    });
+                }
+            });
         }
 
-        // Função para fechar modal
         function closeModal() {
             const modal = document.getElementById('maximizedModal');
             if (modal) {
@@ -316,7 +437,6 @@ class ChartJSDashboardGenerator:
             }
         }
 
-        // Função para resetar zoom
         function resetZoom(chartId) {
             const chart = window.charts[chartId];
             if (chart && chart.resetZoom) {
@@ -324,7 +444,6 @@ class ChartJSDashboardGenerator:
             }
         }
 
-        // Funções para mostrar/ocultar legendas no modal
         function mostrarTodosMaximizado() {
             if (maximizedChartInstance) {
                 maximizedChartInstance.data.datasets.forEach((ds, i) => {
@@ -343,9 +462,7 @@ class ChartJSDashboardGenerator:
             }
         }
 
-        // Event listeners
         document.addEventListener('DOMContentLoaded', function() {
-            // Fechar modal clicando fora
             window.onclick = function(event) {
                 const modal = document.getElementById('maximizedModal');
                 if (event.target === modal) {
@@ -353,7 +470,6 @@ class ChartJSDashboardGenerator:
                 }
             };
             
-            // Fechar modal com ESC
             document.addEventListener('keydown', function(event) {
                 if (event.key === 'Escape') {
                     closeModal();
@@ -416,7 +532,6 @@ class ChartJSDashboardGenerator:
             border-radius: 0;
             padding: 10px 20px;
         }
-
 
         .dashboard-container .categoria {
             margin: 40px 0;
@@ -507,6 +622,7 @@ class ChartJSDashboardGenerator:
             gap: 10px;
             margin: 15px 0;
         }
+
         .dashboard-container .zoom-instruction {
             font-size: 12px;
             color: #868e96;
@@ -534,7 +650,6 @@ class ChartJSDashboardGenerator:
             transform: scale(1.05);
         }
 
-        /* Modal para gráfico maximizado */
         .modal {
             display: none;
             position: fixed;
@@ -585,7 +700,8 @@ class ChartJSDashboardGenerator:
             justify-content: center;
             gap: 10px;
             margin-top: 10px;
-        }        
+        }
+
         .reset-btn {
             background-color: #8300FF !important;
             color: white !important;
@@ -602,8 +718,10 @@ class ChartJSDashboardGenerator:
             background-color: #6b00cc !important;
         }
 
-        """
-
+        .copy-notification {
+            animation: none !important;
+        }
+"""
     def get_cdn(self):
         return ['https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js',
                 'https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@2.0.1/dist/chartjs-plugin-zoom.min.js']
@@ -635,7 +753,6 @@ class ChartJSDashboardGenerator:
         }
 
     def generate_modular_blocks(self, config):
-        """Gera blocos modulares, cada um com seu próprio CSS e seu script de inicialização de gráfico."""
         self.chart_counter = 0
         all_charts = []
         html_cats = []
@@ -652,22 +769,14 @@ class ChartJSDashboardGenerator:
             
             html_cats.append(self.generate_html_category(cat, darr))
 
-        # Para cada gráfico, gerar um script de inicialização específico
         js_per_chart = []
         for c in all_charts:
             js_code = self.generate_javascript_chart(c)
             js_per_chart.append(f"<script>\n{js_code}\n</script>")
 
-        # CDN separado
         cdn_block = "\n".join([f'<script src="{url}"></script>' for url in self.get_cdn()]) + "\n"
-
-        # CSS Global
         css_block = f"<style>\n{self.get_required_styles()}\n</style>\n"
-
-        # HTML Final: Inclui o HTML de todos os gráficos + os scripts de cada um logo após o HTML correspondente
         html_final = f"<!-- Dashboard -->\n{''.join(html_cats)}\n<!-- /Dashboard -->\n\n" + "\n\n".join(js_per_chart)
-
-        # Scripts Globais (Maximizar, resetZoom, etc)
         js_global = f"<script>\n{self.get_required_scripts()}\n</script>\n"
 
         return {
@@ -691,7 +800,7 @@ class ChartJSDashboardGenerator:
             f"<div class='zoom-controls'>"
             f"<button class='reset-btn' onclick=\"resetZoom('{c['canvas_id']}')\">Reset Zoom</button>"
             f"</div>"
-            f"<div class='zoom-instruction'>Use o scroll do mouse para zoom ou duplo clique para resetar</div>"
+            f"<div class='zoom-instruction'>Use o scroll do mouse para zoom, duplo clique para resetar ou clique direito em um ponto para copiar dados</div>"
             f"</div>"
         )
 
@@ -702,27 +811,22 @@ class ChartJSDashboardGenerator:
         html, js = self.generate_single_chart_block(chart_config)
 
         with open(output_path, 'w', encoding='utf-8') as f:
-            # CSS local do gráfico
             f.write('<style>\n')
             f.write(self.get_required_styles())
             f.write('\n</style>\n\n')
 
-            # CDNs necessárias
             for url in self.get_cdn():
                 f.write(f'<script src="{url}"></script>\n')
             f.write('\n')
 
-            # Bloco HTML do gráfico
             f.write(html)
             f.write('\n\n')
 
-            # Script JavaScript específico
             f.write('<script>\n')
-            f.write(self.get_required_scripts())  # Aqui talvez só os scripts de maximize/resetZoom
+            f.write(self.get_required_scripts())
             f.write(js)
             f.write('\n</script>\n')
 
-        # print(f"✅ Bloco salvo em: {os.path.abspath(output_path)}")
         return output_path
 
 
@@ -754,9 +858,8 @@ def get_media_info(medias, tipo, grupo_id):
     return "Dados disponíveis"
 
 def save_modular_blocks(blocks, filename='bloco_dashboard.html'):
-    # Caminho absoluto até a pasta universal temp_blocos
     base_dir = Path(__file__).parent.parent / 'temp_blocos'
-    base_dir.mkdir(parents=True, exist_ok=True)  # Garante que a pasta existe
+    base_dir.mkdir(parents=True, exist_ok=True)
 
     output_path = base_dir / filename
 
@@ -766,7 +869,6 @@ def save_modular_blocks(blocks, filename='bloco_dashboard.html'):
         f.write(blocks['html'] + '\n\n')
         f.write(blocks['js'])
 
-    # print(f"✅ Bloco modular salvo em: {output_path.resolve()}")
     return output_path
 
 def out_html(input1, input2, match_path, tipo, template_path=None, medias=None, save_blocks=False):
@@ -871,40 +973,12 @@ def out_html(input1, input2, match_path, tipo, template_path=None, medias=None, 
     gen = ChartJSDashboardGenerator()
     
     if save_blocks:
-        # Gera e salva os blocos modulares
         blocks = gen.generate_modular_blocks(cfg)
         combined_path = save_modular_blocks(blocks, filename='bloco_dashboard.html')
-
-        # print(f"Blocos modulares salvos em: {os.path.abspath('temp_blocos')}")
-        # print(f"Arquivo combinado: {os.path.abspath(combined_path)}")
         return combined_path
     else:
-        # Mantém o comportamento original
         db = gen.generate_dashboard(cfg)
         output = template_path.replace('.html', '_with_dashboard.html') if template_path else tempfile.NamedTemporaryFile(delete=False, suffix='.html').name
         gen.insert_into_html_file(template_path, db, output)
         webbrowser.open(f"file://{os.path.abspath(output)}")
         return output
-
-# if __name__ == "__main__":
-#     # Exemplo de uso com salvamento dos blocos modulares
-#     medias_exemplo = {
-#         'Distância': {'D1': 15.5, 'D5': 20.3, 'D10': 18.7},
-#         'Diferença de Velocidade': {'D1': 2.1, 'D5': 3.4, 'D10': 1.9},
-#         'Diferença Angular': {'D1': 5.2, 'D5': 7.8, 'D10': 4.3}
-#     }
-    
-#     # Substitua pelos caminhos reais dos seus arquivos
-#     input1 = 'logs/test_1nv_match1.csv'
-#     input2 = 'logs/test_2NV_match2.csv'
-#     match_path = 'logs/test_1nv_match1_outputGeral.csv'
-    
-#     # Chama a função com save_blocks=True para gerar os blocos modulares
-#     out_html(
-#         input1=input1,
-#         input2=input2,
-#         match_path=match_path,
-#         tipo='todas',
-#         medias=medias_exemplo,
-#         save_blocks=True
-#     )

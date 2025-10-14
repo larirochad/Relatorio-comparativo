@@ -1,0 +1,303 @@
+
+    <!DOCTYPE html>
+    <html lang="pt-BR">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Dashboard de Análise de Frotas</title>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <link href="https://fonts.googleapis.com/css2?family=Saira:wght@600;700;800&display=swap" rel="stylesheet">
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+            
+            body {
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                background-color: #f8f9fa;
+                min-height: 100vh;
+                padding: 20px;
+            }
+            
+            .dashboard-container {
+                max-width: 1400px;
+                margin: 0 auto;
+            }
+            
+            h1 {
+                text-align: center;
+                color: #9B51E0;
+                margin-bottom: 30px;
+                font-size: 2.5em;
+                font-family: 'Saira', sans-serif;
+            }
+            
+            .legenda {
+                padding: 15px;
+                margin: 10px auto;
+                border-radius: 8px;
+                max-width: 1200px;
+                border-left: 4px solid;
+            }
+            
+            .analises-container {
+                display: flex;
+                gap: 30px;
+                margin-bottom: 20px;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .analise-bloco {
+                flex: 1;
+                min-width: 500px;
+                max-width: 650px;
+                background: white;
+                padding: 30px;
+                border-radius: 20px;
+                box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+                border: 1px solid #e9ecef;
+            }
+            
+            .analise-titulo {
+                text-align: center;
+                font-size: 1.8em;
+                margin-bottom: 30px;
+                font-family: 'Saira', sans-serif;
+                font-weight: 700;
+            }
+            
+            .secao {
+                margin-bottom: 40px;
+            }
+            
+            .secao-header {
+                background: #9B51E0;
+                color: white;
+                padding: 15px 25px;
+                border-radius: 10px;
+                text-align: center;
+                font-size: 1.3em;
+                font-weight: 600;
+                margin-bottom: 20px;
+            }
+            
+            .conteudo-secao {
+                display: flex;
+                align-items: center;
+                gap: 20px;
+            }
+            
+            .indicador {
+                flex: 0 0 250px;
+                text-align: center;
+                padding: 20px;
+                background: #f8f9fa;
+                border-radius: 15px;
+            }
+            
+            .indicador-titulo {
+                font-size: 0.9em;
+                color: #666;
+                margin-bottom: 10px;
+            }
+            
+            .indicador-valor {
+                font-size: 3em;
+                font-weight: bold;
+                color: #333;
+            }
+            
+            .grafico-container {
+                flex: 1;
+                position: relative;
+                height: 300px;
+            }
+            
+            @media (max-width: 900px) {
+                .conteudo-secao {
+                    flex-direction: column;
+                }
+                
+                .indicador {
+                    flex: 1;
+                    width: 100%;
+                }
+                
+                .grafico-container {
+                    width: 100%;
+                    height: 350px;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <div class="dashboard-container">
+            <h1>📊 Parcial de Rodagem</h1>
+            
+            
+        
+        
+        
+        
+            
+            <div class="analises-container">
+                
+                <div class="analise-bloco">
+                    <h2 class="analise-titulo" style="color: #6C757D;">Dispositivos referência</h2>
+                    
+                    <!-- Análise de KM -->
+                    <div class="secao">
+                        <div class="secao-header">Análise de km</div>
+                        <div class="conteudo-secao">
+                            <div class="indicador">
+                                <div class="indicador-titulo">Distância Percorrida (km)</div>
+                                <div class="indicador-valor">4433.20</div>
+                            </div>
+                            <div class="grafico-container">
+                                <canvas id="chartREFKm"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Análise de Viagens -->
+                    <div class="secao">
+                        <div class="secao-header">Análise de contagem de viagens</div>
+                        <div class="conteudo-secao">
+                            <div class="indicador">
+                                <div class="indicador-titulo">Total de viagens nesse período</div>
+                                <div class="indicador-valor">683</div>
+                            </div>
+                            <div class="grafico-container">
+                                <canvas id="chartREFViagens"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        
+                <div class="analise-bloco">
+                    <h2 class="analise-titulo" style="color: #836FFF;">Analise dispositivo teste TM-10</h2>
+                    
+                    <!-- Análise de KM -->
+                    <div class="secao">
+                        <div class="secao-header">Análise de km</div>
+                        <div class="conteudo-secao">
+                            <div class="indicador">
+                                <div class="indicador-titulo">Distância Percorrida (km)</div>
+                                <div class="indicador-valor">4414.00</div>
+                            </div>
+                            <div class="grafico-container">
+                                <canvas id="chart802003Km"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Análise de Viagens -->
+                    <div class="secao">
+                        <div class="secao-header">Análise de contagem de viagens</div>
+                        <div class="conteudo-secao">
+                            <div class="indicador">
+                                <div class="indicador-titulo">Total de viagens nesse período</div>
+                                <div class="indicador-valor">686</div>
+                            </div>
+                            <div class="grafico-container">
+                                <canvas id="chart802003Viagens"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        
+            </div>
+        </div>
+        
+        <script>
+            // Configuração comum dos gráficos de donut
+            const defaultOptions = {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'right',
+                        labels: {
+                            boxWidth: 15,
+                            padding: 10,
+                            font: {
+                                size: 11
+                            }
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const label = context.label || '';
+                                const value = context.parsed || 0;
+                                const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                const percentage = ((value / total) * 100).toFixed(2);
+                                
+                                // Detecta se é gráfico de viagens pelo ID do canvas
+                                const canvasId = context.chart.canvas.id;
+                                const isViagemChart = canvasId.includes('Viagens');
+                                
+                                // Formata valor como inteiro para viagens, decimal para km
+                                const formattedValue = isViagemChart ? Math.round(value).toString() : value.toFixed(2);
+                                
+                                return label + ': ' + formattedValue + ' (' + percentage + '%)';
+                            }
+                        }
+                    }
+                },
+                cutout: '60%'
+            };
+            
+            // Dados dos gráficos por tipo (AGORA COM CORES PERSONALIZADAS)
+            const chartDataPorTipo = {"REF": {"distancias": {"labels": ["AYL2486", "BDB3D78", "JAP8F64", "RHH4B26", "A474038", "A474999", "A475104", "BAA1364", "TYA9C79"], "values": [445.7, 2.7999999999956344, 1160.3, 453.3, 1007.6999999999999, 607.6, 252.5, 502.5, 0.8], "cores": ["#5F9EA0", "#483D8B", "#483D8B", "#4B0082", "#7B68EE", "#00FFFF", "#1E90FF", "#FF00FF", "#FFC0CB"]}, "viagens": {"labels": ["AYL2486", "BDB3D78", "JAP8F64", "RHH4B26", "A474038", "A474999", "A475104", "BAA1364", "TYA9C79"], "values": [37, 42, 68, 33, 234, 61, 49, 152, 7], "cores": ["#5F9EA0", "#483D8B", "#483D8B", "#4B0082", "#7B68EE", "#00FFFF", "#1E90FF", "#FF00FF", "#FFC0CB"]}}, "802003": {"distancias": {"labels": ["ENG_004", "ENG_009", "ENG_014", "ENG_039", "ENG_042", "ENG_046", "ENG_048", "ENG_111", "ENG_146"], "values": [2.4, 497.9, 0.7, 446.8, 999.1, 1162.7, 441.0, 252.6, 610.8], "cores": ["#483D8B", "#FF00FF", "#FFC0CB", "#4B0082", "#7B68EE", "#483D8B", "#5F9EA0", "#1E90FF", "#00FFFF"]}, "viagens": {"labels": ["ENG_004", "ENG_009", "ENG_014", "ENG_039", "ENG_042", "ENG_046", "ENG_048", "ENG_111", "ENG_146"], "values": [48, 104, 7, 44, 233, 81, 57, 49, 63], "cores": ["#483D8B", "#FF00FF", "#FFC0CB", "#4B0082", "#7B68EE", "#483D8B", "#5F9EA0", "#1E90FF", "#00FFFF"]}}};
+
+            // Para o grupo de referência, garante valores inteiros nas viagens
+            if (chartDataPorTipo['REF']) {
+                chartDataPorTipo['REF'].viagens.values = chartDataPorTipo['REF'].viagens.values.map(v => Math.trunc(v));
+            }
+            
+            // Cria gráficos dinamicamente para cada tipo
+            Object.keys(chartDataPorTipo).forEach(codigoTipo => {
+                const dados = chartDataPorTipo[codigoTipo];
+                
+                // Gráfico de KM (USANDO CORES PERSONALIZADAS)
+                if (dados.distancias.values.length > 0) {
+                    new Chart(document.getElementById('chart' + codigoTipo + 'Km'), {
+                        type: 'doughnut',
+                        data: {
+                            labels: dados.distancias.labels,
+                            datasets: [{
+                                data: dados.distancias.values,
+                                backgroundColor: dados.distancias.cores,
+                                borderWidth: 2,
+                                borderColor: '#fff'
+                            }]
+                        },
+                        options: defaultOptions
+                    });
+                }
+                
+                // Gráfico de Viagens (USANDO CORES PERSONALIZADAS)
+                if (dados.viagens.values.length > 0) {
+                    new Chart(document.getElementById('chart' + codigoTipo + 'Viagens'), {
+                        type: 'doughnut',
+                        data: {
+                            labels: dados.viagens.labels,
+                            datasets: [{
+                                data: dados.viagens.values,
+                                backgroundColor: dados.viagens.cores,
+                                borderWidth: 2,
+                                borderColor: '#fff'
+                            }]
+                        },
+                        options: defaultOptions
+                    });
+                }
+            });
+        </script>
+    </body>
+    </html>
+    

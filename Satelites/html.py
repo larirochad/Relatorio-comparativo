@@ -178,6 +178,52 @@ def gerar_bloco_satellite_estabilidade(df, filename='bloco_satellite_estabilidad
         font-weight: bold;
         color: {'green' if diferenca_percentual >= 0 else 'red'};
     }}
+    
+    /* Modal para gráfico maximizado */
+    .modal {{
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0,0,0,0.8);
+        backdrop-filter: blur(5px);
+    }}
+
+    .modal-content {{
+        background: white;
+        margin: 2% auto;
+        padding: 30px;
+        border-radius: 20px;
+        width: 90%;
+        max-width: 95vw;
+        max-height: 90vh;
+        overflow: auto;
+    }}
+
+    .close-modal {{
+        color: #aaa;
+        font-size: 28px;
+        font-weight: bold;
+        cursor: pointer;
+        float: right;
+    }}
+
+    .modal-chart-container {{
+        width: 100%;
+        height: 70vh;
+        position: relative;
+        margin-top: 20px;
+    }}
+
+    .modal-titulo {{
+        margin: 0 0 20px 0;
+        font-size: 1.5em;
+        color: #333;
+        text-align: center;
+    }}
     </style>
 </head>
 <body>
@@ -341,7 +387,6 @@ def gerar_bloco_satellite_estabilidade(df, filename='bloco_satellite_estabilidad
 
     <!-- Gráfico de Barras Horizontais com Porcentagem -->
     <div class='grafico-container' style="margin-top: 30px;">
-        <button class='btn-maximizar' onclick="maximizeChart('canvas_sat_barras_validos')">🔍 Maximizar</button>
         <div class='grafico-titulo-container'><h3 class='grafico-titulo'>Total de Satélites Válidos (Referência x Teste)</h3></div>
         <div class='chart-wrapper'>
             <canvas id='canvas_sat_barras_validos'></canvas>
@@ -354,74 +399,177 @@ def gerar_bloco_satellite_estabilidade(df, filename='bloco_satellite_estabilidad
     </div>
 
     <script>
-    (function() {{
-        const ctx = document.getElementById('canvas_sat_barras_validos').getContext('2d');
-        const chart = new Chart(ctx, {{
-            type: 'bar',
-            data: {{
-                labels: ['Válidos Referência', 'Válidos Teste'],
-                datasets: [{{
-                    label: 'Quantidade',
-                    data: [{total_val_ref}, {total_val_teste}],
-                    backgroundColor: ['#12094A', '#17becf'],
-                    borderColor: ['#12094A', '#14a9b8'],
-                    borderWidth: 1,
-                    barThickness: 40
-                }}]
-            }},
-            options: {{
-                indexAxis: 'y',
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {{
-                    legend: {{ display: false }},
-                    tooltip: {{
-                        callbacks: {{
-                            label: function(context) {{
-                                return context.dataset.label + ': ' + context.raw;
-                            }},
-                            afterLabel: function(context) {{
-                                const refValue = {total_val_ref};
-                                const testValue = {total_val_teste};
-                                const diff = ((testValue - refValue) / refValue * 100).toFixed(2);
-                                
-                                if (context.dataIndex === 0) {{
-                                    return 'Referência';
-                                }} else {{
-                                    return 'Diferença: ' + diff + '%';
+    document.addEventListener('DOMContentLoaded', function() {{
+        setTimeout(function() {{
+            const ctx = document.getElementById('canvas_sat_barras_validos').getContext('2d');
+            
+            const chart = new Chart(ctx, {{
+                type: 'bar',
+                data: {{
+                    labels: ['Referência', 'Teste'],
+                    datasets: [{{
+                        label: 'Quantidade',
+                        data: [Number({total_val_ref}), Number({total_val_teste})],
+                        backgroundColor: ['#12094A', '#17becf'],
+                        borderColor: ['#12094A', '#14a9b8'],
+                        borderWidth: 1
+                    }}]
+                }},
+                options: {{
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {{
+                        legend: {{ display: false }},
+                        tooltip: {{
+                            callbacks: {{
+                                label: function(context) {{
+                                    return context.dataset.label + ': ' + context.raw;
+                                }},
+                                afterLabel: function(context) {{
+                                    const refValue = {total_val_ref};
+                                    const testValue = {total_val_teste};
+                                    const diff = ((testValue - refValue) / refValue * 100).toFixed(2);
+                                    
+                                    if (context.dataIndex === 0) {{
+                                        return 'Referência';
+                                    }} else {{
+                                        return 'Diferença: ' + diff + '%';
+                                    }}
                                 }}
                             }}
                         }}
-                    }}
-                }},
-                scales: {{
-                    x: {{
-                        beginAtZero: true,
-                        title: {{
-                            display: true,
-                            text: 'QUANTIDADE DE MENSAGENS',
-                            font: {{ weight: 'bold', size: 14 }}
-                        }},
-                        ticks: {{
-                            stepSize: 200
-                        }}
                     }},
-                    y: {{
-                        title: {{
-                            display: true,
-                            text: 'CATEGORIA',
-                            font: {{ weight: 'bold', size: 14 }}
+                    scales: {{
+                        x: {{
+                            beginAtZero: true,
+                            title: {{
+                                display: true,
+                                text: 'QUANTIDADE DE MENSAGENS',
+                                font: {{ weight: 'bold', size: 14 }}
+                            }}
+                        }},
+                        y: {{
+                            title: {{
+                                display: true,
+                                text: 'CATEGORIA',
+                                font: {{ weight: 'bold', size: 14 }}
+                            }}
                         }}
                     }}
                 }}
-            }}
-        }});
-        window.charts = window.charts || {{}};
-        window.charts['canvas_sat_barras_validos'] = chart;
-    }})();
+            }});
+            
+            window.charts = window.charts || {{}};
+            window.charts['canvas_sat_barras_validos'] = chart;
+        }}, 500);
+    }});
 
     </script>
 </div>
+
+<!-- Modal para gráfico maximizado -->
+<div id="maximizedModal" class="modal">
+    <div class="modal-content">
+        <span class="close-modal" onclick="closeModal()">&times;</span>
+        <h2 class="modal-titulo" id="modalTitle">Maximized Chart</h2>
+        <div class="modal-chart-container">
+            <canvas id="maximizedChart"></canvas>
+            <div class="zoom-controls">
+                <button onclick="if (maximizedChartInstance) maximizedChartInstance.resetZoom();">Reset Zoom</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Função para maximizar gráficos
+function maximizeChart(chartId) {{
+    const originalChart = window.charts[chartId];
+    if (!originalChart) return console.error('Chart not found:', chartId);
+    
+    const modal = document.getElementById('maximizedModal');
+    const modalTitle = document.getElementById('modalTitle');
+    
+    // Update modal title
+    modalTitle.textContent = document.querySelector('#' + chartId).closest('.grafico-container').querySelector('.grafico-titulo').textContent;
+    
+    modal.style.display = 'block';
+    
+    const ctx = document.getElementById('maximizedChart').getContext('2d');
+    if (window.maximizedChartInstance) window.maximizedChartInstance.destroy();
+    
+    // Create copy of data maintaining current visibility
+    const chartData = JSON.parse(JSON.stringify(originalChart.data));
+    
+    // Configuração mínima absoluta - sem escalas personalizadas
+    let maximizedOptions = {{
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {{
+            legend: {{ display: true, position: 'top' }}
+        }}
+    }};
+    
+    // Apenas adicionar indexAxis se necessário, sem configurações de escala
+    if (originalChart.config.type === 'bar' && originalChart.options.indexAxis === 'y') {{
+        maximizedOptions.indexAxis = 'y';
+    }}
+    
+    window.maximizedChartInstance = new Chart(ctx, {{
+        type: originalChart.config.type,
+        data: chartData,
+        options: maximizedOptions
+    }});
+
+    // Sync dataset visibility
+    originalChart.data.datasets.forEach((dataset, index) => {{
+        const isVisible = originalChart.getDatasetMeta(index).visible !== false;
+        window.maximizedChartInstance.setDatasetVisibility(index, isVisible);
+    }});
+    window.maximizedChartInstance.update();
+    
+    // Add double click event to reset zoom
+    const maximizedCanvas = document.getElementById('maximizedChart');
+    maximizedCanvas.addEventListener('dblclick', function() {{
+        if (window.maximizedChartInstance) {{
+            window.maximizedChartInstance.resetZoom();
+        }}
+    }});
+}}
+
+// Function to close modal
+function closeModal() {{
+    const modal = document.getElementById('maximizedModal');
+    if (modal) {{
+        modal.style.display = 'none';
+    }}
+    
+    if (window.maximizedChartInstance) {{
+        window.maximizedChartInstance.destroy();
+        window.maximizedChartInstance = null;
+    }}
+}}
+
+// Initialize events when DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {{
+    // Close modal when clicking outside
+    window.onclick = function(event) {{
+        const modal = document.getElementById('maximizedModal');
+        if (event.target === modal) {{
+            closeModal();
+        }}
+    }};
+    
+    // Close modal with ESC key
+    document.addEventListener('keydown', function(event) {{
+        if (event.key === 'Escape') {{
+            closeModal();
+        }}
+    }});
+}});
+</script>
+
 </body>
 </html>
 """
