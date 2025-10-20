@@ -173,11 +173,98 @@ def encontrar_coluna(df, possiveis_nomes):
     
     return None
 
-def analisar_distancia(df):
+def limpar_e_organizar_dados(df, nome_veiculo=""):
     """
-    Analisa a distância percorrida no período do CSV.
-    Retorna a diferença entre hodômetro máximo e mínimo.
+    Limpa e organiza os dados do DataFrame:
+    1. Organiza por 'Data/Hora Evento' 
+    2. Remove duplicatas baseadas na coluna 'Sequência'
+    3. Remove linhas com dados inválidos
+    
+    Args:
+        df: DataFrame original
+        nome_veiculo: Nome do veículo para debug
+    
+    Returns:
+        DataFrame limpo e organizado
     """
+    print(f"\n🧹 LIMPEZA DE DADOS - {nome_veiculo}")
+    print(f"{'='*50}")
+    
+    df_limpo = df.copy()
+    registros_originais = len(df_limpo)
+    
+    # 1. Verifica se existe coluna 'Data/Hora Evento'
+    col_data_hora = encontrar_coluna(df_limpo, ['Data/Hora Evento', 'Data/Hora evento', 'data/hora evento'])
+    if col_data_hora is None:
+        print(f"⚠️ Coluna 'Data/Hora Evento' não encontrada. Pulando limpeza temporal.")
+        return df_limpo
+    
+    print(f"✓ Coluna de data/hora encontrada: '{col_data_hora}'")
+    
+    # 2. Converte 'Data/Hora Evento' para datetime
+    try:
+        df_limpo[col_data_hora] = pd.to_datetime(df_limpo[col_data_hora], errors='coerce')
+        registros_antes_conv = len(df_limpo)
+        df_limpo = df_limpo.dropna(subset=[col_data_hora])
+        registros_apos_conv = len(df_limpo)
+        print(f"✓ Conversão de data: {registros_antes_conv} → {registros_apos_conv} registros")
+    except Exception as e:
+        print(f"❌ Erro ao converter data: {e}")
+        return df_limpo
+    
+    # 3. Verifica se existe coluna 'Sequência'
+    col_sequencia = encontrar_coluna(df_limpo, ['Sequência', 'Sequencia', 'sequencia', 'Sequence', 'sequence'])
+    if col_sequencia is None:
+        print(f"⚠️ Coluna 'Sequência' não encontrada. Pulando remoção de duplicatas.")
+        # Apenas organiza por data
+        df_limpo = df_limpo.sort_values(by=col_data_hora)
+        print(f"✓ Dados organizados por data: {len(df_limpo)} registros")
+        return df_limpo
+    
+    print(f"✓ Coluna de sequência encontrada: '{col_sequencia}'")
+    
+    # 4. Remove duplicatas baseadas na sequência (mantém o primeiro)
+    registros_antes_dedup = len(df_limpo)
+    df_limpo = df_limpo.drop_duplicates(subset=[col_sequencia], keep='first')
+    registros_apos_dedup = len(df_limpo)
+    duplicatas_removidas = registros_antes_dedup - registros_apos_dedup
+    print(f"✓ Remoção de duplicatas: {duplicatas_removidas} duplicatas removidas ({registros_antes_dedup} → {registros_apos_dedup})")
+    
+    # 5. Organiza por 'Data/Hora Evento'
+    df_limpo = df_limpo.sort_values(by=col_data_hora)
+    print(f"✓ Dados organizados por data/hora")
+    
+    # 6. Remove linhas com hodômetro inválido (se existir) - APENAS NULLs, não zeros!
+    col_hodometro = encontrar_coluna(df_limpo, ['Hodômetro total', 'Hodometro total', 'hodometro total', 
+                                               'Odômetro total', 'Odometro total', 'odometro total',
+                                               'Hodômetro', 'Hodometro', 'Odômetro', 'Odometro'])
+    if col_hodometro is not None:
+        registros_antes_hod = len(df_limpo)
+        # Remove APENAS linhas onde hodômetro é NaN (zero é válido!)
+        df_limpo = df_limpo[df_limpo[col_hodometro].notna()]
+        registros_apos_hod = len(df_limpo)
+        hodometro_invalido_removido = registros_antes_hod - registros_apos_hod
+        if hodometro_invalido_removido > 0:
+            print(f"✓ Remoção de hodômetros NULL: {hodometro_invalido_removido} registros removidos")
+    
+    # 7. Resumo final
+    registros_finais = len(df_limpo)
+    registros_removidos = registros_originais - registros_finais
+    print(f"\n📊 RESUMO DA LIMPEZA:")
+    print(f"   • Registros originais: {registros_originais}")
+    print(f"   • Registros finais: {registros_finais}")
+    print(f"   • Registros removidos: {registros_removidos} ({registros_removidos/registros_originais*100:.1f}%)")
+    
+    return df_limpo
+
+def analisar_distancia(df, nome_veiculo=""):
+    """
+    Análise SIMPLES de distância: pega o maior e menor valor de hodômetro e calcula a diferença.
+    Não depende de ignições ou normalizações - apenas matemática básica.
+    """
+    print(f"\n📏 ANÁLISE SIMPLES DE DISTÂNCIA - {nome_veiculo}")
+    print(f"{'='*50}")
+    
     # Possíveis nomes para a coluna de hodômetro
     possiveis_nomes = ['Hodômetro total', 'Hodometro total', 'hodometro total', 
                        'Odômetro total', 'Odometro total', 'odometro total',
@@ -186,14 +273,45 @@ def analisar_distancia(df):
     col_hodometro = encontrar_coluna(df, possiveis_nomes)
     
     if col_hodometro is None:
+        print(f"❌ Coluna de hodômetro não encontrada!")
+        print(f"   Colunas disponíveis: {list(df.columns)[:10]}...")
         return 0
     
+    print(f"✓ Coluna de hodômetro encontrada: '{col_hodometro}'")
+    
     try:
-        hodometro = df[col_hodometro].dropna()
-        if len(hodometro) > 0:
-            return hodometro.max() - hodometro.min()
+        # Converte para numérico, removendo valores inválidos
+        hodometro_numerico = pd.to_numeric(df[col_hodometro], errors='coerce')
+        hodometro_valido = hodometro_numerico.dropna()
+        
+        if len(hodometro_valido) == 0:
+            print(f"❌ Nenhum valor válido de hodômetro encontrado!")
+            return 0
+        
+        # Remove apenas valores negativos (zero é válido!)
+        hodometro_valido_final = hodometro_valido[hodometro_valido >= 0]
+        
+        if len(hodometro_valido_final) == 0:
+            print(f"❌ Nenhum valor válido de hodômetro encontrado!")
+            return 0
+        
+        # CÁLCULO SIMPLES: maior - menor (incluindo zero se for o menor)
+        hodometro_min = hodometro_valido_final.min()
+        hodometro_max = hodometro_valido_final.max()
+        distancia = hodometro_max - hodometro_min
+        
+        print(f"✓ Cálculo simples de distância:")
+        print(f"   • Menor valor: {hodometro_min:.2f} km")
+        print(f"   • Maior valor: {hodometro_max:.2f} km")
+        print(f"   • Distância total: {distancia:.2f} km")
+        print(f"   • Registros processados: {len(hodometro_valido_final)}")
+        
+        return distancia
+        
     except Exception as e:
-        print(f"⚠ Erro ao processar hodômetro: {e}")
+        print(f"❌ Erro ao processar hodômetro: {e}")
+        import traceback
+        traceback.print_exc()
     
     return 0
 
@@ -202,9 +320,10 @@ def contar_viagens(df, nome_veiculo=""):
     Conta o número de viagens válidas (pares 667 -> 668).
     Uma viagem é contabilizada apenas quando há um 667 (ignição ligada) seguido de um 668 (ignição desligada).
     Para TM-10, os códigos são normalizados: GTIGN -> 667, GTIGF -> 668
+    Agora usa dados já limpos e organizados por Data/Hora Evento.
     """
     print(f"\n{'='*60}")
-    print(f"🔍 DEBUG CONTAGEM DE VIAGENS - {nome_veiculo}")
+    print(f"🔍 CONTAGEM DE VIAGENS - {nome_veiculo}")
     print(f"{'='*60}")
     
     # Possíveis nomes para a coluna de tipo de mensagem
@@ -215,19 +334,23 @@ def contar_viagens(df, nome_veiculo=""):
     
     if col_tipo_msg is None:
         print(f"❌ Coluna de tipo mensagem não encontrada!")
-        # print(f"   Colunas disponíveis: {list(df.columns)[:10]}...")
         return 0
     
     print(f"✓ Coluna encontrada: '{col_tipo_msg}'")
     
+    # Verifica se existe coluna de data para ordenação
+    col_data_hora = encontrar_coluna(df, ['Data/Hora Evento', 'Data/Hora evento', 'data/hora evento'])
+    if col_data_hora is not None:
+        print(f"✓ Dados organizados por: '{col_data_hora}'")
+    
     try:
-        # 🔧 CORREÇÃO: Normaliza para comparação numérica
+        # 🔧 CORREÇÃO: Normaliza para comparação numérica (compatível com preprocessadores)
         def normalizar_valor(v):
-            """Converte valor para int se for 667/668, senão retorna string"""
+            """Converte valor para int se for 667/668, independente do tipo original"""
             if pd.isna(v):
                 return None
             
-            # Tenta converter para número
+            # Tenta converter para número primeiro
             try:
                 num = float(v)
                 # Se for 667.0 ou 668.0, retorna como int
@@ -239,18 +362,35 @@ def contar_viagens(df, nome_veiculo=""):
             except (ValueError, TypeError):
                 pass
             
-            # Para outros valores, tenta como string
+            # Para strings, tenta converter
             v_str = str(v).strip()
             if v_str in ('667', '668'):
                 return int(v_str)
             
+            # Para outros valores, retorna como string (não é evento de ignição)
             return v_str
         
-        mensagens = [normalizar_valor(v) for v in df[col_tipo_msg].tolist()]
+        # Cria DataFrame com mensagens e índices para análise
+        df_viagens = df.copy()
+        df_viagens['mensagem_normalizada'] = df_viagens[col_tipo_msg].apply(normalizar_valor)
         
-        print(f"📊 Total de mensagens no arquivo: {len(mensagens)}")
+        # Filtra apenas eventos de ignição (667 e 668)
+        eventos_ignicao = df_viagens[df_viagens['mensagem_normalizada'].isin([667, 668])].copy()
         
-        # Conta eventos de ignição (agora comparando com int)
+        if len(eventos_ignicao) == 0:
+            print(f"❌ Nenhum evento de ignição (667/668) encontrado!")
+            return 0
+        
+        # Ordena por data se disponível
+        if col_data_hora is not None:
+            eventos_ignicao = eventos_ignicao.sort_values(by=col_data_hora)
+            print(f"✓ Eventos ordenados por data/hora")
+        
+        mensagens = eventos_ignicao['mensagem_normalizada'].tolist()
+        
+        print(f"📊 Total de eventos de ignição: {len(mensagens)}")
+        
+        # Conta eventos de ignição
         total_667 = sum(1 for v in mensagens if v == 667)
         total_668 = sum(1 for v in mensagens if v == 668)
         
@@ -258,13 +398,12 @@ def contar_viagens(df, nome_veiculo=""):
         print(f"   • Eventos 668 (ignição desligada): {total_668}")
         
         # Mostra os primeiros eventos de ignição
-        ignicoes = [v for v in mensagens if v in (667, 668)]
         print(f"\n📋 Primeiros 10 eventos de ignição na sequência:")
-        print(f"   {ignicoes[:10]}")
+        print(f"   {mensagens[:10]}")
         
-        if ignicoes:
-            print(f"\n   Primeiro evento: {ignicoes[0]}")
-            print(f"   Último evento: {ignicoes[-1]}")
+        if mensagens:
+            print(f"\n   Primeiro evento: {mensagens[0]}")
+            print(f"   Último evento: {mensagens[-1]}")
 
         # Máquina de estados: aguarda 667; quando vê 668 após um 667, conta uma viagem
         aguardando_desligar = False
@@ -283,13 +422,15 @@ def contar_viagens(df, nome_veiculo=""):
                 pares_encontrados.append(f"Par {count} finalizado na posição {idx}")
                 aguardando_desligar = False
 
-        # Heurística de correção
-        if ignicoes:
-            primeiro = ignicoes[0]
+        # Heurística de correção para casos especiais
+        if mensagens:
+            primeiro = mensagens[0]
             if primeiro == 668 and total_667 == total_668 and count + 1 == total_667:
                 count_corrigido = min(total_667, total_668)
+                print(f"✓ Aplicada correção heurística: {count} → {count_corrigido}")
                 return count_corrigido
 
+        print(f"✓ Total de viagens encontradas: {count}")
         return count
         
     except Exception as e:
@@ -380,11 +521,14 @@ def processar_dados(pasta_csv):
             if codigo_tipo not in dados_por_tipo:
                 dados_por_tipo[codigo_tipo] = {'distancias': {}, 'viagens': {}}
             
-            # Analisa distância
-            dist = analisar_distancia(df)
+            # 🧹 NOVA ETAPA: Limpa e organiza os dados
+            df_limpo = limpar_e_organizar_dados(df, nome_veiculo)
             
-            # Analisa viagens (COM DEBUG)
-            qtd_viagens = contar_viagens(df, nome_veiculo)
+            # Analisa distância usando dados limpos
+            dist = analisar_distancia(df_limpo, nome_veiculo)
+            
+            # Analisa viagens usando dados limpos
+            qtd_viagens = contar_viagens(df_limpo, nome_veiculo)
             
             # Armazena os dados
             dados_por_tipo[codigo_tipo]['distancias'][nome_veiculo] = dist

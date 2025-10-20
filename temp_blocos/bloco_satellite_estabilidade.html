@@ -93,7 +93,7 @@
     }
     .diferenca-valor {
         font-weight: bold;
-        color: green;
+        color: red;
     }
     
     /* Modal para gráfico maximizado */
@@ -172,8 +172,8 @@
     <script>
     (function() {
         const ctx = document.getElementById('canvas_sat_line').getContext('2d');
-        const valRef = [89, 124, 119, 89, 24, 24, 118, 136, 45, 81, 103, 24, 24, 20];
-        const valTeste = [140, 155, 148, 109, 24, 24, 175, 202, 54, 109, 149, 24, 24, 24];
+        const valRef = [261, 210, 214, 136, 175, 87];
+        const valTeste = [243, 227, 198, 146, 187, 71];
 
         // Variável para controlar o filtro ativo
         let filtroAtivo = 'Válidos';
@@ -181,8 +181,8 @@
         const chart = new Chart(ctx, {
             type: 'line',
             data: {
-                labels: ["30/09/2025", "01/10/2025", "02/10/2025", "03/10/2025", "04/10/2025", "05/10/2025", "06/10/2025", "07/10/2025", "08/10/2025", "09/10/2025", "10/10/2025", "11/10/2025", "12/10/2025", "13/10/2025"],
-                datasets: [{"label": "V\u00e1lidos Refer\u00eancia", "data": [89, 124, 119, 89, 24, 24, 118, 136, 45, 81, 103, 24, 24, 20], "borderColor": "#12094A", "backgroundColor": "#12094A", "tension": 0.3, "fill": false, "pointRadius": 4, "pointHoverRadius": 6, "pointBackgroundColor": "#12094A", "pointBorderColor": "#12094A", "pointBorderWidth": 1, "hidden": false}, {"label": "V\u00e1lidos Teste", "data": [140, 155, 148, 109, 24, 24, 175, 202, 54, 109, 149, 24, 24, 24], "borderColor": "#17becf", "backgroundColor": "#17becf", "tension": 0.3, "fill": false, "pointRadius": 4, "pointHoverRadius": 6, "pointBackgroundColor": "#17becf", "pointBorderColor": "#17becf", "pointBorderWidth": 1, "hidden": false}, {"label": "Inv\u00e1lidos Refer\u00eancia", "data": [2, 7, 6, 3, 0, 0, 2, 4, 2, 2, 5, 0, 0, 2], "borderColor": "red", "backgroundColor": "red", "tension": 0.3, "fill": false, "pointRadius": 4, "pointHoverRadius": 6, "pointBackgroundColor": "red", "pointBorderColor": "red", "pointBorderWidth": 1, "hidden": true}, {"label": "Inv\u00e1lidos Teste", "data": [6, 6, 9, 3, 0, 0, 5, 7, 4, 2, 9, 0, 0, 3], "borderColor": "darkorange", "backgroundColor": "darkorange", "tension": 0.3, "fill": false, "pointRadius": 4, "pointHoverRadius": 6, "pointBackgroundColor": "darkorange", "pointBorderColor": "darkorange", "pointBorderWidth": 1, "hidden": true}]
+                labels: ["15/10/2025", "16/10/2025", "17/10/2025", "18/10/2025", "19/10/2025", "20/10/2025"],
+                datasets: [{"label": "V\u00e1lidos Refer\u00eancia", "data": [261, 210, 214, 136, 175, 87], "borderColor": "#12094A", "backgroundColor": "#12094A", "tension": 0.3, "fill": false, "pointRadius": 4, "pointHoverRadius": 6, "pointBackgroundColor": "#12094A", "pointBorderColor": "#12094A", "pointBorderWidth": 1, "hidden": false}, {"label": "V\u00e1lidos Teste", "data": [243, 227, 198, 146, 187, 71], "borderColor": "#17becf", "backgroundColor": "#17becf", "tension": 0.3, "fill": false, "pointRadius": 4, "pointHoverRadius": 6, "pointBackgroundColor": "#17becf", "pointBorderColor": "#17becf", "pointBorderWidth": 1, "hidden": false}, {"label": "Inv\u00e1lidos Refer\u00eancia", "data": [1, 8, 1, 0, 0, 1], "borderColor": "red", "backgroundColor": "red", "tension": 0.3, "fill": false, "pointRadius": 4, "pointHoverRadius": 6, "pointBackgroundColor": "red", "pointBorderColor": "red", "pointBorderWidth": 1, "hidden": true}, {"label": "Inv\u00e1lidos Teste", "data": [16, 24, 18, 5, 5, 7], "borderColor": "darkorange", "backgroundColor": "darkorange", "tension": 0.3, "fill": false, "pointRadius": 4, "pointHoverRadius": 6, "pointBackgroundColor": "darkorange", "pointBorderColor": "darkorange", "pointBorderWidth": 1, "hidden": true}]
             },
             options: {
                 responsive: true,
@@ -304,12 +304,12 @@
 
     <!-- Gráfico de Barras Horizontais com Porcentagem -->
     <div class='grafico-container' style="margin-top: 30px;">
-        <div class='grafico-titulo-container'><h3 class='grafico-titulo'>Total de Satélites Válidos (Referência x Teste)</h3></div>
+        <div class='grafico-titulo-container'><h3 class='grafico-titulo'>Total de Satélites Válidos (Soma) - Referência x Teste</h3></div>
         <div class='chart-wrapper'>
             <canvas id='canvas_sat_barras_validos'></canvas>
         </div>
         <div class='diferenca-container'>
-            Diferença percentual: <span class='diferenca-valor'>33.43%</span>
+            Diferença percentual: <span class='diferenca-valor'>-15.02%</span>
             <br>
             <small>Teste em relação ao Referência</small>
         </div>
@@ -326,7 +326,7 @@
                     labels: ['Referência', 'Teste'],
                     datasets: [{
                         label: 'Quantidade',
-                        data: [Number(1020), Number(1361)],
+                        data: [Number(14397.0), Number(12234.0)],
                         backgroundColor: ['#12094A', '#17becf'],
                         borderColor: ['#12094A', '#14a9b8'],
                         borderWidth: 1
@@ -344,8 +344,8 @@
                                     return context.dataset.label + ': ' + context.raw;
                                 },
                                 afterLabel: function(context) {
-                                    const refValue = 1020;
-                                    const testValue = 1361;
+                                    const refValue = 14397.0;
+                                    const testValue = 12234.0;
                                     const diff = ((testValue - refValue) / refValue * 100).toFixed(2);
                                     
                                     if (context.dataIndex === 0) {
@@ -362,7 +362,7 @@
                             beginAtZero: true,
                             title: {
                                 display: true,
-                                text: 'QUANTIDADE DE MENSAGENS',
+                                text: 'SOMA DE SATÉLITES VÁLIDOS',
                                 font: { weight: 'bold', size: 14 }
                             }
                         },

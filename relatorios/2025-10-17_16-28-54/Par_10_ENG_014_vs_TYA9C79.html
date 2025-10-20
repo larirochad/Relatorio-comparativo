@@ -1040,7 +1040,7 @@
     }
     .diferenca-valor {
         font-weight: bold;
-        color: green;
+        color: red;
     }
     
     /* Modal para gráfico maximizado */
@@ -1125,13 +1125,13 @@
                 <tr style='border-bottom: 1px solid #dee2e6;'>
                     <td style='padding: 22px; border: 1px solid #dee2e6; font-weight: bold; color: #17becf; font-size: 16px;'>Teste</td>
                     <td style='padding: 22px; border: 1px solid #dee2e6; font-weight: bold; font-size: 16px;'>TM-10</td>
-                    <td style='padding: 22px; border: 1px solid #dee2e6; font-weight: bold; font-size: 16px; font-family: monospace;'>867488068351542</td>
+                    <td style='padding: 22px; border: 1px solid #dee2e6; font-weight: bold; font-size: 16px; font-family: monospace;'>867488067670306</td>
                     <td style='padding: 22px; border: 1px solid #dee2e6; font-weight: bold; font-size: 16px; font-family: monospace;'>1.21</td>
                 </tr>
                 <tr style='border-bottom: 1px solid #dee2e6;'>
                     <td style='padding: 22px; border: 1px solid #dee2e6; font-weight: bold; font-size: 16px; color: #12094A;'>Referência</td>
-                    <td style='padding: 22px; border: 1px solid #dee2e6; font-weight: bold; font-size: 16px;'>TM-07</td>
-                    <td style='padding: 22px; border: 1px solid #dee2e6; font-weight: bold; font-size: 16px; font-family: monospace;'>4675740293</td>
+                    <td style='padding: 22px; border: 1px solid #dee2e6; font-weight: bold; font-size: 16px;'>TM-08</td>
+                    <td style='padding: 22px; border: 1px solid #dee2e6; font-weight: bold; font-size: 16px; font-family: monospace;'>862689070136285</td>
                     <td style='padding: 22px; border: 1px solid #dee2e6; font-weight: bold; font-size: 16px; font-family: monospace;'>N/A</td>
                 </tr>
             </tbody>
@@ -1172,7 +1172,7 @@
                 <div class='escala-text escala-left'>0 km</div>
                 <div class='escala-text escala-right'>12.000 km</div>
             </div>
-             <div class='valor'>445,70 km</div>
+             <div class='valor'>1,40 km</div>
         </div>
 
         
@@ -1185,7 +1185,7 @@
                 <div class='escala-text escala-left'>0 km</div>
                 <div class='escala-text escala-right'>12.000 km</div>
             </div>
-             <div class='valor'>441,00 km</div>
+             <div class='valor'>1,50 km</div>
         </div>
 
         
@@ -1193,7 +1193,7 @@
         </div>
         <div class='metric-box' id='metric-box-total'>
             <h4>Diferença percentual entre os Hodômetros (%)</h4>
-            <div class='valor-percentual' data-valor='-1.05'>-1.05%</div>
+            <div class='valor-percentual' data-valor='7.14'>7.14%</div>
         </div>
     </div>
 
@@ -1208,7 +1208,7 @@
                 <div class='escala-text escala-left'>0 km</div>
                 <div class='escala-text escala-right'>12.000 km</div>
             </div>
-             <div class='valor'>8,90 km</div>
+             <div class='valor'>1,40 km</div>
         </div>
 
         
@@ -1221,7 +1221,7 @@
                 <div class='escala-text escala-left'>0 km</div>
                 <div class='escala-text escala-right'>12.000 km</div>
             </div>
-             <div class='valor'>10,10 km</div>
+             <div class='valor'>1,50 km</div>
         </div>
 
         
@@ -1229,7 +1229,7 @@
         </div>
         <div class='metric-box' id='metric-box-curta'>
             <h4>Diferença percentual - Curta (%)</h4>
-            <div class='valor-percentual' data-valor='13.48'>13.48%</div>
+            <div class='valor-percentual' data-valor='7.14'>7.14%</div>
         </div>
     </div>
 
@@ -1244,7 +1244,7 @@
                 <div class='escala-text escala-left'>0 km</div>
                 <div class='escala-text escala-right'>12.000 km</div>
             </div>
-             <div class='valor'>436,80 km</div>
+             <div class='valor'>0,00 km</div>
         </div>
 
         
@@ -1257,7 +1257,7 @@
                 <div class='escala-text escala-left'>0 km</div>
                 <div class='escala-text escala-right'>12.000 km</div>
             </div>
-             <div class='valor'>430,90 km</div>
+             <div class='valor'>0,00 km</div>
         </div>
 
         
@@ -1265,7 +1265,7 @@
         </div>
         <div class='metric-box' id='metric-box-media'>
             <h4>Diferença percentual - Media (%)</h4>
-            <div class='valor-percentual' data-valor='-1.35'>-1.35%</div>
+            <div class='valor-percentual' data-valor='0.00'>0.00%</div>
         </div>
     </div>
 
@@ -1406,19 +1406,19 @@
                 <div class='titulo-categoria'>Análise por Distância</div>
             </div>
             <div class='grupo-selector'>
-        <button onclick="mostrarGrupo('D1','distância', 'Análise por diferença de tempo de 1s')" class='btn-grupo'>D1</button><button onclick="mostrarGrupo('D5','distância', 'Análise por diferença de tempo de 5s')" class='btn-grupo'>D5</button><button onclick="mostrarGrupo('D10','distância', 'Análise por diferença de tempo de 10s')" class='btn-grupo'>D10</button></div><div class='grupo active' data-categoria='distância' data-grupo='D1'><div class='grafico-container'><button class='btn-maximizar' onclick="maximizeChart('canvas_0')">🔍 Maximizar</button><div class='grafico-titulo-container'><h3 class='grafico-titulo'>Análise por diferença de tempo de 1s</h3></div><div class='metricas' id='metrics_0'>Média Distância: 11.13 | Média Discrepância: 0.82</div><div class='chart-wrapper'><canvas id='canvas_0' data-category='distância'></canvas></div><div class='zoom-controls'><button class='reset-btn' onclick="resetZoom('canvas_0')">Reset Zoom</button></div><div class='zoom-instruction'>Use o scroll do mouse para zoom, duplo clique para resetar ou clique direito em um ponto para copiar dados</div></div></div><div class='grupo' data-categoria='distância' data-grupo='D5'><div class='grafico-container'><button class='btn-maximizar' onclick="maximizeChart('canvas_1')">🔍 Maximizar</button><div class='grafico-titulo-container'><h3 class='grafico-titulo'>Análise por diferença de tempo de 5s</h3></div><div class='metricas' id='metrics_1'>Média Distância: 15.88 | Média Discrepância: 13.29</div><div class='chart-wrapper'><canvas id='canvas_1' data-category='distância'></canvas></div><div class='zoom-controls'><button class='reset-btn' onclick="resetZoom('canvas_1')">Reset Zoom</button></div><div class='zoom-instruction'>Use o scroll do mouse para zoom, duplo clique para resetar ou clique direito em um ponto para copiar dados</div></div></div><div class='grupo' data-categoria='distância' data-grupo='D10'><div class='grafico-container'><button class='btn-maximizar' onclick="maximizeChart('canvas_2')">🔍 Maximizar</button><div class='grafico-titulo-container'><h3 class='grafico-titulo'>Análise por diferença de tempo de 10s</h3></div><div class='metricas' id='metrics_2'>Média Distância: 18.59 | Média Discrepância: 6.07</div><div class='chart-wrapper'><canvas id='canvas_2' data-category='distância'></canvas></div><div class='zoom-controls'><button class='reset-btn' onclick="resetZoom('canvas_2')">Reset Zoom</button></div><div class='zoom-instruction'>Use o scroll do mouse para zoom, duplo clique para resetar ou clique direito em um ponto para copiar dados</div></div></div></div>
+        <button onclick="mostrarGrupo('D1','distância', 'Análise por diferença de tempo de 1s')" class='btn-grupo'>D1</button><button onclick="mostrarGrupo('D5','distância', 'Análise por diferença de tempo de 5s')" class='btn-grupo'>D5</button><button onclick="mostrarGrupo('D10','distância', 'Análise por diferença de tempo de 10s')" class='btn-grupo'>D10</button></div><div class='grupo active' data-categoria='distância' data-grupo='D1'><div class='grafico-container'><button class='btn-maximizar' onclick="maximizeChart('canvas_0')">🔍 Maximizar</button><div class='grafico-titulo-container'><h3 class='grafico-titulo'>Análise por diferença de tempo de 1s</h3></div><div class='metricas' id='metrics_0'>Média Distância: 39.6</div><div class='chart-wrapper'><canvas id='canvas_0' data-category='distância'></canvas></div><div class='zoom-controls'><button class='reset-btn' onclick="resetZoom('canvas_0')">Reset Zoom</button></div><div class='zoom-instruction'>Use o scroll do mouse para zoom, duplo clique para resetar ou clique direito em um ponto para copiar dados</div></div></div><div class='grupo' data-categoria='distância' data-grupo='D5'><div class='grafico-container'><button class='btn-maximizar' onclick="maximizeChart('canvas_1')">🔍 Maximizar</button><div class='grafico-titulo-container'><h3 class='grafico-titulo'>Análise por diferença de tempo de 5s</h3></div><div class='metricas' id='metrics_1'>Média Distância: 22.9 | Média Discrepância: 16.68</div><div class='chart-wrapper'><canvas id='canvas_1' data-category='distância'></canvas></div><div class='zoom-controls'><button class='reset-btn' onclick="resetZoom('canvas_1')">Reset Zoom</button></div><div class='zoom-instruction'>Use o scroll do mouse para zoom, duplo clique para resetar ou clique direito em um ponto para copiar dados</div></div></div><div class='grupo' data-categoria='distância' data-grupo='D10'><div class='grafico-container'><button class='btn-maximizar' onclick="maximizeChart('canvas_2')">🔍 Maximizar</button><div class='grafico-titulo-container'><h3 class='grafico-titulo'>Análise por diferença de tempo de 10s</h3></div><div class='metricas' id='metrics_2'>Média Distância: 71.74 | Média Discrepância: 29.44</div><div class='chart-wrapper'><canvas id='canvas_2' data-category='distância'></canvas></div><div class='zoom-controls'><button class='reset-btn' onclick="resetZoom('canvas_2')">Reset Zoom</button></div><div class='zoom-instruction'>Use o scroll do mouse para zoom, duplo clique para resetar ou clique direito em um ponto para copiar dados</div></div></div></div>
         <div class='categoria'>
             <div class='titulo-wrapper'>
                 <div class='titulo-categoria'>Análise por Velocidade</div>
             </div>
             <div class='grupo-selector'>
-        <button onclick="mostrarGrupo('D1','velocidade', 'Análise por diferença de tempo de 1s')" class='btn-grupo'>D1</button><button onclick="mostrarGrupo('D5','velocidade', 'Análise por diferença de tempo de 5s')" class='btn-grupo'>D5</button><button onclick="mostrarGrupo('D10','velocidade', 'Análise por diferença de tempo de 10s')" class='btn-grupo'>D10</button></div><div class='grupo active' data-categoria='velocidade' data-grupo='D1'><div class='grafico-container'><button class='btn-maximizar' onclick="maximizeChart('canvas_3')">🔍 Maximizar</button><div class='grafico-titulo-container'><h3 class='grafico-titulo'>Análise por diferença de tempo de 1s</h3></div><div class='metricas' id='metrics_3'>Média: -0.03</div><div class='chart-wrapper'><canvas id='canvas_3' data-category='velocidade'></canvas></div><div class='zoom-controls'><button class='reset-btn' onclick="resetZoom('canvas_3')">Reset Zoom</button></div><div class='zoom-instruction'>Use o scroll do mouse para zoom, duplo clique para resetar ou clique direito em um ponto para copiar dados</div></div></div><div class='grupo' data-categoria='velocidade' data-grupo='D5'><div class='grafico-container'><button class='btn-maximizar' onclick="maximizeChart('canvas_4')">🔍 Maximizar</button><div class='grafico-titulo-container'><h3 class='grafico-titulo'>Análise por diferença de tempo de 5s</h3></div><div class='metricas' id='metrics_4'>Média: -0.02</div><div class='chart-wrapper'><canvas id='canvas_4' data-category='velocidade'></canvas></div><div class='zoom-controls'><button class='reset-btn' onclick="resetZoom('canvas_4')">Reset Zoom</button></div><div class='zoom-instruction'>Use o scroll do mouse para zoom, duplo clique para resetar ou clique direito em um ponto para copiar dados</div></div></div><div class='grupo' data-categoria='velocidade' data-grupo='D10'><div class='grafico-container'><button class='btn-maximizar' onclick="maximizeChart('canvas_5')">🔍 Maximizar</button><div class='grafico-titulo-container'><h3 class='grafico-titulo'>Análise por diferença de tempo de 10s</h3></div><div class='metricas' id='metrics_5'>Média: 0.35</div><div class='chart-wrapper'><canvas id='canvas_5' data-category='velocidade'></canvas></div><div class='zoom-controls'><button class='reset-btn' onclick="resetZoom('canvas_5')">Reset Zoom</button></div><div class='zoom-instruction'>Use o scroll do mouse para zoom, duplo clique para resetar ou clique direito em um ponto para copiar dados</div></div></div></div>
+        <button onclick="mostrarGrupo('D1','velocidade', 'Análise por diferença de tempo de 1s')" class='btn-grupo'>D1</button><button onclick="mostrarGrupo('D5','velocidade', 'Análise por diferença de tempo de 5s')" class='btn-grupo'>D5</button><button onclick="mostrarGrupo('D10','velocidade', 'Análise por diferença de tempo de 10s')" class='btn-grupo'>D10</button></div><div class='grupo active' data-categoria='velocidade' data-grupo='D1'><div class='grafico-container'><button class='btn-maximizar' onclick="maximizeChart('canvas_3')">🔍 Maximizar</button><div class='grafico-titulo-container'><h3 class='grafico-titulo'>Análise por diferença de tempo de 1s</h3></div><div class='metricas' id='metrics_3'>Média: 0.0</div><div class='chart-wrapper'><canvas id='canvas_3' data-category='velocidade'></canvas></div><div class='zoom-controls'><button class='reset-btn' onclick="resetZoom('canvas_3')">Reset Zoom</button></div><div class='zoom-instruction'>Use o scroll do mouse para zoom, duplo clique para resetar ou clique direito em um ponto para copiar dados</div></div></div><div class='grupo' data-categoria='velocidade' data-grupo='D5'><div class='grafico-container'><button class='btn-maximizar' onclick="maximizeChart('canvas_4')">🔍 Maximizar</button><div class='grafico-titulo-container'><h3 class='grafico-titulo'>Análise por diferença de tempo de 5s</h3></div><div class='metricas' id='metrics_4'>Média: -4.44</div><div class='chart-wrapper'><canvas id='canvas_4' data-category='velocidade'></canvas></div><div class='zoom-controls'><button class='reset-btn' onclick="resetZoom('canvas_4')">Reset Zoom</button></div><div class='zoom-instruction'>Use o scroll do mouse para zoom, duplo clique para resetar ou clique direito em um ponto para copiar dados</div></div></div><div class='grupo' data-categoria='velocidade' data-grupo='D10'><div class='grafico-container'><button class='btn-maximizar' onclick="maximizeChart('canvas_5')">🔍 Maximizar</button><div class='grafico-titulo-container'><h3 class='grafico-titulo'>Análise por diferença de tempo de 10s</h3></div><div class='metricas' id='metrics_5'>Média: -2.78</div><div class='chart-wrapper'><canvas id='canvas_5' data-category='velocidade'></canvas></div><div class='zoom-controls'><button class='reset-btn' onclick="resetZoom('canvas_5')">Reset Zoom</button></div><div class='zoom-instruction'>Use o scroll do mouse para zoom, duplo clique para resetar ou clique direito em um ponto para copiar dados</div></div></div></div>
         <div class='categoria'>
             <div class='titulo-wrapper'>
                 <div class='titulo-categoria'>Análise por Direção</div>
             </div>
             <div class='grupo-selector'>
-        <button onclick="mostrarGrupo('D1','direção', 'Análise por diferença de tempo de 1s')" class='btn-grupo'>D1</button><button onclick="mostrarGrupo('D5','direção', 'Análise por diferença de tempo de 5s')" class='btn-grupo'>D5</button><button onclick="mostrarGrupo('D10','direção', 'Análise por diferença de tempo de 10s')" class='btn-grupo'>D10</button></div><div class='grupo active' data-categoria='direção' data-grupo='D1'><div class='grafico-container'><button class='btn-maximizar' onclick="maximizeChart('canvas_6')">🔍 Maximizar</button><div class='grafico-titulo-container'><h3 class='grafico-titulo'>Análise por diferença de tempo de 1s</h3></div><div class='metricas' id='metrics_6'>Média: 85.28</div><div class='chart-wrapper'><canvas id='canvas_6' data-category='direção'></canvas></div><div class='zoom-controls'><button class='reset-btn' onclick="resetZoom('canvas_6')">Reset Zoom</button></div><div class='zoom-instruction'>Use o scroll do mouse para zoom, duplo clique para resetar ou clique direito em um ponto para copiar dados</div></div></div><div class='grupo' data-categoria='direção' data-grupo='D5'><div class='grafico-container'><button class='btn-maximizar' onclick="maximizeChart('canvas_7')">🔍 Maximizar</button><div class='grafico-titulo-container'><h3 class='grafico-titulo'>Análise por diferença de tempo de 5s</h3></div><div class='metricas' id='metrics_7'>Média: 54.47</div><div class='chart-wrapper'><canvas id='canvas_7' data-category='direção'></canvas></div><div class='zoom-controls'><button class='reset-btn' onclick="resetZoom('canvas_7')">Reset Zoom</button></div><div class='zoom-instruction'>Use o scroll do mouse para zoom, duplo clique para resetar ou clique direito em um ponto para copiar dados</div></div></div><div class='grupo' data-categoria='direção' data-grupo='D10'><div class='grafico-container'><button class='btn-maximizar' onclick="maximizeChart('canvas_8')">🔍 Maximizar</button><div class='grafico-titulo-container'><h3 class='grafico-titulo'>Análise por diferença de tempo de 10s</h3></div><div class='metricas' id='metrics_8'>Média: 68.42</div><div class='chart-wrapper'><canvas id='canvas_8' data-category='direção'></canvas></div><div class='zoom-controls'><button class='reset-btn' onclick="resetZoom('canvas_8')">Reset Zoom</button></div><div class='zoom-instruction'>Use o scroll do mouse para zoom, duplo clique para resetar ou clique direito em um ponto para copiar dados</div></div></div></div>
+        <button onclick="mostrarGrupo('D1','direção', 'Análise por diferença de tempo de 1s')" class='btn-grupo'>D1</button><button onclick="mostrarGrupo('D5','direção', 'Análise por diferença de tempo de 5s')" class='btn-grupo'>D5</button><button onclick="mostrarGrupo('D10','direção', 'Análise por diferença de tempo de 10s')" class='btn-grupo'>D10</button></div><div class='grupo active' data-categoria='direção' data-grupo='D1'><div class='grafico-container'><button class='btn-maximizar' onclick="maximizeChart('canvas_6')">🔍 Maximizar</button><div class='grafico-titulo-container'><h3 class='grafico-titulo'>Análise por diferença de tempo de 1s</h3></div><div class='metricas' id='metrics_6'>Média: 35.57</div><div class='chart-wrapper'><canvas id='canvas_6' data-category='direção'></canvas></div><div class='zoom-controls'><button class='reset-btn' onclick="resetZoom('canvas_6')">Reset Zoom</button></div><div class='zoom-instruction'>Use o scroll do mouse para zoom, duplo clique para resetar ou clique direito em um ponto para copiar dados</div></div></div><div class='grupo' data-categoria='direção' data-grupo='D5'><div class='grafico-container'><button class='btn-maximizar' onclick="maximizeChart('canvas_7')">🔍 Maximizar</button><div class='grafico-titulo-container'><h3 class='grafico-titulo'>Análise por diferença de tempo de 5s</h3></div><div class='metricas' id='metrics_7'>Média: 80.89</div><div class='chart-wrapper'><canvas id='canvas_7' data-category='direção'></canvas></div><div class='zoom-controls'><button class='reset-btn' onclick="resetZoom('canvas_7')">Reset Zoom</button></div><div class='zoom-instruction'>Use o scroll do mouse para zoom, duplo clique para resetar ou clique direito em um ponto para copiar dados</div></div></div><div class='grupo' data-categoria='direção' data-grupo='D10'><div class='grafico-container'><button class='btn-maximizar' onclick="maximizeChart('canvas_8')">🔍 Maximizar</button><div class='grafico-titulo-container'><h3 class='grafico-titulo'>Análise por diferença de tempo de 10s</h3></div><div class='metricas' id='metrics_8'>Média: 59.6</div><div class='chart-wrapper'><canvas id='canvas_8' data-category='direção'></canvas></div><div class='zoom-controls'><button class='reset-btn' onclick="resetZoom('canvas_8')">Reset Zoom</button></div><div class='zoom-instruction'>Use o scroll do mouse para zoom, duplo clique para resetar ou clique direito em um ponto para copiar dados</div></div></div></div>
 <!-- /Dashboard -->
 
 
@@ -1576,7 +1576,7 @@
             <canvas id='canvas_sat_barras_validos'></canvas>
         </div>
         <div class='diferenca-container'>
-            Diferença percentual: <span class='diferenca-valor'>33.43%</span>
+            Diferença percentual: <span class='diferenca-valor'>-31.34%</span>
             <br>
             <small>Teste em relação ao Referência</small>
         </div>
@@ -1615,7 +1615,7 @@
 
             const chart = new Chart(ctx, {
                 type: 'doughnut',
-                data: {"labels": ["Conclu\u00eddo", "Restante"], "datasets": [{"label": "Refer\u00eancia", "data": [3.7141666666666664, 96.28583333333333], "backgroundColor": ["#12094A", "rgba(200,200,200,0.2)"], "borderColor": ["#fff", "#fff"], "circumference": 180, "rotation": -90}]},
+                data: {"labels": ["Conclu\u00eddo", "Restante"], "datasets": [{"label": "Refer\u00eancia", "data": [0.011666666666666667, 99.98833333333333], "backgroundColor": ["#12094A", "rgba(200,200,200,0.2)"], "borderColor": ["#fff", "#fff"], "circumference": 180, "rotation": -90}]},
                 options: {
                     responsive: true,
                     maintainAspectRatio: true,
@@ -1627,7 +1627,7 @@
                         tooltip: {
                             callbacks: {
                                 label: function(context) {
-                                    const km = (445.7).toFixed(2);
+                                    const km = (1.4).toFixed(2);
                                     return context.dataset.label + ': ' + context.raw.toFixed(2) + '% (' + km + ' km)';
                                 }
                             }
@@ -1677,7 +1677,7 @@
 
             const chart = new Chart(ctx, {
                 type: 'doughnut',
-                data: {"labels": ["Conclu\u00eddo", "Restante"], "datasets": [{"label": "Teste", "data": [3.6750000000000007, 96.325], "backgroundColor": ["#17becf", "rgba(200,200,200,0.2)"], "borderColor": ["#fff", "#fff"], "circumference": 180, "rotation": -90}]},
+                data: {"labels": ["Conclu\u00eddo", "Restante"], "datasets": [{"label": "Teste", "data": [0.0125, 99.9875], "backgroundColor": ["#17becf", "rgba(200,200,200,0.2)"], "borderColor": ["#fff", "#fff"], "circumference": 180, "rotation": -90}]},
                 options: {
                     responsive: true,
                     maintainAspectRatio: true,
@@ -1689,7 +1689,7 @@
                         tooltip: {
                             callbacks: {
                                 label: function(context) {
-                                    const km = (441.00000000000006).toFixed(2);
+                                    const km = (1.5).toFixed(2);
                                     return context.dataset.label + ': ' + context.raw.toFixed(2) + '% (' + km + ' km)';
                                 }
                             }
@@ -1739,7 +1739,7 @@
 
             const chart = new Chart(ctx, {
                 type: 'doughnut',
-                data: {"labels": ["Conclu\u00eddo", "Restante"], "datasets": [{"label": "Refer\u00eancia - Curta", "data": [0.07416666666666667, 99.92583333333333], "backgroundColor": ["#12094A", "rgba(200,200,200,0.2)"], "borderColor": ["#fff", "#fff"], "circumference": 180, "rotation": -90}]},
+                data: {"labels": ["Conclu\u00eddo", "Restante"], "datasets": [{"label": "Refer\u00eancia - Curta", "data": [0.011666666666666667, 99.98833333333333], "backgroundColor": ["#12094A", "rgba(200,200,200,0.2)"], "borderColor": ["#fff", "#fff"], "circumference": 180, "rotation": -90}]},
                 options: {
                     responsive: true,
                     maintainAspectRatio: true,
@@ -1751,7 +1751,7 @@
                         tooltip: {
                             callbacks: {
                                 label: function(context) {
-                                    const km = (8.9).toFixed(2);
+                                    const km = (1.4).toFixed(2);
                                     return context.dataset.label + ': ' + context.raw.toFixed(2) + '% (' + km + ' km)';
                                 }
                             }
@@ -1801,7 +1801,7 @@
 
             const chart = new Chart(ctx, {
                 type: 'doughnut',
-                data: {"labels": ["Conclu\u00eddo", "Restante"], "datasets": [{"label": "Teste - Curta", "data": [0.08416666666666667, 99.91583333333334], "backgroundColor": ["#17becf", "rgba(200,200,200,0.2)"], "borderColor": ["#fff", "#fff"], "circumference": 180, "rotation": -90}]},
+                data: {"labels": ["Conclu\u00eddo", "Restante"], "datasets": [{"label": "Teste - Curta", "data": [0.0125, 99.9875], "backgroundColor": ["#17becf", "rgba(200,200,200,0.2)"], "borderColor": ["#fff", "#fff"], "circumference": 180, "rotation": -90}]},
                 options: {
                     responsive: true,
                     maintainAspectRatio: true,
@@ -1813,7 +1813,7 @@
                         tooltip: {
                             callbacks: {
                                 label: function(context) {
-                                    const km = (10.1).toFixed(2);
+                                    const km = (1.5).toFixed(2);
                                     return context.dataset.label + ': ' + context.raw.toFixed(2) + '% (' + km + ' km)';
                                 }
                             }
@@ -1863,7 +1863,7 @@
 
             const chart = new Chart(ctx, {
                 type: 'doughnut',
-                data: {"labels": ["Conclu\u00eddo", "Restante"], "datasets": [{"label": "Refer\u00eancia - Media", "data": [3.64, 96.36], "backgroundColor": ["#12094A", "rgba(200,200,200,0.2)"], "borderColor": ["#fff", "#fff"], "circumference": 180, "rotation": -90}]},
+                data: {"labels": ["Conclu\u00eddo", "Restante"], "datasets": [{"label": "Refer\u00eancia - Media", "data": [0.0, 100.0], "backgroundColor": ["#12094A", "rgba(200,200,200,0.2)"], "borderColor": ["#fff", "#fff"], "circumference": 180, "rotation": -90}]},
                 options: {
                     responsive: true,
                     maintainAspectRatio: true,
@@ -1875,7 +1875,7 @@
                         tooltip: {
                             callbacks: {
                                 label: function(context) {
-                                    const km = (436.8).toFixed(2);
+                                    const km = (0.0).toFixed(2);
                                     return context.dataset.label + ': ' + context.raw.toFixed(2) + '% (' + km + ' km)';
                                 }
                             }
@@ -1925,7 +1925,7 @@
 
             const chart = new Chart(ctx, {
                 type: 'doughnut',
-                data: {"labels": ["Conclu\u00eddo", "Restante"], "datasets": [{"label": "Teste - Media", "data": [3.5908333333333333, 96.40916666666666], "backgroundColor": ["#17becf", "rgba(200,200,200,0.2)"], "borderColor": ["#fff", "#fff"], "circumference": 180, "rotation": -90}]},
+                data: {"labels": ["Conclu\u00eddo", "Restante"], "datasets": [{"label": "Teste - Media", "data": [0.0, 100.0], "backgroundColor": ["#17becf", "rgba(200,200,200,0.2)"], "borderColor": ["#fff", "#fff"], "circumference": 180, "rotation": -90}]},
                 options: {
                     responsive: true,
                     maintainAspectRatio: true,
@@ -1937,7 +1937,7 @@
                         tooltip: {
                             callbacks: {
                                 label: function(context) {
-                                    const km = (430.90000000000003).toFixed(2);
+                                    const km = (0.0).toFixed(2);
                                     return context.dataset.label + ': ' + context.raw.toFixed(2) + '% (' + km + ' km)';
                                 }
                             }
@@ -2110,8 +2110,8 @@
         const chart = new Chart(ctx, {
             type: 'line',
             data: {
-                labels: ["30/09/2025", "01/10/2025", "02/10/2025", "03/10/2025", "06/10/2025", "07/10/2025", "08/10/2025", "09/10/2025", "10/10/2025", "13/10/2025"],
-                datasets: [{"label": "Teste - Total", "data": [98.5, 47.599999999999994, 21.1, 21.6, 63.1, 76.60000000000001, 11.700000000000001, 44.1, 56.7, 0.0], "borderColor": "#17becf", "backgroundColor": "#17becf", "tension": 0.3, "fill": false, "pointRadius": 4, "pointHoverRadius": 6}, {"label": "Refer\u00eancia - Total", "data": [98.7, 48.5, 22.0, 22.0, 63.8, 77.39999999999999, 11.8, 44.5, 57.0, 0.0], "borderColor": "#12094A", "backgroundColor": "#12094A", "tension": 0.3, "fill": false, "pointRadius": 4, "pointHoverRadius": 6}]
+                labels: ["06/10/2025", "08/10/2025", "15/10/2025", "16/10/2025"],
+                datasets: [{"label": "Teste - Total", "data": [0.6, 0.1, 0.2, 0.6], "borderColor": "#17becf", "backgroundColor": "#17becf", "tension": 0.3, "fill": false, "pointRadius": 4, "pointHoverRadius": 6}, {"label": "Refer\u00eancia - Total", "data": [0.4, 0.2, 0.4, 0.4], "borderColor": "#12094A", "backgroundColor": "#12094A", "tension": 0.3, "fill": false, "pointRadius": 4, "pointHoverRadius": 6}]
             },
             options: {
                 responsive: true,
@@ -2147,8 +2147,8 @@
             const chart = new Chart(ctx, {
                 type: 'line',
                 data: {
-                    labels: ["30/09/2025", "01/10/2025", "02/10/2025", "03/10/2025", "06/10/2025", "07/10/2025", "08/10/2025", "09/10/2025", "10/10/2025", "13/10/2025"],
-                    datasets: [{"label": "Teste - Curta", "data": [2.2, 1.3, 1.0, 0.0, 1.9, 0.2, 1.8, 0.0, 1.7, 0.0], "borderColor": "#17becf", "backgroundColor": "#17becf", "tension": 0.3, "fill": false, "pointRadius": 4, "pointHoverRadius": 6}, {"label": "Refer\u00eancia - Curta", "data": [2.3, 1.4, 1.2, 0.0, 0.0, 0.3, 1.8, 0.1, 1.8, 0.0], "borderColor": "#12094A", "backgroundColor": "#12094A", "tension": 0.3, "fill": false, "pointRadius": 4, "pointHoverRadius": 6}]
+                    labels: ["06/10/2025", "08/10/2025", "15/10/2025", "16/10/2025"],
+                    datasets: [{"label": "Teste - Curta", "data": [0.6, 0.1, 0.2, 0.6], "borderColor": "#17becf", "backgroundColor": "#17becf", "tension": 0.3, "fill": false, "pointRadius": 4, "pointHoverRadius": 6}, {"label": "Refer\u00eancia - Curta", "data": [0.4, 0.2, 0.4, 0.4], "borderColor": "#12094A", "backgroundColor": "#12094A", "tension": 0.3, "fill": false, "pointRadius": 4, "pointHoverRadius": 6}]
                 },
                 options: {
                     responsive: true,
@@ -2184,8 +2184,8 @@
             const chart = new Chart(ctx, {
                 type: 'line',
                 data: {
-                    labels: ["30/09/2025", "01/10/2025", "02/10/2025", "03/10/2025", "06/10/2025", "07/10/2025", "08/10/2025", "09/10/2025", "10/10/2025", "13/10/2025"],
-                    datasets: [{"label": "Teste - Media", "data": [96.3, 46.3, 20.1, 21.6, 61.2, 76.4, 9.9, 44.1, 55.0, 0.0], "borderColor": "#17becf", "backgroundColor": "#17becf", "tension": 0.3, "fill": false, "pointRadius": 4, "pointHoverRadius": 6}, {"label": "Refer\u00eancia - Media", "data": [96.4, 47.1, 20.8, 22.0, 63.8, 77.1, 10.0, 44.4, 55.2, 0.0], "borderColor": "#12094A", "backgroundColor": "#12094A", "tension": 0.3, "fill": false, "pointRadius": 4, "pointHoverRadius": 6}]
+                    labels: ["06/10/2025", "08/10/2025", "15/10/2025", "16/10/2025"],
+                    datasets: [{"label": "Teste - Media", "data": [0.0, 0.0, 0.0, 0.0], "borderColor": "#17becf", "backgroundColor": "#17becf", "tension": 0.3, "fill": false, "pointRadius": 4, "pointHoverRadius": 6}, {"label": "Refer\u00eancia - Media", "data": [0.0, 0.0, 0.0, 0.0], "borderColor": "#12094A", "backgroundColor": "#12094A", "tension": 0.3, "fill": false, "pointRadius": 4, "pointHoverRadius": 6}]
                 },
                 options: {
                     responsive: true,
@@ -2221,8 +2221,8 @@
             const chart = new Chart(ctx, {
                 type: 'line',
                 data: {
-                    labels: ["30/09/2025", "01/10/2025", "02/10/2025", "03/10/2025", "06/10/2025", "07/10/2025", "08/10/2025", "09/10/2025", "10/10/2025", "13/10/2025"],
-                    datasets: [{"label": "Teste - Longa", "data": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], "borderColor": "#17becf", "backgroundColor": "#17becf", "tension": 0.3, "fill": false, "pointRadius": 4, "pointHoverRadius": 6}, {"label": "Refer\u00eancia - Longa", "data": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], "borderColor": "#12094A", "backgroundColor": "#12094A", "tension": 0.3, "fill": false, "pointRadius": 4, "pointHoverRadius": 6}]
+                    labels: ["06/10/2025", "08/10/2025", "15/10/2025", "16/10/2025"],
+                    datasets: [{"label": "Teste - Longa", "data": [0.0, 0.0, 0.0, 0.0], "borderColor": "#17becf", "backgroundColor": "#17becf", "tension": 0.3, "fill": false, "pointRadius": 4, "pointHoverRadius": 6}, {"label": "Refer\u00eancia - Longa", "data": [0.0, 0.0, 0.0, 0.0], "borderColor": "#12094A", "backgroundColor": "#12094A", "tension": 0.3, "fill": false, "pointRadius": 4, "pointHoverRadius": 6}]
                 },
                 options: {
                     responsive: true,
@@ -2468,8 +2468,8 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             
             const ctx = canvas.getContext('2d');
-            const labels = ["30/09/2025 08:11:38", "30/09/2025 09:26:24", "30/09/2025 09:41:13", "30/09/2025 15:53:22", "30/09/2025 16:23:17", "30/09/2025 17:00:44", "01/10/2025 08:59:54", "01/10/2025 10:24:52", "01/10/2025 10:57:17", "01/10/2025 11:00:17", "01/10/2025 11:03:17", "01/10/2025 11:06:17", "01/10/2025 11:09:17", "01/10/2025 11:47:02", "01/10/2025 13:53:17", "01/10/2025 15:23:43", "01/10/2025 17:17:49", "02/10/2025 07:53:40", "02/10/2025 09:14:43", "02/10/2025 11:29:13", "02/10/2025 14:07:03", "02/10/2025 14:39:37", "02/10/2025 15:26:58", "02/10/2025 16:06:48", "02/10/2025 16:27:57", "03/10/2025 10:01:50", "03/10/2025 10:04:51", "03/10/2025 11:20:49", "03/10/2025 16:00:26", "03/10/2025 16:41:06", "06/10/2025 08:22:22", "06/10/2025 09:20:22", "06/10/2025 11:32:27", "06/10/2025 16:14:07", "06/10/2025 16:55:51", "07/10/2025 08:23:57", "07/10/2025 09:35:12", "07/10/2025 09:44:11", "07/10/2025 11:37:56", "07/10/2025 13:30:56", "07/10/2025 13:42:09", "07/10/2025 15:37:47", "07/10/2025 16:25:00", "07/10/2025 17:22:27", "08/10/2025 08:38:02", "08/10/2025 13:33:47", "08/10/2025 14:18:52", "08/10/2025 14:54:44", "09/10/2025 10:26:24", "09/10/2025 10:29:24", "09/10/2025 10:32:24", "09/10/2025 10:39:04", "09/10/2025 16:57:28", "10/10/2025 07:44:14", "10/10/2025 08:09:33", "10/10/2025 08:12:33", "10/10/2025 08:15:33", "10/10/2025 08:50:43", "10/10/2025 10:37:39", "10/10/2025 10:57:01", "10/10/2025 11:17:55", "10/10/2025 12:00:59", "10/10/2025 13:37:26", "10/10/2025 14:37:44", "10/10/2025 17:03:18", "13/10/2025 07:54:11", "13/10/2025 09:14:00"];
-            const datasets = [{"label": "Discrep\u00e2ncia (T1)", "data": [14.98, 13.27, 1.45, 2.56, 8.43, 15.65, 10.74, 44.47, 6.44, 5.76, 5.46, 5.3, 4.28, 1.45, 8.26, 1.66, 13.77, 0.86, 9.59, 3.88, 3.08, 97.03, 1.99, 2.06, 24.18, 8.27, 3.54, 2.34, 22.13, 24.07, 15.41, 1.45, 3.12, 4.7, 11.82, 4.27, 7.12, 7.27, 2.89, 10.48, 3.76, 0.24, 23.51, 18.61, 22.85, 7.48, 1.13, 6.92, 46.58, 24.94, 24.51, 26.03, 15.44, 6.7, 0.31, 1.48, 0.68, 12.24, 4.44, 2.64, 3.49, 3.65, 2.86, 1.96, 12.31, 26.65, 2.43], "borderColor": "gold", "backgroundColor": "gold", "tension": 0.3, "fill": false, "pointRadius": 4, "pointHoverRadius": 6, "pointBackgroundColor": "gold", "pointBorderColor": "gold"}];
+            const labels = ["06/10/2025 09:01:41", "06/10/2025 09:04:41", "06/10/2025 09:07:41", "06/10/2025 09:10:41", "06/10/2025 09:13:41", "06/10/2025 09:16:41", "06/10/2025 09:19:41", "06/10/2025 09:22:41", "06/10/2025 09:25:41", "06/10/2025 09:28:41", "06/10/2025 09:31:41", "06/10/2025 09:34:41", "06/10/2025 09:37:41", "06/10/2025 09:40:41", "06/10/2025 09:43:41", "06/10/2025 09:46:41", "06/10/2025 09:49:41", "06/10/2025 09:52:41", "06/10/2025 09:55:41", "06/10/2025 09:58:41", "06/10/2025 10:01:41"];
+            const datasets = [{"label": "Discrep\u00e2ncia (T1)", "data": [34.83, 34.83, 34.83, 40.39, 40.39, 40.39, 40.39, 40.39, 40.39, 40.39, 40.39, 40.39, 40.39, 40.39, 40.39, 40.39, 40.39, 40.39, 40.39, 40.39, 40.39], "borderColor": "gold", "backgroundColor": "gold", "tension": 0.3, "fill": false, "pointRadius": 4, "pointHoverRadius": 6, "pointBackgroundColor": "gold", "pointBorderColor": "gold"}];
             
             const chart_0 = new Chart(ctx, {
                 type: 'line',
@@ -2585,8 +2585,8 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             
             const ctx = canvas.getContext('2d');
-            const labels = ["30/09/2025 07:45:47", "30/09/2025 07:51:47", "30/09/2025 08:00:47", "30/09/2025 16:01:22", "01/10/2025 07:35:09", "01/10/2025 07:38:09", "01/10/2025 07:41:09", "01/10/2025 09:08:34", "01/10/2025 09:11:34", "01/10/2025 09:14:34", "01/10/2025 09:17:34", "02/10/2025 07:46:00", "02/10/2025 09:37:32", "02/10/2025 13:40:04", "02/10/2025 13:43:04", "02/10/2025 13:46:04", "02/10/2025 13:49:04", "02/10/2025 13:52:04", "02/10/2025 13:55:04", "02/10/2025 13:58:04", "02/10/2025 14:01:04", "02/10/2025 14:04:04", "02/10/2025 14:10:04", "02/10/2025 14:13:04", "02/10/2025 14:16:04", "02/10/2025 14:19:04", "02/10/2025 14:22:04", "02/10/2025 14:25:04", "02/10/2025 14:28:04", "02/10/2025 14:31:04", "02/10/2025 14:34:04", "02/10/2025 15:10:52", "02/10/2025 15:13:52", "02/10/2025 15:16:52", "02/10/2025 15:19:52", "02/10/2025 15:52:47", "02/10/2025 15:55:47", "02/10/2025 15:58:47", "02/10/2025 16:01:47", "02/10/2025 16:34:32", "02/10/2025 16:37:32", "03/10/2025 08:04:49", "03/10/2025 08:07:49", "06/10/2025 07:46:27", "06/10/2025 07:49:27", "06/10/2025 07:52:26", "06/10/2025 07:55:27", "06/10/2025 07:58:26", "06/10/2025 08:01:26", "06/10/2025 08:04:26", "06/10/2025 08:07:26", "06/10/2025 08:10:26", "06/10/2025 10:30:21", "06/10/2025 10:33:22", "06/10/2025 10:36:21", "06/10/2025 10:39:21", "06/10/2025 10:42:21", "06/10/2025 10:45:22", "06/10/2025 10:48:22", "06/10/2025 10:51:22", "06/10/2025 10:54:21", "06/10/2025 10:57:22", "06/10/2025 11:00:21", "06/10/2025 11:03:21", "06/10/2025 11:06:22", "06/10/2025 13:09:13", "07/10/2025 07:34:02", "07/10/2025 07:37:01", "07/10/2025 07:40:02", "07/10/2025 13:49:04", "07/10/2025 13:52:04", "07/10/2025 13:55:04", "07/10/2025 13:58:04", "07/10/2025 14:01:04", "07/10/2025 14:04:04", "07/10/2025 14:07:04", "07/10/2025 14:10:04", "07/10/2025 15:25:04", "07/10/2025 16:32:41", "08/10/2025 13:28:12", "08/10/2025 14:12:06", "09/10/2025 15:29:28", "10/10/2025 07:51:33", "10/10/2025 07:54:34", "10/10/2025 08:00:34", "10/10/2025 08:03:33", "10/10/2025 09:28:07", "10/10/2025 10:46:08", "10/10/2025 10:49:08", "10/10/2025 13:10:08", "10/10/2025 13:13:08", "10/10/2025 13:16:09", "10/10/2025 16:20:38", "10/10/2025 16:23:38"];
-            const datasets = [{"label": "Discrep\u00e2ncia (T5)", "data": [20.47, 20.27, 17.19, 1.28, 3.41, 2.0, 4.06, 15.29, 10.73, 11.14, 12.52, 1.59, 8.41, 4.9, 4.98, 4.15, 7.79, 5.95, 35.21, 47.19, 47.11, 104.78, 10.7, 9.33, 11.33, 11.21, 10.94, 5.74, 5.79, 25.14, 75.23, 4.08, 7.37, 10.88, 47.91, 23.47, 6.34, 6.81, 1.99, 7.03, 5.73, 8.47, 2.86, 8.71, 7.4, 11.24, 26.13, 26.11, 25.35, 24.98, 24.64, 9.07, 7.65, 6.56, 7.45, 5.47, 9.48, 18.96, 9.01, 7.22, 8.92, 8.88, 10.21, 8.94, 2.74, 5.42, 8.02, 8.08, 2.37, 3.56, 0.27, 2.81, 3.65, 14.48, 11.77, 11.86, 14.75, 3.15, 0.98, 7.9, 3.09, 4.98, 2.62, 8.07, 8.81, 3.22, 9.95, 1.51, 1.42, 6.17, 5.98, 0.96, 7.81, 3.64], "borderColor": "gold", "backgroundColor": "gold", "tension": 0.3, "fill": false, "pointRadius": 4, "pointHoverRadius": 6, "pointBackgroundColor": "gold", "pointBorderColor": "gold"}];
+            const labels = ["06/10/2025 07:50:55", "06/10/2025 08:58:48", "08/10/2025 15:03:44", "08/10/2025 15:23:56", "15/10/2025 09:28:38", "15/10/2025 10:34:50", "15/10/2025 15:40:07", "16/10/2025 08:24:39", "16/10/2025 08:51:04"];
+            const datasets = [{"label": "Discrep\u00e2ncia (T5)", "data": [6.46, 31.46, 14.67, 5.19, 18.06, 22.58, 24.86, 31.26, 0.03], "borderColor": "gold", "backgroundColor": "gold", "tension": 0.3, "fill": false, "pointRadius": 4, "pointHoverRadius": 6, "pointBackgroundColor": "gold", "pointBorderColor": "gold"}];
             
             const chart_1 = new Chart(ctx, {
                 type: 'line',
@@ -2702,8 +2702,8 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             
             const ctx = canvas.getContext('2d');
-            const labels = ["30/09/2025 07:39:48", "30/09/2025 07:42:48", "30/09/2025 07:48:48", "30/09/2025 07:54:48", "30/09/2025 07:57:48", "30/09/2025 08:03:48", "30/09/2025 08:23:43", "30/09/2025 08:26:42", "30/09/2025 13:05:38", "30/09/2025 13:44:38", "30/09/2025 13:47:38", "30/09/2025 13:50:38", "30/09/2025 13:53:38", "30/09/2025 13:56:38", "30/09/2025 14:53:38", "30/09/2025 14:56:38", "30/09/2025 14:59:38", "30/09/2025 15:02:38", "30/09/2025 15:05:38", "30/09/2025 15:08:38", "30/09/2025 15:11:38", "30/09/2025 15:14:38", "30/09/2025 15:17:38", "30/09/2025 15:20:38", "30/09/2025 15:23:38", "30/09/2025 15:26:38", "30/09/2025 15:29:38", "01/10/2025 12:50:37", "01/10/2025 14:52:51", "01/10/2025 14:55:51", "01/10/2025 14:58:52", "02/10/2025 07:24:59", "02/10/2025 07:27:59", "02/10/2025 07:30:59", "02/10/2025 08:40:05", "02/10/2025 08:43:04", "02/10/2025 08:46:05", "02/10/2025 08:49:05", "02/10/2025 08:52:04", "02/10/2025 08:55:05", "02/10/2025 08:58:05", "02/10/2025 09:01:04", "02/10/2025 09:04:04", "02/10/2025 09:07:05", "02/10/2025 09:31:33", "02/10/2025 09:34:33", "02/10/2025 09:40:33", "02/10/2025 11:22:32", "02/10/2025 16:55:32", "03/10/2025 16:33:50", "06/10/2025 08:29:47", "06/10/2025 11:15:22", "06/10/2025 15:00:14", "07/10/2025 07:55:02", "07/10/2025 07:58:01", "07/10/2025 08:13:01", "07/10/2025 08:16:01", "07/10/2025 08:19:02", "07/10/2025 10:23:13", "07/10/2025 10:26:14", "07/10/2025 11:11:15", "07/10/2025 16:59:41", "08/10/2025 08:32:12", "08/10/2025 14:34:21", "08/10/2025 14:37:21", "08/10/2025 14:40:21", "08/10/2025 14:46:21", "08/10/2025 14:49:21", "09/10/2025 13:02:28", "10/10/2025 07:27:28", "10/10/2025 07:30:28", "10/10/2025 07:33:29", "10/10/2025 09:31:08", "10/10/2025 11:31:35", "10/10/2025 11:34:34", "10/10/2025 11:37:35", "10/10/2025 13:51:26", "13/10/2025 07:47:38", "13/10/2025 08:57:05", "13/10/2025 09:00:05", "13/10/2025 09:03:05", "13/10/2025 09:06:05", "13/10/2025 09:09:06"];
-            const datasets = [{"label": "Discrep\u00e2ncia (T10)", "data": [41.94, 18.29, 20.37, 20.62, 14.26, 0.95, 7.74, 14.41, 0.56, 5.61, 18.15, 18.08, 15.48, 15.57, 2.2, 3.13, 2.76, 0.28, 2.2, 4.67, 4.64, 3.64, 0.57, 1.41, 2.76, 2.58, 7.09, 4.76, 4.87, 7.81, 2.81, 0.78, 0.82, 4.73, 5.12, 5.36, 6.02, 5.67, 6.66, 6.52, 9.08, 11.38, 11.33, 15.0, 14.32, 9.16, 27.22, 5.06, 16.79, 3.68, 4.93, 0.43, 0.3, 2.57, 2.34, 3.48, 3.46, 3.23, 13.01, 2.18, 7.13, 0.64, 15.98, 3.6, 3.35, 0.01, 5.17, 7.13, 5.6, 7.46, 7.69, 10.47, 1.43, 5.78, 2.92, 0.15, 0.36, 20.03, 1.83, 1.13, 1.31, 2.75, 2.1], "borderColor": "gold", "backgroundColor": "gold", "tension": 0.3, "fill": false, "pointRadius": 4, "pointHoverRadius": 6, "pointBackgroundColor": "gold", "pointBorderColor": "gold"}];
+            const labels = ["06/10/2025 15:29:47", "15/10/2025 09:44:10", "15/10/2025 10:19:59", "15/10/2025 10:44:38", "16/10/2025 10:11:08"];
+            const datasets = [{"label": "Discrep\u00e2ncia (T10)", "data": [216.06, 20.13, 79.47, 11.63, 6.54], "borderColor": "gold", "backgroundColor": "gold", "tension": 0.3, "fill": false, "pointRadius": 4, "pointHoverRadius": 6, "pointBackgroundColor": "gold", "pointBorderColor": "gold"}];
             
             const chart_2 = new Chart(ctx, {
                 type: 'line',
@@ -2819,8 +2819,8 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             
             const ctx = canvas.getContext('2d');
-            const labels = ["30/09/2025 08:11:38", "30/09/2025 09:26:24", "30/09/2025 09:41:13", "30/09/2025 15:53:22", "30/09/2025 16:23:17", "30/09/2025 17:00:44", "01/10/2025 08:59:54", "01/10/2025 10:24:52", "01/10/2025 10:57:17", "01/10/2025 11:00:17", "01/10/2025 11:03:17", "01/10/2025 11:06:17", "01/10/2025 11:09:17", "01/10/2025 11:47:02", "01/10/2025 13:53:17", "01/10/2025 15:23:43", "01/10/2025 17:17:49", "02/10/2025 07:53:40", "02/10/2025 09:14:43", "02/10/2025 11:29:13", "02/10/2025 14:07:03", "02/10/2025 14:39:37", "02/10/2025 15:26:58", "02/10/2025 16:06:48", "02/10/2025 16:27:57", "03/10/2025 10:01:50", "03/10/2025 10:04:51", "03/10/2025 11:20:49", "03/10/2025 16:00:26", "03/10/2025 16:41:06", "06/10/2025 08:22:22", "06/10/2025 09:20:22", "06/10/2025 11:32:27", "06/10/2025 16:14:07", "06/10/2025 16:55:51", "07/10/2025 08:23:57", "07/10/2025 09:35:12", "07/10/2025 09:44:11", "07/10/2025 11:37:56", "07/10/2025 13:30:56", "07/10/2025 13:42:09", "07/10/2025 15:37:47", "07/10/2025 16:25:00", "07/10/2025 17:22:27", "08/10/2025 08:38:02", "08/10/2025 13:33:47", "08/10/2025 14:18:52", "08/10/2025 14:54:44", "09/10/2025 10:26:24", "09/10/2025 10:29:24", "09/10/2025 10:32:24", "09/10/2025 10:39:04", "09/10/2025 16:57:28", "10/10/2025 07:44:14", "10/10/2025 08:09:33", "10/10/2025 08:12:33", "10/10/2025 08:15:33", "10/10/2025 08:50:43", "10/10/2025 10:37:39", "10/10/2025 10:57:01", "10/10/2025 11:17:55", "10/10/2025 12:00:59", "10/10/2025 13:37:26", "10/10/2025 14:37:44", "10/10/2025 17:03:18", "13/10/2025 07:54:11", "13/10/2025 09:14:00"];
-            const datasets = [{"label": "Teste", "data": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 15.4, 24.2, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 7.3, 11.5, 10.8, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], "borderColor": "#17becf", "backgroundColor": "#17becf", "tension": 0.3, "fill": false, "pointRadius": 4, "pointHoverRadius": 6, "pointBackgroundColor": "#17becf", "pointBorderColor": "#17becf"}, {"label": "Refer\u00eancia", "data": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 15.0, 23.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 6.0, 13.0, 10.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], "borderColor": "#12094A", "backgroundColor": "#12094A", "tension": 0.3, "fill": false, "pointRadius": 4, "pointHoverRadius": 6, "pointBackgroundColor": "#12094A", "pointBorderColor": "#12094A"}, {"label": "Diferen\u00e7a", "data": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.40000000000000036, 1.1999999999999993, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.2999999999999998, 1.5, 0.8000000000000007, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], "borderColor": "gold", "backgroundColor": "gold", "tension": 0.3, "fill": false, "pointRadius": 4, "pointHoverRadius": 6, "pointBackgroundColor": "gold", "pointBorderColor": "gold"}];
+            const labels = ["06/10/2025 09:01:41", "06/10/2025 09:04:41", "06/10/2025 09:07:41", "06/10/2025 09:10:41", "06/10/2025 09:13:41", "06/10/2025 09:16:41", "06/10/2025 09:19:41", "06/10/2025 09:22:41", "06/10/2025 09:25:41", "06/10/2025 09:28:41", "06/10/2025 09:31:41", "06/10/2025 09:34:41", "06/10/2025 09:37:41", "06/10/2025 09:40:41", "06/10/2025 09:43:41", "06/10/2025 09:46:41", "06/10/2025 09:49:41", "06/10/2025 09:52:41", "06/10/2025 09:55:41", "06/10/2025 09:58:41", "06/10/2025 10:01:41"];
+            const datasets = [{"label": "Teste", "data": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], "borderColor": "#17becf", "backgroundColor": "#17becf", "tension": 0.3, "fill": false, "pointRadius": 4, "pointHoverRadius": 6, "pointBackgroundColor": "#17becf", "pointBorderColor": "#17becf"}, {"label": "Refer\u00eancia", "data": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], "borderColor": "#12094A", "backgroundColor": "#12094A", "tension": 0.3, "fill": false, "pointRadius": 4, "pointHoverRadius": 6, "pointBackgroundColor": "#12094A", "pointBorderColor": "#12094A"}, {"label": "Diferen\u00e7a", "data": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], "borderColor": "gold", "backgroundColor": "gold", "tension": 0.3, "fill": false, "pointRadius": 4, "pointHoverRadius": 6, "pointBackgroundColor": "gold", "pointBorderColor": "gold"}];
             
             const chart_3 = new Chart(ctx, {
                 type: 'line',
@@ -2936,8 +2936,8 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             
             const ctx = canvas.getContext('2d');
-            const labels = ["30/09/2025 07:45:47", "30/09/2025 07:51:47", "30/09/2025 08:00:47", "30/09/2025 16:01:22", "01/10/2025 07:35:09", "01/10/2025 07:38:09", "01/10/2025 07:41:09", "01/10/2025 09:08:34", "01/10/2025 09:11:34", "01/10/2025 09:14:34", "01/10/2025 09:17:34", "02/10/2025 07:46:00", "02/10/2025 09:37:32", "02/10/2025 13:40:04", "02/10/2025 13:43:04", "02/10/2025 13:46:04", "02/10/2025 13:49:04", "02/10/2025 13:52:04", "02/10/2025 13:55:04", "02/10/2025 13:58:04", "02/10/2025 14:01:04", "02/10/2025 14:04:04", "02/10/2025 14:10:04", "02/10/2025 14:13:04", "02/10/2025 14:16:04", "02/10/2025 14:19:04", "02/10/2025 14:22:04", "02/10/2025 14:25:04", "02/10/2025 14:28:04", "02/10/2025 14:31:04", "02/10/2025 14:34:04", "02/10/2025 15:10:52", "02/10/2025 15:13:52", "02/10/2025 15:16:52", "02/10/2025 15:19:52", "02/10/2025 15:52:47", "02/10/2025 15:55:47", "02/10/2025 15:58:47", "02/10/2025 16:01:47", "02/10/2025 16:34:32", "02/10/2025 16:37:32", "03/10/2025 08:04:49", "03/10/2025 08:07:49", "06/10/2025 07:46:27", "06/10/2025 07:49:27", "06/10/2025 07:52:26", "06/10/2025 07:55:27", "06/10/2025 07:58:26", "06/10/2025 08:01:26", "06/10/2025 08:04:26", "06/10/2025 08:07:26", "06/10/2025 08:10:26", "06/10/2025 10:30:21", "06/10/2025 10:33:22", "06/10/2025 10:36:21", "06/10/2025 10:39:21", "06/10/2025 10:42:21", "06/10/2025 10:45:22", "06/10/2025 10:48:22", "06/10/2025 10:51:22", "06/10/2025 10:54:21", "06/10/2025 10:57:22", "06/10/2025 11:00:21", "06/10/2025 11:03:21", "06/10/2025 11:06:22", "06/10/2025 13:09:13", "07/10/2025 07:34:02", "07/10/2025 07:37:01", "07/10/2025 07:40:02", "07/10/2025 13:49:04", "07/10/2025 13:52:04", "07/10/2025 13:55:04", "07/10/2025 13:58:04", "07/10/2025 14:01:04", "07/10/2025 14:04:04", "07/10/2025 14:07:04", "07/10/2025 14:10:04", "07/10/2025 15:25:04", "07/10/2025 16:32:41", "08/10/2025 13:28:12", "08/10/2025 14:12:06", "09/10/2025 15:29:28", "10/10/2025 07:51:33", "10/10/2025 07:54:34", "10/10/2025 08:00:34", "10/10/2025 08:03:33", "10/10/2025 09:28:07", "10/10/2025 10:46:08", "10/10/2025 10:49:08", "10/10/2025 13:10:08", "10/10/2025 13:13:08", "10/10/2025 13:16:09", "10/10/2025 16:20:38", "10/10/2025 16:23:38"];
-            const datasets = [{"label": "Teste", "data": [0.0, 0.0, 0.0, 28.0, 0.0, 0.0, 11.3, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 8.4, 13.2, 0.0, 0.0, 3.4, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 7.5, 24.3, 0.0, 0.0, 25.4, 0.0, 6.6, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 6.9, 27.2, 0.0, 70.8, 23.2, 39.5, 70.1, 0.0, 7.6, 0.0, 0.0, 0.0, 0.0, 0.0, 8.6, 0.0, 13.9], "borderColor": "#17becf", "backgroundColor": "#17becf", "tension": 0.3, "fill": false, "pointRadius": 4, "pointHoverRadius": 6, "pointBackgroundColor": "#17becf", "pointBorderColor": "#17becf"}, {"label": "Refer\u00eancia", "data": [0.0, 0.0, 0.0, 17.0, 0.0, 0.0, 15.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 3.0, 0.0, 0.0, 2.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 3.0, 5.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 6.0, 14.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 5.0, 3.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 6.0, 23.0, 0.0, 0.0, 22.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 7.0, 28.0, 0.0, 71.0, 23.0, 34.0, 75.0, 0.0, 7.0, 0.0, 0.0, 0.0, 0.0, 0.0, 9.0, 0.0, 15.0], "borderColor": "#12094A", "backgroundColor": "#12094A", "tension": 0.3, "fill": false, "pointRadius": 4, "pointHoverRadius": 6, "pointBackgroundColor": "#12094A", "pointBorderColor": "#12094A"}, {"label": "Diferen\u00e7a", "data": [0.0, 0.0, 0.0, 11.0, 0.0, 0.0, 3.6999999999999993, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 3.0, 0.0, 0.0, 2.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 3.0, 5.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 2.4000000000000004, 0.8000000000000007, 0.0, 0.0, 3.4, 0.0, 0.0, 0.0, 0.0, 0.0, 5.0, 3.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.5, 1.3000000000000007, 0.0, 0.0, 3.3999999999999986, 0.0, 6.6, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.09999999999999964, 0.8000000000000007, 0.0, 0.20000000000000284, 0.1999999999999993, 5.5, 4.900000000000006, 0.0, 0.5999999999999996, 0.0, 0.0, 0.0, 0.0, 0.0, 0.40000000000000036, 0.0, 1.0999999999999996], "borderColor": "gold", "backgroundColor": "gold", "tension": 0.3, "fill": false, "pointRadius": 4, "pointHoverRadius": 6, "pointBackgroundColor": "gold", "pointBorderColor": "gold"}];
+            const labels = ["06/10/2025 07:50:55", "06/10/2025 08:58:48", "08/10/2025 15:03:44", "08/10/2025 15:23:56", "15/10/2025 09:28:38", "15/10/2025 10:34:50", "15/10/2025 15:40:07", "16/10/2025 08:24:39", "16/10/2025 08:51:04"];
+            const datasets = [{"label": "Teste", "data": [17.5, 2.3, 0.0, 0.0, 0.0, 12.6, 30.3, 0.0, 1.8], "borderColor": "#17becf", "backgroundColor": "#17becf", "tension": 0.3, "fill": false, "pointRadius": 4, "pointHoverRadius": 6, "pointBackgroundColor": "#17becf", "pointBorderColor": "#17becf"}, {"label": "Refer\u00eancia", "data": [8.3, 1.4, 0.6, 0.0, 0.0, 6.9, 1.9, 0.0, 5.4], "borderColor": "#12094A", "backgroundColor": "#12094A", "tension": 0.3, "fill": false, "pointRadius": 4, "pointHoverRadius": 6, "pointBackgroundColor": "#12094A", "pointBorderColor": "#12094A"}, {"label": "Diferen\u00e7a", "data": [9.2, 0.8999999999999999, 0.6, 0.0, 0.0, 5.699999999999999, 28.400000000000002, 0.0, 3.6000000000000005], "borderColor": "gold", "backgroundColor": "gold", "tension": 0.3, "fill": false, "pointRadius": 4, "pointHoverRadius": 6, "pointBackgroundColor": "gold", "pointBorderColor": "gold"}];
             
             const chart_4 = new Chart(ctx, {
                 type: 'line',
@@ -3053,8 +3053,8 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             
             const ctx = canvas.getContext('2d');
-            const labels = ["30/09/2025 07:39:48", "30/09/2025 07:42:48", "30/09/2025 07:48:48", "30/09/2025 07:54:48", "30/09/2025 07:57:48", "30/09/2025 08:03:48", "30/09/2025 08:23:43", "30/09/2025 08:26:42", "30/09/2025 13:05:38", "30/09/2025 13:44:38", "30/09/2025 13:47:38", "30/09/2025 13:50:38", "30/09/2025 13:53:38", "30/09/2025 13:56:38", "30/09/2025 14:53:38", "30/09/2025 14:56:38", "30/09/2025 14:59:38", "30/09/2025 15:02:38", "30/09/2025 15:05:38", "30/09/2025 15:08:38", "30/09/2025 15:11:38", "30/09/2025 15:14:38", "30/09/2025 15:17:38", "30/09/2025 15:20:38", "30/09/2025 15:23:38", "30/09/2025 15:26:38", "30/09/2025 15:29:38", "01/10/2025 12:50:37", "01/10/2025 14:52:51", "01/10/2025 14:55:51", "01/10/2025 14:58:52", "02/10/2025 07:24:59", "02/10/2025 07:27:59", "02/10/2025 07:30:59", "02/10/2025 08:40:05", "02/10/2025 08:43:04", "02/10/2025 08:46:05", "02/10/2025 08:49:05", "02/10/2025 08:52:04", "02/10/2025 08:55:05", "02/10/2025 08:58:05", "02/10/2025 09:01:04", "02/10/2025 09:04:04", "02/10/2025 09:07:05", "02/10/2025 09:31:33", "02/10/2025 09:34:33", "02/10/2025 09:40:33", "02/10/2025 11:22:32", "02/10/2025 16:55:32", "03/10/2025 16:33:50", "06/10/2025 08:29:47", "06/10/2025 11:15:22", "06/10/2025 15:00:14", "07/10/2025 07:55:02", "07/10/2025 07:58:01", "07/10/2025 08:13:01", "07/10/2025 08:16:01", "07/10/2025 08:19:02", "07/10/2025 10:23:13", "07/10/2025 10:26:14", "07/10/2025 11:11:15", "07/10/2025 16:59:41", "08/10/2025 08:32:12", "08/10/2025 14:34:21", "08/10/2025 14:37:21", "08/10/2025 14:40:21", "08/10/2025 14:46:21", "08/10/2025 14:49:21", "09/10/2025 13:02:28", "10/10/2025 07:27:28", "10/10/2025 07:30:28", "10/10/2025 07:33:29", "10/10/2025 09:31:08", "10/10/2025 11:31:35", "10/10/2025 11:34:34", "10/10/2025 11:37:35", "10/10/2025 13:51:26", "13/10/2025 07:47:38", "13/10/2025 08:57:05", "13/10/2025 09:00:05", "13/10/2025 09:03:05", "13/10/2025 09:06:05", "13/10/2025 09:09:06"];
-            const datasets = [{"label": "Teste", "data": [0.0, 0.0, 0.0, 0.0, 0.0, 8.8, 43.7, 60.8, 3.9, 8.5, 0.0, 0.0, 0.0, 0.0, 3.4, 0.0, 17.8, 0.7, 26.2, 0.0, 0.0, 22.8, 3.7, 0.0, 0.0, 0.0, 36.3, 23.2, 0.0, 0.0, 20.3, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 26.1, 0.0, 0.0, 30.3, 5.6, 6.4, 13.8, 14.8, 0.0, 0.0, 0.0, 1.2, 0.0, 33.5, 21.2, 0.0, 0.0, 59.8, 26.6, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 15.9, 0.0, 0.0, 0.0, 7.9, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], "borderColor": "#17becf", "backgroundColor": "#17becf", "tension": 0.3, "fill": false, "pointRadius": 4, "pointHoverRadius": 6, "pointBackgroundColor": "#17becf", "pointBorderColor": "#17becf"}, {"label": "Refer\u00eancia", "data": [0.0, 1.0, 0.0, 0.0, 4.0, 21.0, 40.0, 60.0, 0.0, 9.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 19.0, 1.0, 14.0, 0.0, 0.0, 29.0, 7.0, 0.0, 0.0, 0.0, 37.0, 20.0, 0.0, 0.0, 17.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 4.0, 29.0, 0.0, 0.0, 26.0, 4.0, 1.0, 13.0, 16.0, 0.0, 0.0, 0.0, 0.0, 6.0, 32.0, 24.0, 2.0, 0.0, 58.0, 37.0, 0.0, 0.0, 0.0, 0.0, 0.0, 4.0, 13.0, 0.0, 0.0, 4.0, 17.0, 2.0, 0.0, 0.0, 0.0, 0.0, 0.0], "borderColor": "#12094A", "backgroundColor": "#12094A", "tension": 0.3, "fill": false, "pointRadius": 4, "pointHoverRadius": 6, "pointBackgroundColor": "#12094A", "pointBorderColor": "#12094A"}, {"label": "Diferen\u00e7a", "data": [0.0, 1.0, 0.0, 0.0, 4.0, 12.2, 3.700000000000003, 0.7999999999999972, 3.9, 0.5, 0.0, 0.0, 0.0, 0.0, 3.4, 0.0, 1.1999999999999993, 0.30000000000000004, 12.2, 0.0, 0.0, 6.199999999999999, 3.3, 0.0, 0.0, 0.0, 0.7000000000000028, 3.1999999999999993, 0.0, 0.0, 3.3000000000000007, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 4.0, 2.8999999999999986, 0.0, 0.0, 4.300000000000001, 1.5999999999999996, 5.4, 0.8000000000000007, 1.1999999999999993, 0.0, 0.0, 0.0, 1.2, 6.0, 1.5, 2.8000000000000007, 2.0, 0.0, 1.7999999999999972, 10.399999999999999, 0.0, 0.0, 0.0, 0.0, 0.0, 4.0, 2.9000000000000004, 0.0, 0.0, 4.0, 9.1, 2.0, 0.0, 0.0, 0.0, 0.0, 0.0], "borderColor": "gold", "backgroundColor": "gold", "tension": 0.3, "fill": false, "pointRadius": 4, "pointHoverRadius": 6, "pointBackgroundColor": "gold", "pointBorderColor": "gold"}];
+            const labels = ["06/10/2025 15:29:47", "15/10/2025 09:44:10", "15/10/2025 10:19:59", "15/10/2025 10:44:38", "16/10/2025 10:11:08"];
+            const datasets = [{"label": "Teste", "data": [0.0, 0.5, 4.4, 5.5, 13.3], "borderColor": "#17becf", "backgroundColor": "#17becf", "tension": 0.3, "fill": false, "pointRadius": 4, "pointHoverRadius": 6, "pointBackgroundColor": "#17becf", "pointBorderColor": "#17becf"}, {"label": "Refer\u00eancia", "data": [0.0, 0.0, 1.6, 3.8, 4.4], "borderColor": "#12094A", "backgroundColor": "#12094A", "tension": 0.3, "fill": false, "pointRadius": 4, "pointHoverRadius": 6, "pointBackgroundColor": "#12094A", "pointBorderColor": "#12094A"}, {"label": "Diferen\u00e7a", "data": [0.0, 0.5, 2.8000000000000003, 1.7000000000000002, 8.9], "borderColor": "gold", "backgroundColor": "gold", "tension": 0.3, "fill": false, "pointRadius": 4, "pointHoverRadius": 6, "pointBackgroundColor": "gold", "pointBorderColor": "gold"}];
             
             const chart_5 = new Chart(ctx, {
                 type: 'line',
@@ -3170,8 +3170,8 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             
             const ctx = canvas.getContext('2d');
-            const labels = ["30/09/2025 08:11:38", "30/09/2025 09:26:24", "30/09/2025 09:41:13", "30/09/2025 15:53:22", "30/09/2025 16:23:17", "30/09/2025 17:00:44", "01/10/2025 08:59:54", "01/10/2025 10:24:52", "01/10/2025 10:57:17", "01/10/2025 11:00:17", "01/10/2025 11:03:17", "01/10/2025 11:06:17", "01/10/2025 11:09:17", "01/10/2025 11:47:02", "01/10/2025 13:53:17", "01/10/2025 15:23:43", "01/10/2025 17:17:49", "02/10/2025 07:53:40", "02/10/2025 09:14:43", "02/10/2025 11:29:13", "02/10/2025 14:07:03", "02/10/2025 14:39:37", "02/10/2025 15:26:58", "02/10/2025 16:06:48", "02/10/2025 16:27:57", "03/10/2025 10:01:50", "03/10/2025 10:04:51", "03/10/2025 11:20:49", "03/10/2025 16:00:26", "03/10/2025 16:41:06", "06/10/2025 08:22:22", "06/10/2025 09:20:22", "06/10/2025 11:32:27", "06/10/2025 16:14:07", "06/10/2025 16:55:51", "07/10/2025 08:23:57", "07/10/2025 09:35:12", "07/10/2025 09:44:11", "07/10/2025 11:37:56", "07/10/2025 13:30:56", "07/10/2025 13:42:09", "07/10/2025 15:37:47", "07/10/2025 16:25:00", "07/10/2025 17:22:27", "08/10/2025 08:38:02", "08/10/2025 13:33:47", "08/10/2025 14:18:52", "08/10/2025 14:54:44", "09/10/2025 10:26:24", "09/10/2025 10:29:24", "09/10/2025 10:32:24", "09/10/2025 10:39:04", "09/10/2025 16:57:28", "10/10/2025 07:44:14", "10/10/2025 08:09:33", "10/10/2025 08:12:33", "10/10/2025 08:15:33", "10/10/2025 08:50:43", "10/10/2025 10:37:39", "10/10/2025 10:57:01", "10/10/2025 11:17:55", "10/10/2025 12:00:59", "10/10/2025 13:37:26", "10/10/2025 14:37:44", "10/10/2025 17:03:18", "13/10/2025 07:54:11", "13/10/2025 09:14:00"];
-            const datasets = [{"label": "Teste", "data": [176.0, 97.0, 97.0, 138.0, 114.0, 129.0, 193.0, 84.0, 84.0, 84.0, 84.0, 84.0, 84.0, 145.0, 28.0, 22.0, 91.0, 236.0, 229.0, 336.0, 321.0, 342.0, 294.0, 158.0, 158.0, 143.0, 143.0, 94.0, 89.0, 89.0, 264.0, 34.0, 281.0, 283.0, 81.0, 229.0, 84.0, 269.0, 337.0, 300.0, 300.0, 103.0, 314.0, 159.0, 160.0, 160.0, 10.0, 159.0, 159.0, 159.0, 159.0, 159.0, 84.0, 262.0, 256.0, 275.0, 283.0, 324.0, 141.0, 141.0, 141.0, 174.0, 139.0, 54.0, 80.0, 321.0, 321.0], "borderColor": "#17becf", "backgroundColor": "#17becf", "tension": 0.3, "fill": false, "pointRadius": 4, "pointHoverRadius": 6, "pointBackgroundColor": "#17becf", "pointBorderColor": "#17becf"}, {"label": "Refer\u00eancia", "data": [33.0, 76.0, 0.0, 141.0, 105.0, 273.0, 192.0, 196.0, 0.0, 0.0, 0.0, 0.0, 199.0, 157.0, 201.0, 211.0, 242.0, 272.0, 203.0, 146.0, 344.0, 150.0, 135.0, 146.0, 110.0, 299.0, 341.0, 271.0, 63.0, 168.0, 66.0, 87.0, 272.0, 262.0, 290.0, 60.0, 88.0, 274.0, 330.0, 196.0, 62.0, 290.0, 221.0, 218.0, 59.0, 32.0, 61.0, 341.0, 73.0, 73.0, 73.0, 73.0, 179.0, 1.0, 250.0, 273.0, 283.0, 133.0, 69.0, 67.0, 59.0, 115.0, 259.0, 89.0, 193.0, 66.0, 302.0], "borderColor": "#12094A", "backgroundColor": "#12094A", "tension": 0.3, "fill": false, "pointRadius": 4, "pointHoverRadius": 6, "pointBackgroundColor": "#12094A", "pointBorderColor": "#12094A"}, {"label": "Diferen\u00e7a", "data": [143.0, 21.0, 97.0, 3.0, 9.0, 144.0, 1.0, 112.0, 84.0, 84.0, 84.0, 84.0, 115.0, 12.0, 173.0, 171.0, 151.0, 36.0, 26.0, 170.0, 23.0, 168.0, 159.0, 12.0, 48.0, 156.0, 162.0, 177.0, 26.0, 79.0, 162.0, 53.0, 9.0, 21.0, 151.0, 169.0, 4.0, 5.0, 7.0, 104.0, 122.0, 173.0, 93.0, 59.0, 101.0, 128.0, 51.0, 178.0, 86.0, 86.0, 86.0, 86.0, 95.0, 99.0, 6.0, 2.0, 0.0, 169.0, 72.0, 74.0, 82.0, 59.0, 120.0, 35.0, 113.0, 105.0, 19.0], "borderColor": "gold", "backgroundColor": "gold", "tension": 0.3, "fill": false, "pointRadius": 4, "pointHoverRadius": 6, "pointBackgroundColor": "gold", "pointBorderColor": "gold"}];
+            const labels = ["06/10/2025 09:01:41", "06/10/2025 09:04:41", "06/10/2025 09:07:41", "06/10/2025 09:10:41", "06/10/2025 09:13:41", "06/10/2025 09:16:41", "06/10/2025 09:19:41", "06/10/2025 09:22:41", "06/10/2025 09:25:41", "06/10/2025 09:28:41", "06/10/2025 09:31:41", "06/10/2025 09:34:41", "06/10/2025 09:37:41", "06/10/2025 09:40:41", "06/10/2025 09:43:41", "06/10/2025 09:46:41", "06/10/2025 09:49:41", "06/10/2025 09:52:41", "06/10/2025 09:55:41", "06/10/2025 09:58:41", "06/10/2025 10:01:41"];
+            const datasets = [{"label": "Teste", "data": [261.0, 261.0, 261.0, 261.0, 261.0, 261.0, 261.0, 261.0, 261.0, 261.0, 261.0, 261.0, 261.0, 261.0, 261.0, 261.0, 261.0, 261.0, 261.0, 261.0, 261.0], "borderColor": "#17becf", "backgroundColor": "#17becf", "tension": 0.3, "fill": false, "pointRadius": 4, "pointHoverRadius": 6, "pointBackgroundColor": "#17becf", "pointBorderColor": "#17becf"}, {"label": "Refer\u00eancia", "data": [66.0, 66.0, 66.0, 275.0, 275.0, 275.0, 275.0, 275.0, 275.0, 275.0, 275.0, 275.0, 275.0, 275.0, 275.0, 275.0, 275.0, 275.0, 275.0, 275.0, 275.0], "borderColor": "#12094A", "backgroundColor": "#12094A", "tension": 0.3, "fill": false, "pointRadius": 4, "pointHoverRadius": 6, "pointBackgroundColor": "#12094A", "pointBorderColor": "#12094A"}, {"label": "Diferen\u00e7a", "data": [165.0, 165.0, 165.0, 14.0, 14.0, 14.0, 14.0, 14.0, 14.0, 14.0, 14.0, 14.0, 14.0, 14.0, 14.0, 14.0, 14.0, 14.0, 14.0, 14.0, 14.0], "borderColor": "gold", "backgroundColor": "gold", "tension": 0.3, "fill": false, "pointRadius": 4, "pointHoverRadius": 6, "pointBackgroundColor": "gold", "pointBorderColor": "gold"}];
             
             const chart_6 = new Chart(ctx, {
                 type: 'line',
@@ -3287,8 +3287,8 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             
             const ctx = canvas.getContext('2d');
-            const labels = ["30/09/2025 07:45:47", "30/09/2025 07:51:47", "30/09/2025 08:00:47", "30/09/2025 16:01:22", "01/10/2025 07:35:09", "01/10/2025 07:38:09", "01/10/2025 07:41:09", "01/10/2025 09:08:34", "01/10/2025 09:11:34", "01/10/2025 09:14:34", "01/10/2025 09:17:34", "02/10/2025 07:46:00", "02/10/2025 09:37:32", "02/10/2025 13:40:04", "02/10/2025 13:43:04", "02/10/2025 13:46:04", "02/10/2025 13:49:04", "02/10/2025 13:52:04", "02/10/2025 13:55:04", "02/10/2025 13:58:04", "02/10/2025 14:01:04", "02/10/2025 14:04:04", "02/10/2025 14:10:04", "02/10/2025 14:13:04", "02/10/2025 14:16:04", "02/10/2025 14:19:04", "02/10/2025 14:22:04", "02/10/2025 14:25:04", "02/10/2025 14:28:04", "02/10/2025 14:31:04", "02/10/2025 14:34:04", "02/10/2025 15:10:52", "02/10/2025 15:13:52", "02/10/2025 15:16:52", "02/10/2025 15:19:52", "02/10/2025 15:52:47", "02/10/2025 15:55:47", "02/10/2025 15:58:47", "02/10/2025 16:01:47", "02/10/2025 16:34:32", "02/10/2025 16:37:32", "03/10/2025 08:04:49", "03/10/2025 08:07:49", "06/10/2025 07:46:27", "06/10/2025 07:49:27", "06/10/2025 07:52:26", "06/10/2025 07:55:27", "06/10/2025 07:58:26", "06/10/2025 08:01:26", "06/10/2025 08:04:26", "06/10/2025 08:07:26", "06/10/2025 08:10:26", "06/10/2025 10:30:21", "06/10/2025 10:33:22", "06/10/2025 10:36:21", "06/10/2025 10:39:21", "06/10/2025 10:42:21", "06/10/2025 10:45:22", "06/10/2025 10:48:22", "06/10/2025 10:51:22", "06/10/2025 10:54:21", "06/10/2025 10:57:22", "06/10/2025 11:00:21", "06/10/2025 11:03:21", "06/10/2025 11:06:22", "06/10/2025 13:09:13", "07/10/2025 07:34:02", "07/10/2025 07:37:01", "07/10/2025 07:40:02", "07/10/2025 13:49:04", "07/10/2025 13:52:04", "07/10/2025 13:55:04", "07/10/2025 13:58:04", "07/10/2025 14:01:04", "07/10/2025 14:04:04", "07/10/2025 14:07:04", "07/10/2025 14:10:04", "07/10/2025 15:25:04", "07/10/2025 16:32:41", "08/10/2025 13:28:12", "08/10/2025 14:12:06", "09/10/2025 15:29:28", "10/10/2025 07:51:33", "10/10/2025 07:54:34", "10/10/2025 08:00:34", "10/10/2025 08:03:33", "10/10/2025 09:28:07", "10/10/2025 10:46:08", "10/10/2025 10:49:08", "10/10/2025 13:10:08", "10/10/2025 13:13:08", "10/10/2025 13:16:09", "10/10/2025 16:20:38", "10/10/2025 16:23:38"];
-            const datasets = [{"label": "Teste", "data": [82.0, 82.0, 82.0, 114.0, 129.0, 129.0, 337.0, 193.0, 193.0, 193.0, 193.0, 236.0, 203.0, 143.0, 143.0, 143.0, 143.0, 143.0, 258.0, 258.0, 258.0, 321.0, 348.0, 348.0, 348.0, 348.0, 348.0, 348.0, 348.0, 332.0, 342.0, 326.0, 326.0, 326.0, 294.0, 158.0, 158.0, 158.0, 158.0, 158.0, 158.0, 71.0, 335.0, 89.0, 89.0, 147.0, 147.0, 147.0, 147.0, 147.0, 147.0, 233.0, 266.0, 266.0, 266.0, 266.0, 266.0, 266.0, 266.0, 266.0, 266.0, 266.0, 266.0, 266.0, 289.0, 133.0, 81.0, 81.0, 266.0, 300.0, 266.0, 266.0, 266.0, 266.0, 266.0, 266.0, 266.0, 15.0, 77.0, 160.0, 10.0, 111.0, 347.0, 2.0, 231.0, 276.0, 324.0, 141.0, 141.0, 174.0, 174.0, 142.0, 54.0, 87.0], "borderColor": "#17becf", "backgroundColor": "#17becf", "tension": 0.3, "fill": false, "pointRadius": 4, "pointHoverRadius": 6, "pointBackgroundColor": "#17becf", "pointBorderColor": "#17becf"}, {"label": "Refer\u00eancia", "data": [152.0, 152.0, 234.0, 126.0, 27.0, 227.0, 340.0, 203.0, 139.0, 80.0, 17.0, 189.0, 128.0, 137.0, 137.0, 137.0, 65.0, 65.0, 308.0, 313.0, 313.0, 350.0, 337.0, 337.0, 252.0, 143.0, 143.0, 332.0, 332.0, 105.0, 151.0, 335.0, 337.0, 347.0, 47.0, 165.0, 311.0, 311.0, 146.0, 0.0, 0.0, 72.0, 337.0, 91.0, 352.0, 12.0, 168.0, 168.0, 168.0, 168.0, 168.0, 242.0, 258.0, 300.0, 104.0, 214.0, 123.0, 266.0, 259.0, 284.0, 5.0, 141.0, 259.0, 298.0, 286.0, 136.0, 239.0, 239.0, 267.0, 62.0, 225.0, 288.0, 288.0, 286.0, 286.0, 286.0, 286.0, 9.0, 78.0, 32.0, 10.0, 113.0, 347.0, 358.0, 200.0, 276.0, 168.0, 67.0, 67.0, 199.0, 199.0, 144.0, 94.0, 89.0], "borderColor": "#12094A", "backgroundColor": "#12094A", "tension": 0.3, "fill": false, "pointRadius": 4, "pointHoverRadius": 6, "pointBackgroundColor": "#12094A", "pointBorderColor": "#12094A"}, {"label": "Diferen\u00e7a", "data": [70.0, 70.0, 152.0, 12.0, 102.0, 98.0, 3.0, 10.0, 54.0, 113.0, 176.0, 47.0, 75.0, 6.0, 6.0, 6.0, 78.0, 78.0, 50.0, 55.0, 55.0, 29.0, 11.0, 11.0, 96.0, 155.0, 155.0, 16.0, 16.0, 133.0, 169.0, 9.0, 11.0, 21.0, 113.0, 7.0, 153.0, 153.0, 12.0, 158.0, 158.0, 1.0, 2.0, 2.0, 97.0, 135.0, 21.0, 21.0, 21.0, 21.0, 21.0, 9.0, 8.0, 34.0, 162.0, 52.0, 143.0, 0.0, 7.0, 18.0, 99.0, 125.0, 7.0, 32.0, 3.0, 3.0, 158.0, 158.0, 1.0, 122.0, 41.0, 22.0, 22.0, 20.0, 20.0, 20.0, 20.0, 6.0, 1.0, 128.0, 0.0, 2.0, 0.0, 4.0, 31.0, 0.0, 156.0, 74.0, 74.0, 25.0, 25.0, 2.0, 40.0, 2.0], "borderColor": "gold", "backgroundColor": "gold", "tension": 0.3, "fill": false, "pointRadius": 4, "pointHoverRadius": 6, "pointBackgroundColor": "gold", "pointBorderColor": "gold"}];
+            const labels = ["06/10/2025 07:50:55", "06/10/2025 08:58:48", "08/10/2025 15:03:44", "08/10/2025 15:23:56", "15/10/2025 09:28:38", "15/10/2025 10:34:50", "15/10/2025 15:40:07", "16/10/2025 08:24:39", "16/10/2025 08:51:04"];
+            const datasets = [{"label": "Teste", "data": [351.0, 205.0, 269.0, 269.0, 186.0, 115.0, 271.0, 101.0, 101.0], "borderColor": "#17becf", "backgroundColor": "#17becf", "tension": 0.3, "fill": false, "pointRadius": 4, "pointHoverRadius": 6, "pointBackgroundColor": "#17becf", "pointBorderColor": "#17becf"}, {"label": "Refer\u00eancia", "data": [320.0, 61.0, 0.0, 92.0, 328.0, 109.0, 301.0, 11.0, 118.0], "borderColor": "#12094A", "backgroundColor": "#12094A", "tension": 0.3, "fill": false, "pointRadius": 4, "pointHoverRadius": 6, "pointBackgroundColor": "#12094A", "pointBorderColor": "#12094A"}, {"label": "Diferen\u00e7a", "data": [31.0, 144.0, 91.0, 177.0, 142.0, 6.0, 30.0, 90.0, 17.0], "borderColor": "gold", "backgroundColor": "gold", "tension": 0.3, "fill": false, "pointRadius": 4, "pointHoverRadius": 6, "pointBackgroundColor": "gold", "pointBorderColor": "gold"}];
             
             const chart_7 = new Chart(ctx, {
                 type: 'line',
@@ -3404,8 +3404,8 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             
             const ctx = canvas.getContext('2d');
-            const labels = ["30/09/2025 07:39:48", "30/09/2025 07:42:48", "30/09/2025 07:48:48", "30/09/2025 07:54:48", "30/09/2025 07:57:48", "30/09/2025 08:03:48", "30/09/2025 08:23:43", "30/09/2025 08:26:42", "30/09/2025 13:05:38", "30/09/2025 13:44:38", "30/09/2025 13:47:38", "30/09/2025 13:50:38", "30/09/2025 13:53:38", "30/09/2025 13:56:38", "30/09/2025 14:53:38", "30/09/2025 14:56:38", "30/09/2025 14:59:38", "30/09/2025 15:02:38", "30/09/2025 15:05:38", "30/09/2025 15:08:38", "30/09/2025 15:11:38", "30/09/2025 15:14:38", "30/09/2025 15:17:38", "30/09/2025 15:20:38", "30/09/2025 15:23:38", "30/09/2025 15:26:38", "30/09/2025 15:29:38", "01/10/2025 12:50:37", "01/10/2025 14:52:51", "01/10/2025 14:55:51", "01/10/2025 14:58:52", "02/10/2025 07:24:59", "02/10/2025 07:27:59", "02/10/2025 07:30:59", "02/10/2025 08:40:05", "02/10/2025 08:43:04", "02/10/2025 08:46:05", "02/10/2025 08:49:05", "02/10/2025 08:52:04", "02/10/2025 08:55:05", "02/10/2025 08:58:05", "02/10/2025 09:01:04", "02/10/2025 09:04:04", "02/10/2025 09:07:05", "02/10/2025 09:31:33", "02/10/2025 09:34:33", "02/10/2025 09:40:33", "02/10/2025 11:22:32", "02/10/2025 16:55:32", "03/10/2025 16:33:50", "06/10/2025 08:29:47", "06/10/2025 11:15:22", "06/10/2025 15:00:14", "07/10/2025 07:55:02", "07/10/2025 07:58:01", "07/10/2025 08:13:01", "07/10/2025 08:16:01", "07/10/2025 08:19:02", "07/10/2025 10:23:13", "07/10/2025 10:26:14", "07/10/2025 11:11:15", "07/10/2025 16:59:41", "08/10/2025 08:32:12", "08/10/2025 14:34:21", "08/10/2025 14:37:21", "08/10/2025 14:40:21", "08/10/2025 14:46:21", "08/10/2025 14:49:21", "09/10/2025 13:02:28", "10/10/2025 07:27:28", "10/10/2025 07:30:28", "10/10/2025 07:33:29", "10/10/2025 09:31:08", "10/10/2025 11:31:35", "10/10/2025 11:34:34", "10/10/2025 11:37:35", "10/10/2025 13:51:26", "13/10/2025 07:47:38", "13/10/2025 08:57:05", "13/10/2025 09:00:05", "13/10/2025 09:03:05", "13/10/2025 09:06:05", "13/10/2025 09:09:06"];
-            const datasets = [{"label": "Teste", "data": [82.0, 82.0, 82.0, 82.0, 82.0, 265.0, 349.0, 357.0, 75.0, 161.0, 161.0, 161.0, 161.0, 161.0, 203.0, 203.0, 152.0, 135.0, 323.0, 323.0, 323.0, 159.0, 303.0, 303.0, 303.0, 303.0, 144.0, 20.0, 28.0, 28.0, 282.0, 53.0, 53.0, 53.0, 236.0, 236.0, 236.0, 236.0, 236.0, 236.0, 229.0, 229.0, 229.0, 229.0, 294.0, 203.0, 203.0, 336.0, 237.0, 89.0, 349.0, 291.0, 259.0, 256.0, 271.0, 229.0, 229.0, 229.0, 211.0, 211.0, 279.0, 84.0, 160.0, 0.0, 190.0, 200.0, 159.0, 159.0, 233.0, 14.0, 14.0, 304.0, 84.0, 357.0, 357.0, 132.0, 324.0, 321.0, 321.0, 321.0, 321.0, 321.0, 321.0], "borderColor": "#17becf", "backgroundColor": "#17becf", "tension": 0.3, "fill": false, "pointRadius": 4, "pointHoverRadius": 6, "pointBackgroundColor": "#17becf", "pointBorderColor": "#17becf"}, {"label": "Refer\u00eancia", "data": [285.0, 152.0, 152.0, 152.0, 233.0, 265.0, 349.0, 353.0, 83.0, 171.0, 154.0, 154.0, 154.0, 131.0, 83.0, 83.0, 158.0, 145.0, 325.0, 307.0, 307.0, 148.0, 311.0, 310.0, 162.0, 162.0, 146.0, 338.0, 35.0, 35.0, 230.0, 216.0, 216.0, 232.0, 11.0, 11.0, 27.0, 27.0, 9.0, 9.0, 9.0, 48.0, 48.0, 48.0, 249.0, 65.0, 263.0, 295.0, 209.0, 57.0, 348.0, 261.0, 333.0, 261.0, 275.0, 60.0, 60.0, 60.0, 211.0, 275.0, 254.0, 63.0, 78.0, 116.0, 190.0, 188.0, 218.0, 341.0, 238.0, 305.0, 305.0, 306.0, 84.0, 64.0, 3.0, 160.0, 315.0, 70.0, 257.0, 205.0, 205.0, 322.0, 144.0], "borderColor": "#12094A", "backgroundColor": "#12094A", "tension": 0.3, "fill": false, "pointRadius": 4, "pointHoverRadius": 6, "pointBackgroundColor": "#12094A", "pointBorderColor": "#12094A"}, {"label": "Diferen\u00e7a", "data": [157.0, 70.0, 70.0, 70.0, 151.0, 0.0, 0.0, 4.0, 8.0, 10.0, 7.0, 7.0, 7.0, 30.0, 120.0, 120.0, 6.0, 10.0, 2.0, 16.0, 16.0, 11.0, 8.0, 7.0, 141.0, 141.0, 2.0, 42.0, 7.0, 7.0, 52.0, 163.0, 163.0, 179.0, 135.0, 135.0, 151.0, 151.0, 133.0, 133.0, 140.0, 179.0, 179.0, 179.0, 45.0, 138.0, 60.0, 41.0, 28.0, 32.0, 1.0, 30.0, 74.0, 5.0, 4.0, 169.0, 169.0, 169.0, 0.0, 64.0, 25.0, 21.0, 82.0, 116.0, 0.0, 12.0, 59.0, 178.0, 5.0, 69.0, 69.0, 2.0, 0.0, 67.0, 6.0, 28.0, 9.0, 109.0, 64.0, 116.0, 116.0, 1.0, 177.0], "borderColor": "gold", "backgroundColor": "gold", "tension": 0.3, "fill": false, "pointRadius": 4, "pointHoverRadius": 6, "pointBackgroundColor": "gold", "pointBorderColor": "gold"}];
+            const labels = ["06/10/2025 15:29:47", "15/10/2025 09:44:10", "15/10/2025 10:19:59", "15/10/2025 10:44:38", "16/10/2025 10:11:08"];
+            const datasets = [{"label": "Teste", "data": [155.0, 186.0, 186.0, 264.0, 15.0], "borderColor": "#17becf", "backgroundColor": "#17becf", "tension": 0.3, "fill": false, "pointRadius": 4, "pointHoverRadius": 6, "pointBackgroundColor": "#17becf", "pointBorderColor": "#17becf"}, {"label": "Refer\u00eancia", "data": [280.0, 328.0, 163.0, 259.0, 12.0], "borderColor": "#12094A", "backgroundColor": "#12094A", "tension": 0.3, "fill": false, "pointRadius": 4, "pointHoverRadius": 6, "pointBackgroundColor": "#12094A", "pointBorderColor": "#12094A"}, {"label": "Diferen\u00e7a", "data": [125.0, 142.0, 23.0, 5.0, 3.0], "borderColor": "gold", "backgroundColor": "gold", "tension": 0.3, "fill": false, "pointRadius": 4, "pointHoverRadius": 6, "pointBackgroundColor": "gold", "pointBorderColor": "gold"}];
             
             const chart_8 = new Chart(ctx, {
                 type: 'line',
@@ -3775,8 +3775,8 @@ function showCopyNotification(x, y, message = '✓', isError = false) {
                 window.charts['linhaEventos'] = new Chart(linhaCanvas.getContext('2d'), {
                     type: 'line',
                     data: {
-                        labels: ["30/09/2025", "01/10/2025", "02/10/2025", "03/10/2025", "04/10/2025", "05/10/2025", "06/10/2025", "07/10/2025", "08/10/2025", "09/10/2025", "10/10/2025", "11/10/2025", "12/10/2025", "13/10/2025"],
-                        datasets: [{"label": "Peri\u00f3dicas do referencia", "data": [57, 86, 80, 63, 0, 0, 89, 101, 9, 58, 61, 0, 0, 6], "borderColor": "#0e0561", "backgroundColor": "#0e0561", "fill": false, "tension": 0.3, "pointRadius": 4, "pointHoverRadius": 6, "pointBackgroundColor": "#0e0561", "pointBorderColor": "#0e0561", "hidden": false}, {"label": "Peri\u00f3dicas do teste", "data": [108, 113, 98, 78, 0, 0, 142, 153, 17, 82, 100, 0, 0, 8], "borderColor": "#3ae8ff", "backgroundColor": "#3ae8ff", "fill": false, "tension": 0.3, "pointRadius": 4, "pointHoverRadius": 6, "pointBackgroundColor": "#3ae8ff", "pointBorderColor": "#3ae8ff", "hidden": false}, {"label": "Modo econ\u00f4mico referencia", "data": [22, 30, 26, 23, 24, 24, 21, 21, 28, 21, 28, 24, 24, 11], "borderColor": "#3b08b3", "backgroundColor": "#3b08b3", "fill": false, "tension": 0.3, "pointRadius": 4, "pointHoverRadius": 6, "pointBackgroundColor": "#3b08b3", "pointBorderColor": "#3b08b3", "hidden": false}, {"label": "Modo econ\u00f4mico teste", "data": [26, 34, 41, 28, 24, 24, 28, 33, 31, 25, 40, 24, 24, 14], "borderColor": "#4ff9ff", "backgroundColor": "#4ff9ff", "fill": false, "tension": 0.3, "pointRadius": 4, "pointHoverRadius": 6, "pointBackgroundColor": "#4ff9ff", "pointBorderColor": "#4ff9ff", "hidden": false}, {"label": "Igni\u00e7\u00e3o ligada referencia", "data": [6, 7, 9, 3, 0, 0, 5, 9, 5, 2, 9, 0, 0, 3], "borderColor": "#3c04d6", "backgroundColor": "#3c04d6", "fill": false, "tension": 0.3, "pointRadius": 4, "pointHoverRadius": 6, "pointBackgroundColor": "#3c04d6", "pointBorderColor": "#3c04d6", "hidden": false}, {"label": "Igni\u00e7\u00e3o ligada teste", "data": [6, 7, 9, 3, 0, 0, 5, 9, 5, 2, 9, 0, 0, 3], "borderColor": "#00bfff", "backgroundColor": "#00bfff", "fill": false, "tension": 0.3, "pointRadius": 4, "pointHoverRadius": 6, "pointBackgroundColor": "#00bfff", "pointBorderColor": "#00bfff", "hidden": false}, {"label": "Igni\u00e7\u00e3o desligada referencia", "data": [6, 7, 9, 3, 0, 0, 5, 9, 5, 2, 9, 0, 0, 2], "borderColor": "#2519CC", "backgroundColor": "#2519CC", "fill": false, "tension": 0.3, "pointRadius": 4, "pointHoverRadius": 6, "pointBackgroundColor": "#2519CC", "pointBorderColor": "#2519CC", "hidden": false}, {"label": "Igni\u00e7\u00e3o desligada teste", "data": [6, 7, 9, 3, 0, 0, 5, 9, 5, 2, 9, 0, 0, 2], "borderColor": "#48d8f1ff", "backgroundColor": "#48d8f1ff", "fill": false, "tension": 0.3, "pointRadius": 4, "pointHoverRadius": 6, "pointBackgroundColor": "#48d8f1ff", "pointBorderColor": "#48d8f1ff", "hidden": false}]
+                        labels: ["06/10/2025", "07/10/2025", "08/10/2025", "09/10/2025", "15/10/2025", "16/10/2025", "17/10/2025"],
+                        datasets: [{"label": "Peri\u00f3dicas do referencia", "data": [24, 0, 2, 0, 6, 9, 0], "borderColor": "#0e0561", "backgroundColor": "#0e0561", "fill": false, "tension": 0.3, "pointRadius": 4, "pointHoverRadius": 6, "pointBackgroundColor": "#0e0561", "pointBorderColor": "#0e0561", "hidden": false}, {"label": "Peri\u00f3dicas do teste", "data": [24.0, 0.0, 2.0, 0.0, 6.0, 7.0, 0.0], "borderColor": "#3ae8ff", "backgroundColor": "#3ae8ff", "fill": false, "tension": 0.3, "pointRadius": 4, "pointHoverRadius": 6, "pointBackgroundColor": "#3ae8ff", "pointBorderColor": "#3ae8ff", "hidden": false}, {"label": "Modo econ\u00f4mico referencia", "data": [25, 40, 36, 15, 29, 31, 8], "borderColor": "#3b08b3", "backgroundColor": "#3b08b3", "fill": false, "tension": 0.3, "pointRadius": 4, "pointHoverRadius": 6, "pointBackgroundColor": "#3b08b3", "pointBorderColor": "#3b08b3", "hidden": false}, {"label": "Modo econ\u00f4mico teste", "data": [16.0, 8.0, 20.0, 0.0, 41.0, 37.0, 8.0], "borderColor": "#4ff9ff", "backgroundColor": "#4ff9ff", "fill": false, "tension": 0.3, "pointRadius": 4, "pointHoverRadius": 6, "pointBackgroundColor": "#4ff9ff", "pointBorderColor": "#4ff9ff", "hidden": false}, {"label": "Igni\u00e7\u00e3o ligada referencia", "data": [4, 0, 3, 0, 10, 9, 0], "borderColor": "#3c04d6", "backgroundColor": "#3c04d6", "fill": false, "tension": 0.3, "pointRadius": 4, "pointHoverRadius": 6, "pointBackgroundColor": "#3c04d6", "pointBorderColor": "#3c04d6", "hidden": false}, {"label": "Igni\u00e7\u00e3o ligada teste", "data": [4.0, 0.0, 3.0, 0.0, 9.0, 9.0, 0.0], "borderColor": "#00bfff", "backgroundColor": "#00bfff", "fill": false, "tension": 0.3, "pointRadius": 4, "pointHoverRadius": 6, "pointBackgroundColor": "#00bfff", "pointBorderColor": "#00bfff", "hidden": false}, {"label": "Igni\u00e7\u00e3o desligada referencia", "data": [4, 0, 3, 0, 10, 9, 0], "borderColor": "#2519CC", "backgroundColor": "#2519CC", "fill": false, "tension": 0.3, "pointRadius": 4, "pointHoverRadius": 6, "pointBackgroundColor": "#2519CC", "pointBorderColor": "#2519CC", "hidden": false}, {"label": "Igni\u00e7\u00e3o desligada teste", "data": [4.0, 0.0, 3.0, 0.0, 9.0, 9.0, 0.0], "borderColor": "#48d8f1ff", "backgroundColor": "#48d8f1ff", "fill": false, "tension": 0.3, "pointRadius": 4, "pointHoverRadius": 6, "pointBackgroundColor": "#48d8f1ff", "pointBorderColor": "#48d8f1ff", "hidden": false}]
                     },
                     options: {
                         responsive: true,
@@ -3859,7 +3859,7 @@ function showCopyNotification(x, y, message = '✓', isError = false) {
                     type: 'bar',
                     data: {
                         labels: ["Peri\u00f3dicas do referencia", "Peri\u00f3dicas do teste", "Modo econ\u00f4mico referencia", "Modo econ\u00f4mico teste", "Igni\u00e7\u00e3o ligada referencia", "Igni\u00e7\u00e3o ligada teste", "Igni\u00e7\u00e3o desligada referencia", "Igni\u00e7\u00e3o desligada teste"],
-                        datasets: [{"label": "Total por categoria", "data": [610, 899, 327, 396, 58, 58, 57, 57], "backgroundColor": ["#12094A", "#17becf", "#12094A", "#17becf", "#12094A", "#17becf", "#12094A", "#17becf"], "borderColor": ["#12094A", "#17becf", "#12094A", "#17becf", "#12094A", "#17becf", "#12094A", "#17becf"], "borderWidth": 1}]
+                        datasets: [{"label": "Total por categoria", "data": [41.0, 39.0, 184.0, 130.0, 26.0, 25.0, 26.0, 25.0], "backgroundColor": ["#12094A", "#17becf", "#12094A", "#17becf", "#12094A", "#17becf", "#12094A", "#17becf"], "borderColor": ["#12094A", "#17becf", "#12094A", "#17becf", "#12094A", "#17becf", "#12094A", "#17becf"], "borderWidth": 1}]
                     },
                     options: {
                         responsive: true,
@@ -4137,7 +4137,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 labels: ["Sem conex\u00e3o", "2G", "3G", "4G"],
                 datasets: [{
                     label: 'Teste',
-                    data: [746, 0, 0, 554],
+                    data: [1, 0, 0, 169],
                     backgroundColor: cores,
                     borderColor: cores,
                     borderWidth: 1
@@ -4163,7 +4163,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 labels: ["Sem conex\u00e3o", "2G", "3G", "4G"],
                 datasets: [{
                     label: 'Referência',
-                    data: [0, 1209, 0, 769],
+                    data: [20, 202, 0, 16],
                     backgroundColor: cores,
                     borderColor: cores,
                     borderWidth: 1
@@ -4189,7 +4189,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 labels: ["Sem conex\u00e3o", "2G", "3G", "4G"],
                 datasets: [{
                     label: 'Total Geral',
-                    data: [746, 1209, 0, 1323],
+                    data: [21, 202, 0, 185],
                     backgroundColor: cores,
                     borderColor: cores,
                     borderWidth: 1
@@ -4221,8 +4221,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
 (function() {
         const ctx = document.getElementById('canvas_sat_line').getContext('2d');
-        const valRef = [89, 124, 119, 89, 24, 24, 118, 136, 45, 81, 103, 24, 24, 20];
-        const valTeste = [140, 155, 148, 109, 24, 24, 175, 202, 54, 109, 149, 24, 24, 24];
+        const valRef = [57, 40, 56, 15, 52, 56, 8];
+        const valTeste = [44, 8, 26, 0, 54, 55, 8];
 
         // Variável para controlar o filtro ativo
         let filtroAtivo = 'Válidos';
@@ -4230,8 +4230,8 @@ document.addEventListener('DOMContentLoaded', function() {
         const chart = new Chart(ctx, {
             type: 'line',
             data: {
-                labels: ["30/09/2025", "01/10/2025", "02/10/2025", "03/10/2025", "04/10/2025", "05/10/2025", "06/10/2025", "07/10/2025", "08/10/2025", "09/10/2025", "10/10/2025", "11/10/2025", "12/10/2025", "13/10/2025"],
-                datasets: [{"label": "V\u00e1lidos Refer\u00eancia", "data": [89, 124, 119, 89, 24, 24, 118, 136, 45, 81, 103, 24, 24, 20], "borderColor": "#12094A", "backgroundColor": "#12094A", "tension": 0.3, "fill": false, "pointRadius": 4, "pointHoverRadius": 6, "pointBackgroundColor": "#12094A", "pointBorderColor": "#12094A", "pointBorderWidth": 1, "hidden": false}, {"label": "V\u00e1lidos Teste", "data": [140, 155, 148, 109, 24, 24, 175, 202, 54, 109, 149, 24, 24, 24], "borderColor": "#17becf", "backgroundColor": "#17becf", "tension": 0.3, "fill": false, "pointRadius": 4, "pointHoverRadius": 6, "pointBackgroundColor": "#17becf", "pointBorderColor": "#17becf", "pointBorderWidth": 1, "hidden": false}, {"label": "Inv\u00e1lidos Refer\u00eancia", "data": [2, 7, 6, 3, 0, 0, 2, 4, 2, 2, 5, 0, 0, 2], "borderColor": "red", "backgroundColor": "red", "tension": 0.3, "fill": false, "pointRadius": 4, "pointHoverRadius": 6, "pointBackgroundColor": "red", "pointBorderColor": "red", "pointBorderWidth": 1, "hidden": true}, {"label": "Inv\u00e1lidos Teste", "data": [6, 6, 9, 3, 0, 0, 5, 7, 4, 2, 9, 0, 0, 3], "borderColor": "darkorange", "backgroundColor": "darkorange", "tension": 0.3, "fill": false, "pointRadius": 4, "pointHoverRadius": 6, "pointBackgroundColor": "darkorange", "pointBorderColor": "darkorange", "pointBorderWidth": 1, "hidden": true}]
+                labels: ["06/10/2025", "07/10/2025", "08/10/2025", "09/10/2025", "15/10/2025", "16/10/2025", "17/10/2025"],
+                datasets: [{"label": "V\u00e1lidos Refer\u00eancia", "data": [57, 40, 56, 15, 52, 56, 8], "borderColor": "#12094A", "backgroundColor": "#12094A", "tension": 0.3, "fill": false, "pointRadius": 4, "pointHoverRadius": 6, "pointBackgroundColor": "#12094A", "pointBorderColor": "#12094A", "pointBorderWidth": 1, "hidden": false}, {"label": "V\u00e1lidos Teste", "data": [44, 8, 26, 0, 54, 55, 8], "borderColor": "#17becf", "backgroundColor": "#17becf", "tension": 0.3, "fill": false, "pointRadius": 4, "pointHoverRadius": 6, "pointBackgroundColor": "#17becf", "pointBorderColor": "#17becf", "pointBorderWidth": 1, "hidden": false}, {"label": "Inv\u00e1lidos Refer\u00eancia", "data": [1, 0, 0, 0, 3, 2, 0], "borderColor": "red", "backgroundColor": "red", "tension": 0.3, "fill": false, "pointRadius": 4, "pointHoverRadius": 6, "pointBackgroundColor": "red", "pointBorderColor": "red", "pointBorderWidth": 1, "hidden": true}, {"label": "Inv\u00e1lidos Teste", "data": [4, 0, 2, 0, 11, 7, 0], "borderColor": "darkorange", "backgroundColor": "darkorange", "tension": 0.3, "fill": false, "pointRadius": 4, "pointHoverRadius": 6, "pointBackgroundColor": "darkorange", "pointBorderColor": "darkorange", "pointBorderWidth": 1, "hidden": true}]
             },
             options: {
                 responsive: true,
@@ -4358,7 +4358,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     labels: ['Referência', 'Teste'],
                     datasets: [{
                         label: 'Quantidade',
-                        data: [Number(1020), Number(1361)],
+                        data: [Number(284), Number(195)],
                         backgroundColor: ['#12094A', '#17becf'],
                         borderColor: ['#12094A', '#14a9b8'],
                         borderWidth: 1
@@ -4376,8 +4376,8 @@ document.addEventListener('DOMContentLoaded', function() {
                                     return context.dataset.label + ': ' + context.raw;
                                 },
                                 afterLabel: function(context) {
-                                    const refValue = 1020;
-                                    const testValue = 1361;
+                                    const refValue = 284;
+                                    const testValue = 195;
                                     const diff = ((testValue - refValue) / refValue * 100).toFixed(2);
                                     
                                     if (context.dataIndex === 0) {

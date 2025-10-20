@@ -188,6 +188,6 @@ def executar_analise_completa(tipo='todas', input1=None, input2=None):
 
 if __name__ == "__main__":
     executar_analise_completa(
-        input1='logs/ENG_048.csv', #teste 
-        input2='logs/AYL2486.csv'
+        input1='logs/ENG_146.csv', #teste 
+        input2='logs/A474999.csv'
     )

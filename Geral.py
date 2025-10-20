@@ -18,28 +18,28 @@ class Analises_geral:
         # Define os pares fixos de análise conforme planilha
         self.pares_analise = [
             # Par 1
-            {'nome': 'Par_01_ENG_146_vs_A474999', 'csv1': 'ENG_146.csv', 'csv2': 'A474999.csv', 'problema': 'TM-08'},
+            {'nome': 'Par_06_ENG_146_vs_A474999', 'csv1': 'ENG_146.csv', 'csv2': 'A474999.csv', 'problema': 'TM-08'},
 
             #par 2
-            {'nome': 'Par_02_ENG_111_vs_A475104', 'csv1': 'ENG_111.csv', 'csv2': 'A475104.csv', 'problema': 'TM-08'},
+            {'nome': 'Par_11_ENG_111_vs_A475104', 'csv1': 'ENG_111.csv', 'csv2': 'A475104.csv', 'problema': 'TM-08'},
 
             # Par 4
-            {'nome': 'Par_04_ENG_048_vs_AYL2486', 'csv1': 'ENG_048.csv', 'csv2': 'AYL2486.csv', 'problema': 'TM-07'},
+            {'nome': 'Par_05_ENG_048_vs_AYL2486', 'csv1': 'ENG_048.csv', 'csv2': 'AYL2486.csv', 'problema': 'TM-07'},
             
             # Par 5
-            {'nome': 'Par_05_ENG_046_vs_JAP8F64', 'csv1': 'ENG_046.csv', 'csv2': 'JAP8F64.csv', 'problema': 'TM-07'},
+            {'nome': 'Par_04_ENG_046_vs_JAP8F64', 'csv1': 'ENG_046.csv', 'csv2': 'JAP8F64.csv', 'problema': 'TM-07'},
             
             # Par 6
-            {'nome': 'Par_06_ENG_042_vs_A474038', 'csv1': 'ENG_042.csv', 'csv2': 'A474038.csv', 'problema': 'TM-08'},
+            {'nome': 'Par_03_ENG_042_vs_A474038', 'csv1': 'ENG_042.csv', 'csv2': 'A474038.csv', 'problema': 'TM-08'},
             
             # Par 7
-            {'nome': 'Par_07_ENG_039_vs_RHH4B26', 'csv1': 'ENG_039.csv', 'csv2': 'RHH4B26.csv', 'problema': 'TM-07'},
+            {'nome': 'Par_02_ENG_039_vs_RHH4B26', 'csv1': 'ENG_039.csv', 'csv2': 'RHH4B26.csv', 'problema': 'TM-07'},
             
             # Par 8
-            {'nome': 'Par_08_ENG_004_vs_BDB3D78', 'csv1': 'ENG_004.csv', 'csv2': 'BDB3D78.csv', 'problema': 'TM-07'},
+            {'nome': 'Par_01_ENG_004_vs_BDB3D78', 'csv1': 'ENG_004.csv', 'csv2': 'BDB3D78.csv', 'problema': 'TM-07'},
             
             # Par 10
-            {'nome': 'Par_10_ENG_014_vs_TYA9C79', 'csv1': 'ENG_014.csv', 'csv2': 'TYA9C79.csv', 'problema': 'TM-08'},
+            {'nome': 'Par_08_ENG_014_vs_TYA9C79', 'csv1': 'ENG_014.csv', 'csv2': 'TYA9C79.csv', 'problema': 'TM-08'},
             
             # Par Alexandre (separado)
             {'nome': 'Par_Alexandre_ENG_009_vs_BAA1364', 'csv1': 'ENG_009.csv', 'csv2': 'BAA1364.csv', 'problema': 'TM-08'},

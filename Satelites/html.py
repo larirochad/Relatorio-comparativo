@@ -13,9 +13,13 @@ def gerar_bloco_satellite_estabilidade(df, filename='bloco_satellite_estabilidad
     val_teste = df['Validos teste'].fillna(0).tolist()
     inv_ref = df['Inválidos referencia'].fillna(0).tolist()
     inv_teste = df['Inválidos teste'].fillna(0).tolist()
+    # Novas colunas com a soma dos satélites válidos por dia
+    soma_sat_ref = df.get('Soma Satélites Válidos referencia', pd.Series([0]*len(df))).fillna(0).tolist()
+    soma_sat_teste = df.get('Soma Satélites Válidos teste', pd.Series([0]*len(df))).fillna(0).tolist()
 
-    total_val_ref = sum(val_ref)
-    total_val_teste = sum(val_teste)
+    # Totais para o gráfico de barras devem usar a soma dos satélites válidos
+    total_val_ref = sum(soma_sat_ref)
+    total_val_teste = sum(soma_sat_teste)
     total_inv_ref = sum(inv_ref)
     total_inv_teste = sum(inv_teste)
 
@@ -387,7 +391,7 @@ def gerar_bloco_satellite_estabilidade(df, filename='bloco_satellite_estabilidad
 
     <!-- Gráfico de Barras Horizontais com Porcentagem -->
     <div class='grafico-container' style="margin-top: 30px;">
-        <div class='grafico-titulo-container'><h3 class='grafico-titulo'>Total de Satélites Válidos (Referência x Teste)</h3></div>
+        <div class='grafico-titulo-container'><h3 class='grafico-titulo'>Total de Satélites Válidos (Soma) - Referência x Teste</h3></div>
         <div class='chart-wrapper'>
             <canvas id='canvas_sat_barras_validos'></canvas>
         </div>
@@ -445,7 +449,7 @@ def gerar_bloco_satellite_estabilidade(df, filename='bloco_satellite_estabilidad
                             beginAtZero: true,
                             title: {{
                                 display: true,
-                                text: 'QUANTIDADE DE MENSAGENS',
+                                text: 'SOMA DE SATÉLITES VÁLIDOS',
                                 font: {{ weight: 'bold', size: 14 }}
                             }}
                         }},

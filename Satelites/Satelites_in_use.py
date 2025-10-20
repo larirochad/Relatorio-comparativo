@@ -148,12 +148,22 @@ def analise_estabilidade_satelite(df_teste, df_ref):
             df_validos = df[df[precisao_col + '_num'] > 0].copy()
             df_invalidos = df[df[precisao_col + '_num'] == 0].copy()
 
-            # Conta mensagens por dia
+            # Conta mensagens por dia (contagem de eventos)
             resultado_validos = df_validos.groupby('Data').size().to_frame('validos')
             resultado_invalidos = df_invalidos.groupby('Data').size().to_frame('invalidos')
+            # Soma diária dos valores de satélites para eventos válidos
+            soma_sat_validos = df_validos.groupby('Data')[satelite_col + '_num'].sum().to_frame('soma_sat_validos')
             # Total diário (contar todas as mensagens)
             total_por_dia = df.groupby('Data').size().to_frame('total')
-            resultado = total_por_dia.join(resultado_validos, how='outer').join(resultado_invalidos, how='outer').fillna(0).astype(int)
+            resultado = (total_por_dia
+                         .join(resultado_validos, how='outer')
+                         .join(resultado_invalidos, how='outer')
+                         .join(soma_sat_validos, how='outer')
+                         .fillna(0))
+            # Converte colunas de contagem para int, preservando soma como float (pode ser int naturalmente)
+            for col_conv in ['total', 'validos', 'invalidos']:
+                if col_conv in resultado.columns:
+                    resultado[col_conv] = resultado[col_conv].astype(int)
             return resultado.to_dict('index')
 
         elif dispositivo == 'TM07':
@@ -202,12 +212,21 @@ def analise_estabilidade_satelite(df_teste, df_ref):
 
 
 
-            # Conta mensagens por dia
+            # Conta mensagens por dia (contagem de eventos)
             resultado_validos = df_validos.groupby('Data').size().to_frame('validos')
             resultado_invalidos = df_invalidos.groupby('Data').size().to_frame('invalidos')
+            # Soma diária dos valores de satélites para eventos válidos
+            soma_sat_validos = df_validos.groupby('Data')[satelite_col + '_num'].sum().to_frame('soma_sat_validos')
             # Total diário (contar todas as mensagens)
             total_por_dia = df.groupby('Data').size().to_frame('total')
-            resultado = total_por_dia.join(resultado_validos, how='outer').join(resultado_invalidos, how='outer').fillna(0).astype(int)
+            resultado = (total_por_dia
+                         .join(resultado_validos, how='outer')
+                         .join(resultado_invalidos, how='outer')
+                         .join(soma_sat_validos, how='outer')
+                         .fillna(0))
+            for col_conv in ['total', 'validos', 'invalidos']:
+                if col_conv in resultado.columns:
+                    resultado[col_conv] = resultado[col_conv].astype(int)
             return resultado.to_dict('index')
       
         else:
@@ -231,12 +250,24 @@ def analise_estabilidade_satelite(df_teste, df_ref):
             # if zeros_mask.any():
             #      print(f"Exemplos de linhas com zero: {df[zeros_mask][[satelite_col, satelite_col + '_num']].head()}")
             
-            # Conta mensagens válidas (sat > 0) e inválidas (sat <= 0 ou NaN) - contando mensagens, não somando valores
-            validos = df[df[satelite_col + '_num'] > 0].groupby('Data').size().to_frame('validos')
-            invalidos = df[( (df[satelite_col + '_num'] <= 0) | pd.isna(df[satelite_col + '_num']) )].groupby('Data').size().to_frame('invalidos')
+            # Conta mensagens válidas (sat > 0) e inválidas (sat <= 0 ou NaN) - contando eventos
+            df_validos = df[df[satelite_col + '_num'] > 0].copy()
+            df_invalidos = df[( (df[satelite_col + '_num'] <= 0) | pd.isna(df[satelite_col + '_num']) )].copy()
+
+            validos = df_validos.groupby('Data').size().to_frame('validos')
+            invalidos = df_invalidos.groupby('Data').size().to_frame('invalidos')
+            # Soma diária dos valores de satélites para eventos válidos
+            soma_sat_validos = df_validos.groupby('Data')[satelite_col + '_num'].sum().to_frame('soma_sat_validos')
             # Total diário contando todas as mensagens
             total_por_dia = df.groupby('Data').size().to_frame('total')
-            resultado = total_por_dia.join(validos, how='left').join(invalidos, how='left').fillna(0).astype(int)
+            resultado = (total_por_dia
+                         .join(validos, how='left')
+                         .join(invalidos, how='left')
+                         .join(soma_sat_validos, how='left')
+                         .fillna(0))
+            for col_conv in ['total', 'validos', 'invalidos']:
+                if col_conv in resultado.columns:
+                    resultado[col_conv] = resultado[col_conv].astype(int)
             return resultado.to_dict('index')
     
     # Processa ambos dispositivos
@@ -259,7 +290,9 @@ def analise_estabilidade_satelite(df_teste, df_ref):
             'Validos referencia': ref.get('validos', 0),
             'Validos teste': teste.get('validos', 0),
             'Inválidos referencia': ref.get('invalidos', 0),
-            'Inválidos teste': teste.get('invalidos', 0)
+            'Inválidos teste': teste.get('invalidos', 0),
+            'Soma Satélites Válidos referencia': ref.get('soma_sat_validos', 0),
+            'Soma Satélites Válidos teste': teste.get('soma_sat_validos', 0)
         })
 
     return pd.DataFrame(registros)

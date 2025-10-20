@@ -9,14 +9,11 @@ def normalizar_TM07(df: pd.DataFrame) -> dict:
         print("\n🔍 [DEBUG TM07] Iniciando normalização TM-07...")
         df = df.copy()
         
-        # Para TM-07, procura por 'Tipo Mensagem', 'Tipo mensagem' ou 'Event code'
+        # Para TM-07, procura por 'Event Code' (preferencial), 'Event code', 'Tipo Mensagem' ou 'Tipo mensagem'
         coluna_tipo = None
-        if 'Tipo Mensagem' in df.columns:
-            coluna_tipo = 'Tipo Mensagem'
-            print("✅ [DEBUG TM07] Usando coluna 'Tipo Mensagem'")
-        elif 'Tipo mensagem' in df.columns:
-            coluna_tipo = 'Tipo mensagem'
-            print("✅ [DEBUG TM07] Usando coluna 'Tipo mensagem'")
+        if 'Event Code' in df.columns:
+            coluna_tipo = 'Event Code'
+            print("✅ [DEBUG TM07] Usando coluna 'Event Code'")
         elif 'Event code' in df.columns:
             coluna_tipo = 'Event code'
             print("✅ [DEBUG TM07] Usando coluna 'Event code'")
@@ -33,11 +30,11 @@ def normalizar_TM07(df: pd.DataFrame) -> dict:
         # Aplica mapeamento específico para TM-07 (códigos 21/20 e variações em português)
         df_mapeado = mapear_eventos_tipo_mensagem(df)
         
-        # Se usou 'Event code', renomeia para 'Tipo Mensagem' para padronizar
-        if coluna_tipo == 'Event code':
-            df_mapeado = df_mapeado.rename(columns={'Event code': 'Tipo Mensagem'})
+        # Se usou 'Event Code' ou 'Event code', renomeia para 'Tipo Mensagem' para padronizar
+        if coluna_tipo in ['Event Code', 'Event code']:
+            df_mapeado = df_mapeado.rename(columns={coluna_tipo: 'Tipo Mensagem'})
             coluna_tipo = 'Tipo Mensagem'
-            print("✅ [DEBUG TM07] Coluna 'Event code' renomeada para 'Tipo Mensagem'")
+            
 
         # 🔧 CORREÇÃO PRINCIPAL: Converte explicitamente para int onde foi mapeado
         def converter_para_int(valor):
@@ -98,15 +95,17 @@ def mapear_eventos_tipo_mensagem(df: pd.DataFrame) -> pd.DataFrame:
     if df is None or not isinstance(df, pd.DataFrame):
         return df
 
-    if 'Tipo Mensagem' not in df.columns and 'Tipo mensagem' not in df.columns and 'Event code' not in df.columns:
+    if 'Tipo Mensagem' not in df.columns and 'Tipo mensagem' not in df.columns and 'Event code' not in df.columns and 'Event Code' not in df.columns:
         print("❌ [DEBUG MAPEAMENTO] A coluna 'Tipo Mensagem' não foi encontrada no arquivo.")
         return df
 
     df_out = df.copy()
 
-    # Detecta qual variação de coluna existe (prioriza Event code para TM-07)
+    # Detecta qual variação de coluna existe (prioriza 'Event Code' para TM-07)
     coluna_tipo = None
-    if 'Event code' in df_out.columns:
+    if 'Event Code' in df_out.columns:
+        coluna_tipo = 'Event Code'
+    elif 'Event code' in df_out.columns:
         coluna_tipo = 'Event code'
     elif 'Tipo Mensagem' in df_out.columns:
         coluna_tipo = 'Tipo Mensagem'
@@ -191,7 +190,7 @@ def mapear_eventos_tipo_mensagem(df: pd.DataFrame) -> pd.DataFrame:
 
 
 if __name__ == "__main__":
-    df_exemplo = pd.read_csv('logs/867488068342780_decoded.csv', encoding='latin-1', low_memory=False)
+    df_exemplo = pd.read_csv('logs/BDB3D78.csv', encoding='latin-1', low_memory=False)
 
     # Exemplo de uso do mapeamento
     df_mapeado = mapear_eventos_tipo_mensagem(df_exemplo)
