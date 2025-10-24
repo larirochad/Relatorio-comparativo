@@ -52,7 +52,8 @@ class ChartJSDashboardGenerator:
             'canvas_id': cid, 'metrics_id': mid, 'chart_var': var,
             'title': cfg['titulo'], 'category': cfg['categoria'],
             'group': cfg['grupo'], 'labels': cfg['labels'],
-            'datasets': ds, 'metrics_info': metrics_info
+            'datasets': ds, 'metrics_info': metrics_info,
+            'match_ids': cfg.get('match_ids', [])
         }
         self.chart_counter += 1
         return out
@@ -108,6 +109,7 @@ class ChartJSDashboardGenerator:
     def generate_javascript_chart(self, c):
         labels = json.dumps(c['labels'])
         ds = json.dumps(c['datasets'])
+        match_ids = json.dumps(c.get('match_ids', []))
 
         y_axis_label = {
             'distância': 'METROS (m)',
@@ -127,6 +129,7 @@ class ChartJSDashboardGenerator:
             const ctx = canvas.getContext('2d');
             const labels = {labels};
             const datasets = {ds};
+            const matchIds = {match_ids};
             
             const {c['chart_var']} = new Chart(ctx, {{
                 type: 'line',
@@ -145,6 +148,18 @@ class ChartJSDashboardGenerator:
                         legend: {{
                             display: true,
                             position: 'top'
+                        }},
+                        tooltip: {{
+                            callbacks: {{
+                                title: function(context) {{
+                                    const index = context[0].dataIndex;
+                                    const matchId = matchIds[index] || '';
+                                    return matchId ? `Match: ${{matchId}}` : context[0].label;
+                                }},
+                                afterTitle: function(context) {{
+                                    return context[0].label;
+                                }}
+                            }}
                         }},
                         zoom: {{
                             pan: {{
@@ -194,6 +209,9 @@ class ChartJSDashboardGenerator:
             
             window.charts = window.charts || {{}};
             window.charts['{c['canvas_id']}'] = {c['chart_var']};
+            
+            // Armazena matchIds para uso no gráfico maximizado
+            window.charts['{c['canvas_id']}'].matchIds = matchIds;
 
             // Adiciona evento de duplo clique para resetar zoom
             canvas.addEventListener('dblclick', function() {{
@@ -211,6 +229,7 @@ class ChartJSDashboardGenerator:
                 if (dataX !== undefined && dataX !== null && dataX >= 0 && dataX < labels.length) {{
                     const dataIndex = Math.round(dataX);
                     const label = labels[dataIndex];
+                    const matchId = matchIds[dataIndex] || '';
                     
                     // Coleta dados de todos os datasets para este ponto
                     const dadosPonto = [];
@@ -220,7 +239,12 @@ class ChartJSDashboardGenerator:
                         }}
                     }});
                     
-                    const textoCompleto = 'Data/Hora: ' + label + '\\n' + dadosPonto.join('\\n');
+                    let textoCompleto = '';
+                    if (matchId) {{
+                        textoCompleto = 'Match: ' + matchId + '\\n' + 'Data/Hora: ' + label + '\\n' + dadosPonto.join('\\n');
+                    }} else {{
+                        textoCompleto = 'Data/Hora: ' + label + '\\n' + dadosPonto.join('\\n');
+                    }}
                     
                     // Copia para clipboard
                     navigator.clipboard.writeText(textoCompleto).then(() => {{
@@ -323,6 +347,9 @@ class ChartJSDashboardGenerator:
             const canvasElem = document.getElementById(chartId);
             const titulo = canvasElem.closest('.grafico-container').querySelector('.grafico-titulo').textContent;
             
+            // Recupera os matchIds do gráfico original
+            const matchIds = originalChart.matchIds || [];
+            
             let modal = document.getElementById('maximizedModal');
             if (!modal) {
                 modal = document.createElement('div');
@@ -359,6 +386,18 @@ class ChartJSDashboardGenerator:
                     interaction: { mode: 'nearest', intersect: false },
                     plugins: {
                         legend: { display: true, position: 'top' },
+                        tooltip: {
+                            callbacks: {
+                                title: function(context) {
+                                    const index = context[0].dataIndex;
+                                    const matchId = matchIds[index] || '';
+                                    return matchId ? `Match: ${matchId}` : context[0].label;
+                                },
+                                afterTitle: function(context) {
+                                    return context[0].label;
+                                }
+                            }
+                        },
                         zoom: {
                             pan: {
                                 enabled: true,
@@ -403,6 +442,7 @@ class ChartJSDashboardGenerator:
                 if (dataX !== undefined && dataX !== null && dataX >= 0 && dataX < maximizedChartInstance.data.labels.length) {
                     const dataIndex = Math.round(dataX);
                     const label = maximizedChartInstance.data.labels[dataIndex];
+                    const matchId = matchIds[dataIndex] || '';
                     
                     // Coleta dados de todos os datasets para este ponto
                     const dadosPonto = [];
@@ -412,7 +452,12 @@ class ChartJSDashboardGenerator:
                         }
                     });
                     
-                    const textoCompleto = 'Data/Hora: ' + label + '\\n' + dadosPonto.join('\\n');
+                    let textoCompleto = '';
+                    if (matchId) {
+                        textoCompleto = 'Match: ' + matchId + '\\n' + 'Data/Hora: ' + label + '\\n' + dadosPonto.join('\\n');
+                    } else {
+                        textoCompleto = 'Data/Hora: ' + label + '\\n' + dadosPonto.join('\\n');
+                    }
                     
                     // Copia para clipboard
                     navigator.clipboard.writeText(textoCompleto).then(() => {
@@ -721,6 +766,61 @@ class ChartJSDashboardGenerator:
         .copy-notification {
             animation: none !important;
         }
+
+        .info-icon {
+            display: inline-block;
+            margin-right: 6px;
+            cursor: help;
+            position: relative;
+            font-size: 14px;
+            opacity: 0.7;
+            transition: opacity 0.3s ease;
+        }
+
+        .info-icon:hover {
+            opacity: 1;
+        }
+
+        .info-icon::after {
+            content: attr(title);
+            position: absolute;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #333;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            white-space: nowrap;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            max-width: 300px;
+            white-space: normal;
+            text-align: center;
+        }
+
+        .info-icon::before {
+            content: '';
+            position: absolute;
+            bottom: 115%;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 5px solid transparent;
+            border-top-color: #333;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+
+        .info-icon:hover::after,
+        .info-icon:hover::before {
+            opacity: 1;
+            visibility: visible;
+        }
 """
     def get_cdn(self):
         return ['https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js',
@@ -840,9 +940,9 @@ def get_media_info(medias, tipo, grupo_id):
 
         infos = []
         if media_dist is not None:
-            infos.append(f"Média Distância: {round(media_dist, 2)}")
+            infos.append(f"<span class='info-icon' title='Média da distância real entre pontos GNSS (em metros)'>ℹ️</span> Média Distância: {round(media_dist, 2)}")
         if media_disc is not None:
-            infos.append(f"Média Discrepância: {round(media_disc, 2)}")
+            infos.append(f"<span class='info-icon' title='Valores próximos a zero são ideais. Picos altos indicam pontos de atenção na precisão.'>ℹ️</span> Média Discrepância: {round(media_disc, 2)}")
         return " | ".join(infos) if infos else "Dados disponíveis"
     
     mapeamento_tipos = {
@@ -853,6 +953,15 @@ def get_media_info(medias, tipo, grupo_id):
     chave_media = mapeamento_tipos.get(tipo)
     if chave_media and chave_media in medias and grupo_id in medias[chave_media]:
         media_valor = medias[chave_media][grupo_id]
+        
+        # Para velocidade, adiciona ícone informativo
+        if tipo == 'velocidade':
+            return f"<span class='info-icon' title='Valores negativos indicam velocidades mais altas no dispositivo de teste (fórmula: Referência - Teste)'>ℹ️</span> Média: {round(media_valor, 2)}"
+        
+        # Para direção, adiciona ícone informativo
+        if tipo == 'direção':
+            return f"<span class='info-icon' title='Média da diferença angular entre direções.'>ℹ️</span> Média: {round(media_valor, 2)}"
+        
         return f"Média: {round(media_valor, 2)}"
     
     return "Dados disponíveis"
@@ -909,6 +1018,10 @@ def out_html(input1, input2, match_path, tipo, template_path=None, medias=None, 
             ts = df[df['Match_Complete'].str.contains(key, na=False) & (df['Fonte'] == 'Teste')].copy()
             ts['GNSS UTC Time'] = pd.to_datetime(ts['GNSS UTC Time'], errors='coerce')
             labels = ts['GNSS UTC Time'].dt.strftime('%d/%m/%Y %H:%M:%S').tolist()
+            
+            # Extrair Match IDs completos
+            match_ids = ts['Match_Complete'].tolist()
+            
             legenda_mapeada = {
                 'D1': 'Análise por diferença de tempo de 1s',
                 'D5': 'Análise por diferença de tempo de 5s',
@@ -924,6 +1037,7 @@ def out_html(input1, input2, match_path, tipo, template_path=None, medias=None, 
                 cfg['categories'][op].append({
                     'grupo': grupo_id,
                     'labels': labels,
+                    'match_ids': match_ids,
                     'datasets': [
                         {
                             'label': f"Discrepância ({t}{g})",
@@ -945,6 +1059,7 @@ def out_html(input1, input2, match_path, tipo, template_path=None, medias=None, 
                 cfg['categories'][op].append({
                     'grupo': grupo_id,
                     'labels': labels,
+                    'match_ids': match_ids,
                     'datasets': [
                         {'label': 'Teste', 'data': tr, 'borderColor': '#17becf'},
                         {'label': 'Referência', 'data': rf, 'borderColor': '#12094A'},
@@ -961,6 +1076,7 @@ def out_html(input1, input2, match_path, tipo, template_path=None, medias=None, 
                 cfg['categories'][op].append({
                     'grupo': grupo_id,
                     'labels': labels,
+                    'match_ids': match_ids,
                     'datasets': [
                         {'label': 'Teste', 'data': tr, 'borderColor': '#17becf'},
                         {'label': 'Referência', 'data': rf, 'borderColor': '#12094A'},

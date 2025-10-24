@@ -3,7 +3,17 @@ import pandas as pd
 def analise_diaria(df1, df2):
     def get_evento(row):
         tipo = str(row.get('Tipo Mensagem', '')).strip().upper()
-        codigo = str(row.get('Event Code', '')).strip()
+        
+        # Converter Event Code de forma robusta (aceita int e float)
+        codigo_raw = row.get('Event Code', '')
+        if pd.notna(codigo_raw) and str(codigo_raw).strip() != '':
+            try:
+                codigo = str(int(float(codigo_raw)))
+            except (ValueError, TypeError):
+                codigo = str(codigo_raw).strip()
+        else:
+            codigo = ''
+        
         tipo_disp = str(row.get('Tipo Dispositivo', '')).strip()
 
         # Normaliza modo econômico por texto
@@ -88,7 +98,16 @@ def analise_diaria(df1, df2):
                 motion = row.get('Motion Status', row.get('Motion', ''))
                 motion_str = str(motion) if pd.notna(motion) else ''
                 motion_prefix = motion_str[0] if len(motion_str) > 0 else None
-                codigo = str(row.get('Event Code', '')).strip()
+                
+                # Converter Event Code de forma robusta (aceita int e float)
+                codigo_raw = row.get('Event Code', '')
+                if pd.notna(codigo_raw) and str(codigo_raw).strip() != '':
+                    try:
+                        codigo = str(int(float(codigo_raw)))
+                    except (ValueError, TypeError):
+                        codigo = str(codigo_raw).strip()
+                else:
+                    codigo = ''
 
                 report_type_raw = row.get('Position Report Type', '')
                 if pd.notna(report_type_raw) and str(report_type_raw).strip() != '':
@@ -149,18 +168,11 @@ def analise_diaria(df1, df2):
                         ign_off += 1
                         # modo_eco_ativo = True
                         # periodicas = False
-
                     elif evento == 'GTERI':
-                        if motion_prefix == '1':
-                            eco += 1
-                            continue
                         if motion_prefix == '1'  or codigo == '27':
                             eco += 1
-                        else:
-                            if motion_prefix == '2'  or codigo == '30':
-                                peri += 1
-                            elif pd.isna(motion) or motion_str == '':
-                                peri += 1
+                        elif motion_prefix == '2'  or codigo == '30':
+                            peri += 1
                     elif evento == 'MODOECO':
                         eco += 1
 
@@ -176,11 +188,12 @@ def analise_diaria(df1, df2):
 
     df_teste = processar_dispositivo(df1, "teste")
     df_referencia = processar_dispositivo(df2, "referencia")
-
+    
     df_final = pd.merge(df_referencia, df_teste, on='Dias', how='outer').fillna(0)
     df_final['Dias'] = pd.to_datetime(df_final['Dias'], format='%d/%m/%Y')
     df_final = df_final.sort_values(by='Dias')
     df_final['Dias'] = df_final['Dias'].dt.strftime('%d/%m/%Y')
+
 
     colunas = [
         'Dias',
@@ -195,7 +208,16 @@ def analise_diaria(df1, df2):
 
     return df_final
 
-# if __name__ == "__main__":
-#     df1 = pd.read_csv('logs/ENG_009.csv', encoding='latin1')
-#     df2 = pd.read_csv('logs/BAA1364.csv', encoding='latin1')
-#     analise_diaria(df1, df2)    
+if __name__ == "__main__":
+    import os
+    # Detecta se está sendo executado da raiz ou do subdiretório
+    df1 = pd.read_csv('logs/ENG_048.csv', encoding='latin1')
+    df2 = pd.read_csv('logs/AYL2486.csv', encoding='latin1')
+
+    result = analise_diaria(df1, df2)
+    print(result.to_string())
+    
+    # Salvar em CSV
+    output_path = 'Contagem_eventos/resumo_eventos_diarios.csv'
+    result.to_csv(output_path, index=False, encoding='utf-8-sig')
+    print(f"\n✓ Resultado salvo em: {output_path}")    

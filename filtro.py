@@ -17,6 +17,7 @@ from Categorizacao_Vel_direcao_Distancia.diff_vel import *
 from Categorizacao_Vel_direcao_Distancia.Direção import *
 from Categorizacao_Vel_direcao_Distancia.match import *
 from Categorizacao_Vel_direcao_Distancia.nv_html import *
+from Categorizacao_Vel_direcao_Distancia.gerar_mapa_direcoes import gerar_mapa_direcoes, extrair_dados_mapa
 from Conexão.conexao import conexao
 from Conexão.conexoes_html import gerar_bloco_grafico_conexao
 from Contagem_eventos.contagem_diaria import analise_diaria
@@ -180,14 +181,65 @@ def executar_analise_completa(tipo='todas', input1=None, input2=None):
     df_satelites = analise_estabilidade_satelite(df_raw1, df_raw2)
     gerar_bloco_satellite_estabilidade(df_satelites)
 
-    unir_blocos(df_raw1, df_raw2)
+    # Gerar mapa de direções
+    print("🗺️  Gerando mapa de direções...")
+    gerar_mapa_direcoes(
+        input1=match1,
+        input2=match2,
+        match_path=output_geral
+    )
+    
+    # Extrair dados do mapa para incorporar no HTML principal
+    dados_mapa = extrair_dados_mapa(
+        input1=match1,
+        input2=match2,
+        match_path=output_geral
+    )
+    
+    # Extrair trajetos completos (GTERI e ignições)
+    print("📍 Extraindo trajetos completos...")
+    def extrair_trajeto(df):
+        trajeto = []
+        # Verificar se existe coluna Parsed ou Event Type
+        if 'Parsed' in df.columns:
+            filtro = df['Parsed'].astype(str).str.contains('GTERI|GTIGN|GTIGF', case=False, na=False)
+            df_filtrado = df[filtro]
+        elif 'Event Type' in df.columns:
+            filtro = df['Event Type'].astype(str).str.contains('GTERI|GTIGN|20|21|GTIGF', case=False, na=False)
+            df_filtrado = df[filtro]
+        else:
+            # Se não tem coluna específica, tenta buscar em todas as colunas string
+            df_filtrado = df
+            
+        for _, row in df_filtrado.iterrows():
+            try:
+                if pd.notna(row.get('Latitude')) and pd.notna(row.get('Longitude')):
+                    ponto = {
+                        'lat': float(row['Latitude']),
+                        'lon': float(row['Longitude']),
+                        'time': str(row.get('GNSS UTC Time', '')),
+                        'vel': float(row.get('Velocidade', 0)) if pd.notna(row.get('Velocidade')) else 0
+                    }
+                    trajeto.append(ponto)
+            except:
+                continue
+        return trajeto
+    
+    trajeto_teste = extrair_trajeto(df_raw1)
+    trajeto_ref = extrair_trajeto(df_raw2)
+    
+    print(f"   📍 Trajeto Teste: {len(trajeto_teste)} pontos")
+    print(f"   📍 Trajeto Referência: {len(trajeto_ref)} pontos")
+
+    unir_blocos(df_raw1, df_raw2, dados_mapa, trajeto_teste, trajeto_ref)
 
     print("✅ Dashboard final gerado!")
+    print("✅ Mapa de direções gerado em: temp_blocos/mapa_direcoes.html")
 
 
 
 if __name__ == "__main__":
     executar_analise_completa(
-        input1='logs/ENG_146.csv', #teste 
-        input2='logs/A474999.csv'
+        input1='logs/ENG_042.csv', #teste 
+        input2='logs/A474038.csv'
     )

@@ -41,7 +41,7 @@
                 labels: ["Sem conex\u00e3o", "2G", "3G", "4G"],
                 datasets: [{
                     label: 'Teste',
-                    data: [0, 1, 0, 1072],
+                    data: [5, 6, 0, 3850],
                     backgroundColor: cores,
                     borderColor: cores,
                     borderWidth: 1
@@ -50,9 +50,21 @@
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
+                interaction: {
+                    mode: 'index',
+                    intersect: false
+                },
                 plugins: {
                     legend: {
                         display: false
+                    },
+                    tooltip: {
+                        enabled: true,
+                        callbacks: {
+                            label: function(context) {
+                                return context.label + ': ' + context.parsed.y;
+                            }
+                        }
                     }
                 }
             }
@@ -67,7 +79,7 @@
                 labels: ["Sem conex\u00e3o", "2G", "3G", "4G"],
                 datasets: [{
                     label: 'Referência',
-                    data: [0, 1, 0, 1016],
+                    data: [0, 56, 0, 3867],
                     backgroundColor: cores,
                     borderColor: cores,
                     borderWidth: 1
@@ -76,9 +88,21 @@
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
+                interaction: {
+                    mode: 'index',
+                    intersect: false
+                },
                 plugins: {
                     legend: {
                         display: false
+                    },
+                    tooltip: {
+                        enabled: true,
+                        callbacks: {
+                            label: function(context) {
+                                return context.label + ': ' + context.parsed.y;
+                            }
+                        }
                     }
                 }
             }
@@ -93,7 +117,7 @@
                 labels: ["Sem conex\u00e3o", "2G", "3G", "4G"],
                 datasets: [{
                     label: 'Total Geral',
-                    data: [0, 2, 0, 2088],
+                    data: [5, 62, 0, 7717],
                     backgroundColor: cores,
                     borderColor: cores,
                     borderWidth: 1

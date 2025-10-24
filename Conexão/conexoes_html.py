@@ -66,9 +66,21 @@ def gerar_bloco_grafico_conexao(df, filename='bloco_conexao_gprs.html'):
             options: {{
                 responsive: true,
                 maintainAspectRatio: false,
+                interaction: {{
+                    mode: 'index',
+                    intersect: false
+                }},
                 plugins: {{
                     legend: {{
                         display: false
+                    }},
+                    tooltip: {{
+                        enabled: true,
+                        callbacks: {{
+                            label: function(context) {{
+                                return context.label + ': ' + context.parsed.y;
+                            }}
+                        }}
                     }}
                 }}
             }}
@@ -92,9 +104,21 @@ def gerar_bloco_grafico_conexao(df, filename='bloco_conexao_gprs.html'):
             options: {{
                 responsive: true,
                 maintainAspectRatio: false,
+                interaction: {{
+                    mode: 'index',
+                    intersect: false
+                }},
                 plugins: {{
                     legend: {{
                         display: false
+                    }},
+                    tooltip: {{
+                        enabled: true,
+                        callbacks: {{
+                            label: function(context) {{
+                                return context.label + ': ' + context.parsed.y;
+                            }}
+                        }}
                     }}
                 }}
             }}

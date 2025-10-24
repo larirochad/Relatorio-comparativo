@@ -1,0 +1,281 @@
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/><script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<style>
+
+.mapa-container {
+  background: white;
+  border-radius: 15px;
+  padding: 20px;
+  margin: 20px 0;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+}
+
+.mapa-header h2 {
+  text-align: center;
+  color: #333;
+  margin-bottom: 20px;
+  font-size: 1.5em;
+}
+
+.mapa-controls {
+  text-align: center;
+  margin-bottom: 15px;
+}
+
+.group-selector {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-bottom: 10px;
+}
+
+.group-btn {
+  padding: 6px 15px;
+  border: none;
+  border-radius: 15px;
+  background: #e9ecef;
+  color: #495057;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.group-btn.active {
+  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+  color: white;
+  transform: translateY(-1px);
+  box-shadow: 0 3px 10px rgba(79, 172, 254, 0.3);
+}
+
+.group-btn:hover {
+  transform: translateY(-1px);
+}
+
+.mapa-stats {
+  font-size: 14px;
+  color: #6c757d;
+}
+
+#mapa-direcoes {
+  height: 400px;
+  width: 100%;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.mapa-legend {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: white;
+  padding: 8px;
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  z-index: 1000;
+  font-size: 12px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  margin: 3px 0;
+}
+
+.legend-color {
+  width: 15px;
+  height: 3px;
+  margin-right: 6px;
+}
+
+</style>
+
+
+<div class="mapa-container">
+  <div class="mapa-header">
+    <h2>🗺️ Visualizador de Direções</h2>
+    <div class="mapa-controls">
+      <div class="group-selector">
+        <button class="group-btn" onclick="showMapGroup('D1')">D1 (1s)</button>
+        <button class="group-btn" onclick="showMapGroup('D5')">D5 (5s)</button>
+        <button class="group-btn" onclick="showMapGroup('D10')">D10 (10s)</button>
+      </div>
+      <div class="mapa-stats">
+        <span id="mapa-stats-text">Selecionemente um grupo para visualizar</span>
+      </div>
+    </div>
+  </div>
+  <div id="mapa-direcoes"></div>
+  <div class="mapa-legend">
+    <strong>Legenda:</strong>
+    <div class="legend-item">
+      <div class="legend-color" style="background: #ff6b6b;"></div>
+      Teste
+    </div>
+    <div class="legend-item">
+      <div class="legend-color" style="background: #4ecdc4;"></div>
+      Referência
+    </div>
+  </div>
+</div>
+
+
+<script>
+// Aguarda o Leaflet carregar antes de executar o código
+function initMapaWhenReady() {
+  if (typeof L !== "undefined") {
+    
+// Dados do mapa (embutidos)
+const mapaGruposData = {"D1":[{"match_id":"T1_1","teste":{"lat":-22.95561,"lon":-43.340111,"direcao":264.0,"velocidade":2.7},"ref":{"lat":-22.955945,"lon":-43.338208,"direcao":226.0,"velocidade":0.0},"distancia":198.38,"discrepancia":198.38},{"match_id":"T1_2","teste":{"lat":-22.879405,"lon":-43.270811,"direcao":274.0,"velocidade":0.8},"ref":{"lat":-22.879587,"lon":-43.270898,"direcao":179.0,"velocidade":0.0},"distancia":22.11,"discrepancia":22.0},{"match_id":"T1_3","teste":{"lat":-22.881377,"lon":-43.28251,"direcao":250.0,"velocidade":70.3},"ref":{"lat":-22.881498,"lon":-43.282653,"direcao":250.0,"velocidade":70.2},"distancia":19.89,"discrepancia":0.38},{"match_id":"T1_4","teste":{"lat":-22.899855,"lon":-43.303164,"direcao":196.0,"velocidade":69.3},"ref":{"lat":-22.900132,"lon":-43.303195,"direcao":196.0,"velocidade":69.7},"distancia":30.96,"discrepancia":11.65},{"match_id":"T1_5","teste":{"lat":-22.899855,"lon":-43.303164,"direcao":196.0,"velocidade":69.3},"ref":{"lat":-22.900132,"lon":-43.303195,"direcao":196.0,"velocidade":69.7},"distancia":30.96,"discrepancia":11.65},{"match_id":"T1_6","teste":{"lat":-22.938806,"lon":-43.349876,"direcao":218.0,"velocidade":72.9},"ref":{"lat":-22.938945,"lon":-43.34995,"direcao":219.0,"velocidade":72.8},"distancia":17.21,"discrepancia":3.03},{"match_id":"T1_7","teste":{"lat":-22.95523,"lon":-43.354965,"direcao":43.0,"velocidade":29.3},"ref":{"lat":-22.955193,"lon":-43.354817,"direcao":42.0,"velocidade":28.9},"distancia":15.7,"discrepancia":7.62},{"match_id":"T1_8","teste":{"lat":-22.957286,"lon":-43.35074,"direcao":24.0,"velocidade":43.2},"ref":{"lat":-22.957212,"lon":-43.350635,"direcao":27.0,"velocidade":43.0},"distancia":13.54,"discrepancia":1.57},{"match_id":"T1_9","teste":{"lat":-22.95785,"lon":-43.342211,"direcao":112.0,"velocidade":13.5},"ref":{"lat":-22.957898,"lon":-43.34218,"direcao":113.0,"velocidade":14.4},"distancia":6.21,"discrepancia":2.34},{"match_id":"T1_10","teste":{"lat":-22.957026,"lon":-43.33909,"direcao":101.0,"velocidade":0.0},"ref":{"lat":-22.957028,"lon":-43.339145,"direcao":274.0,"velocidade":0.0},"distancia":5.64,"discrepancia":5.64},{"match_id":"T1_11","teste":{"lat":-22.956192,"lon":-43.337322,"direcao":67.0,"velocidade":21.4},"ref":{"lat":-22.956125,"lon":-43.337217,"direcao":66.0,"velocidade":18.8},"distancia":13.08,"discrepancia":7.5},{"match_id":"T1_12","teste":{"lat":-22.955783,"lon":-43.336985,"direcao":67.0,"velocidade":0.0},"ref":{"lat":-22.9558,"lon":-43.336987,"direcao":337.0,"velocidade":0.0},"distancia":1.9,"discrepancia":1.9},{"match_id":"T1_13","teste":{"lat":-22.945235,"lon":-43.339818,"direcao":354.0,"velocidade":0.0},"ref":{"lat":-22.945183,"lon":-43.339853,"direcao":347.0,"velocidade":4.1},"distancia":6.8,"discrepancia":6.23},{"match_id":"T1_14","teste":{"lat":-22.937578,"lon":-43.337373,"direcao":305.0,"velocidade":17.9},"ref":{"lat":-22.937503,"lon":-43.33738,"direcao":326.0,"velocidade":18.9},"distancia":8.37,"discrepancia":3.26},{"match_id":"T1_15","teste":{"lat":-22.971025,"lon":-43.395256,"direcao":90.0,"velocidade":13.2},"ref":{"lat":-22.97099,"lon":-43.395125,"direcao":65.0,"velocidade":18.8},"distancia":13.96,"discrepancia":13.96},{"match_id":"T1_16","teste":{"lat":-22.971081,"lon":-43.388803,"direcao":90.0,"velocidade":0.0},"ref":{"lat":-22.971318,"lon":-43.388785,"direcao":197.0,"velocidade":0.0},"distancia":26.42,"discrepancia":26.42},{"match_id":"T1_17","teste":{"lat":-22.969313,"lon":-43.385929,"direcao":182.0,"velocidade":25.0},"ref":{"lat":-22.969233,"lon":-43.38581,"direcao":177.0,"velocidade":26.6},"distancia":15.09,"discrepancia":15.09},{"match_id":"T1_18","teste":{"lat":-22.996839,"lon":-43.355772,"direcao":122.0,"velocidade":9.7},"ref":{"lat":-22.996893,"lon":-43.355713,"direcao":132.0,"velocidade":7.5},"distancia":8.52,"discrepancia":6.13},{"match_id":"T1_19","teste":{"lat":-22.998849,"lon":-43.354715,"direcao":122.0,"velocidade":0.0},"ref":{"lat":-22.998818,"lon":-43.354702,"direcao":181.0,"velocidade":0.0},"distancia":3.69,"discrepancia":3.69},{"match_id":"T1_20","teste":{"lat":-22.999752,"lon":-43.358719,"direcao":269.0,"velocidade":20.2},"ref":{"lat":-22.99982,"lon":-43.358712,"direcao":272.0,"velocidade":21.1},"distancia":7.6,"discrepancia":1.86},{"match_id":"T1_21","teste":{"lat":-23.000009,"lon":-43.366722,"direcao":267.0,"velocidade":22.3},"ref":{"lat":-23.0001,"lon":-43.36672,"direcao":267.0,"velocidade":20.2},"distancia":10.12,"discrepancia":4.22},{"match_id":"T1_22","teste":{"lat":-23.000049,"lon":-43.376322,"direcao":275.0,"velocidade":37.8},"ref":{"lat":-23.000128,"lon":-43.376368,"direcao":271.0,"velocidade":38.4},"distancia":9.97,"discrepancia":0.61},{"match_id":"T1_23","teste":{"lat":-23.000007,"lon":-43.395757,"direcao":271.0,"velocidade":2.6},"ref":{"lat":-23.000098,"lon":-43.395707,"direcao":271.0,"velocidade":0.0},"distancia":11.34,"discrepancia":10.98},{"match_id":"T1_24","teste":{"lat":-23.000454,"lon":-43.416605,"direcao":257.0,"velocidade":48.4},"ref":{"lat":-23.000553,"lon":-43.416708,"direcao":257.0,"velocidade":45.2},"distancia":15.24,"discrepancia":2.24},{"match_id":"T1_25","teste":{"lat":-23.004853,"lon":-43.430746,"direcao":252.0,"velocidade":1.0},"ref":{"lat":-23.004952,"lon":-43.430683,"direcao":262.0,"velocidade":0.0},"distancia":12.76,"discrepancia":12.62},{"match_id":"T1_26","teste":{"lat":-23.000802,"lon":-43.430121,"direcao":46.0,"velocidade":49.2},"ref":{"lat":-23.000703,"lon":-43.430068,"direcao":44.0,"velocidade":50.2},"distancia":12.27,"discrepancia":1.54},{"match_id":"T1_27","teste":{"lat":-22.988313,"lon":-43.415252,"direcao":50.0,"velocidade":58.7},"ref":{"lat":-22.988313,"lon":-43.415063,"direcao":48.0,"velocidade":59.0},"distancia":19.35,"discrepancia":3.0},{"match_id":"T1_28","teste":{"lat":-22.97343,"lon":-43.398594,"direcao":50.0,"velocidade":0.1},"ref":{"lat":-22.97351,"lon":-43.398477,"direcao":83.0,"velocidade":0.0},"distancia":14.92,"discrepancia":14.91},{"match_id":"T1_29","teste":{"lat":-22.97289,"lon":-43.398805,"direcao":349.0,"velocidade":0.0},"ref":{"lat":-22.97281,"lon":-43.398777,"direcao":7.0,"velocidade":0.0},"distancia":9.35,"discrepancia":9.35},{"match_id":"T1_30","teste":{"lat":-22.971799,"lon":-43.392812,"direcao":180.0,"velocidade":27.9},"ref":{"lat":-22.971785,"lon":-43.392738,"direcao":182.0,"velocidade":27.1},"distancia":7.73,"discrepancia":0.09},{"match_id":"T1_31","teste":{"lat":-22.973488,"lon":-43.38626,"direcao":90.0,"velocidade":13.3},"ref":{"lat":-22.973485,"lon":-43.38623,"direcao":91.0,"velocidade":12.3},"distancia":3.09,"discrepancia":0.47},{"match_id":"T1_32","teste":{"lat":-22.97352,"lon":-43.382789,"direcao":90.0,"velocidade":0.0},"ref":{"lat":-22.973497,"lon":-43.38274,"direcao":95.0,"velocidade":0.0},"distancia":5.63,"discrepancia":5.63},{"match_id":"T1_33","teste":{"lat":-22.973569,"lon":-43.368864,"direcao":87.0,"velocidade":65.8},"ref":{"lat":-22.973537,"lon":-43.369038,"direcao":88.0,"velocidade":65.8},"distancia":18.17,"discrepancia":0.11},{"match_id":"T1_34","teste":{"lat":-22.961093,"lon":-43.357354,"direcao":350.0,"velocidade":81.3},"ref":{"lat":-22.961295,"lon":-43.357295,"direcao":352.0,"velocidade":79.5},"distancia":23.26,"discrepancia":0.93},{"match_id":"T1_35","teste":{"lat":-22.937554,"lon":-43.350339,"direcao":313.0,"velocidade":20.4},"ref":{"lat":-22.937647,"lon":-43.35028,"direcao":315.0,"velocidade":18.9},"distancia":11.98,"discrepancia":6.52},{"match_id":"T1_36","teste":{"lat":-22.931269,"lon":-43.353368,"direcao":358.0,"velocidade":0.0},"ref":{"lat":-22.931245,"lon":-43.353337,"direcao":344.0,"velocidade":0.0},"distancia":4.15,"discrepancia":4.15},{"match_id":"T1_37","teste":{"lat":-22.981452,"lon":-43.381427,"direcao":344.0,"velocidade":0.2},"ref":{"lat":-22.981387,"lon":-43.381355,"direcao":129.0,"velocidade":0.6},"distancia":10.32,"discrepancia":10.21},{"match_id":"T1_38","teste":{"lat":-22.982918,"lon":-43.380873,"direcao":344.0,"velocidade":0.0},"ref":{"lat":-22.982923,"lon":-43.38086,"direcao":154.0,"velocidade":0.0},"distancia":1.44,"discrepancia":1.44},{"match_id":"T1_39","teste":{"lat":-22.993424,"lon":-43.37066,"direcao":92.0,"velocidade":30.6},"ref":{"lat":-22.993455,"lon":-43.370767,"direcao":90.0,"velocidade":31.9},"distancia":11.48,"discrepancia":2.8},{"match_id":"T1_40","teste":{"lat":-22.993593,"lon":-43.366442,"direcao":92.0,"velocidade":0.0},"ref":{"lat":-22.993602,"lon":-43.366443,"direcao":90.0,"velocidade":0.0},"distancia":1.01,"discrepancia":1.01},{"match_id":"T1_41","teste":{"lat":-22.990215,"lon":-43.36547,"direcao":1.0,"velocidade":49.9},"ref":{"lat":-22.99037,"lon":-43.365508,"direcao":1.0,"velocidade":48.4},"distancia":17.67,"discrepancia":4.02},{"match_id":"T1_42","teste":{"lat":-22.97427,"lon":-43.363646,"direcao":23.0,"velocidade":40.2},"ref":{"lat":-22.974418,"lon":-43.3638,"direcao":354.0,"velocidade":30.2},"distancia":22.79,"discrepancia":13.01},{"match_id":"T1_43","teste":{"lat":-22.973005,"lon":-43.379145,"direcao":23.0,"velocidade":0.0},"ref":{"lat":-22.972993,"lon":-43.379155,"direcao":272.0,"velocidade":0.0},"distancia":1.68,"discrepancia":1.68},{"match_id":"T1_44","teste":{"lat":-22.973,"lon":-43.384471,"direcao":269.0,"velocidade":15.9},"ref":{"lat":-22.973003,"lon":-43.384482,"direcao":267.0,"velocidade":3.8},"distancia":1.17,"discrepancia":1.17},{"match_id":"T1_45","teste":{"lat":-22.968887,"lon":-43.390576,"direcao":349.0,"velocidade":29.6},"ref":{"lat":-22.968962,"lon":-43.390612,"direcao":339.0,"velocidade":31.6},"distancia":9.12,"discrepancia":0.62},{"match_id":"T1_46","teste":{"lat":-22.971005,"lon":-43.390143,"direcao":268.0,"velocidade":19.4},"ref":{"lat":-22.970927,"lon":-43.389992,"direcao":278.0,"velocidade":16.2},"distancia":17.73,"discrepancia":12.79},{"match_id":"T1_47","teste":{"lat":-22.972963,"lon":-43.39545,"direcao":270.0,"velocidade":66.1},"ref":{"lat":-22.972998,"lon":-43.39514,"direcao":270.0,"velocidade":64.3},"distancia":31.97,"discrepancia":13.86},{"match_id":"T1_48","teste":{"lat":-22.972594,"lon":-43.391237,"direcao":7.0,"velocidade":12.7},"ref":{"lat":-22.97256,"lon":-43.3913,"direcao":65.0,"velocidade":3.0},"distancia":7.48,"discrepancia":5.3},{"match_id":"T1_49","teste":{"lat":-22.97105,"lon":-43.394695,"direcao":89.0,"velocidade":24.1},"ref":{"lat":-22.971135,"lon":-43.394685,"direcao":82.0,"velocidade":21.6},"distancia":9.51,"discrepancia":9.51},{"match_id":"T1_50","teste":{"lat":-22.971101,"lon":-43.388935,"direcao":89.0,"velocidade":0.0},"ref":{"lat":-22.971085,"lon":-43.388883,"direcao":89.0,"velocidade":0.0},"distancia":5.61,"discrepancia":5.61},{"match_id":"T1_51","teste":{"lat":-22.968293,"lon":-43.385733,"direcao":89.0,"velocidade":8.9},"ref":{"lat":-22.968312,"lon":-43.385647,"direcao":101.0,"velocidade":14.8},"distancia":9.05,"discrepancia":9.05},{"match_id":"T1_52","teste":{"lat":-22.971172,"lon":-43.38684,"direcao":274.0,"velocidade":17.7},"ref":{"lat":-22.971188,"lon":-43.386758,"direcao":286.0,"velocidade":18.8},"distancia":8.58,"discrepancia":3.51},{"match_id":"T1_53","teste":{"lat":-22.972702,"lon":-43.398562,"direcao":93.0,"velocidade":12.1},"ref":{"lat":-22.972743,"lon":-43.398605,"direcao":96.0,"velocidade":11.5},"distancia":6.34,"discrepancia":6.34},{"match_id":"T1_54","teste":{"lat":-22.966487,"lon":-43.396474,"direcao":40.0,"velocidade":36.2},"ref":{"lat":-22.96662,"lon":-43.396445,"direcao":43.0,"velocidade":39.2},"distancia":15.08,"discrepancia":4.61},{"match_id":"T1_55","teste":{"lat":-22.960252,"lon":-43.391084,"direcao":40.0,"velocidade":0.0},"ref":{"lat":-22.960227,"lon":-43.391017,"direcao":354.0,"velocidade":4.7},"distancia":7.4,"discrepancia":6.75},{"match_id":"T1_56","teste":{"lat":-22.964054,"lon":-43.394883,"direcao":220.0,"velocidade":37.1},"ref":{"lat":-22.963963,"lon":-43.39483,"direcao":224.0,"velocidade":36.9},"distancia":11.48,"discrepancia":1.2},{"match_id":"T1_57","teste":{"lat":-22.973353,"lon":-43.385899,"direcao":220.0,"velocidade":0.0},"ref":{"lat":-22.973357,"lon":-43.38582,"direcao":112.0,"velocidade":0.0},"distancia":8.1,"discrepancia":8.1},{"match_id":"T1_58","teste":{"lat":-22.973473,"lon":-43.368477,"direcao":90.0,"velocidade":50.9},"ref":{"lat":-22.973457,"lon":-43.368595,"direcao":90.0,"velocidade":50.5},"distancia":12.21,"discrepancia":1.87},{"match_id":"T1_59","teste":{"lat":-22.963843,"lon":-43.356983,"direcao":17.0,"velocidade":36.7},"ref":{"lat":-22.963895,"lon":-43.35702,"direcao":359.0,"velocidade":49.8},"distancia":6.91,"discrepancia":5.1},{"match_id":"T1_60","teste":{"lat":-22.840239,"lon":-43.312595,"direcao":51.0,"velocidade":4.6},"ref":{"lat":-22.840205,"lon":-43.312593,"direcao":41.0,"velocidade":4.5},"distancia":3.79,"discrepancia":2.53},{"match_id":"T1_61","teste":{"lat":-22.829843,"lon":-43.321218,"direcao":71.0,"velocidade":12.6},"ref":{"lat":-22.82987,"lon":-43.321227,"direcao":69.0,"velocidade":10.8},"distancia":3.14,"discrepancia":0.11},{"match_id":"T1_62","teste":{"lat":-22.827539,"lon":-43.31765,"direcao":71.0,"velocidade":0.0},"ref":{"lat":-22.827605,"lon":-43.31761,"direcao":59.0,"velocidade":0.0},"distancia":8.41,"discrepancia":8.41},{"match_id":"T1_63","teste":{"lat":-22.824071,"lon":-43.312588,"direcao":333.0,"velocidade":36.9},"ref":{"lat":-22.824095,"lon":-43.312662,"direcao":331.0,"velocidade":39.3},"distancia":8.04,"discrepancia":2.54},{"match_id":"T1_64","teste":{"lat":-22.822459,"lon":-43.327019,"direcao":251.0,"velocidade":35.9},"ref":{"lat":-22.82246,"lon":-43.327128,"direcao":254.0,"velocidade":39.4},"distancia":11.17,"discrepancia":0.71},{"match_id":"T1_65","teste":{"lat":-22.828852,"lon":-43.345252,"direcao":246.0,"velocidade":28.7},"ref":{"lat":-22.828865,"lon":-43.345375,"direcao":247.0,"velocidade":26.7},"distancia":12.69,"discrepancia":5.0},{"match_id":"T1_66","teste":{"lat":-22.835635,"lon":-43.361994,"direcao":236.0,"velocidade":43.5},"ref":{"lat":-22.835698,"lon":-43.362098,"direcao":239.0,"velocidade":43.0},"distancia":12.75,"discrepancia":0.74},{"match_id":"T1_67","teste":{"lat":-22.851468,"lon":-43.386718,"direcao":243.0,"velocidade":62.3},"ref":{"lat":-22.851567,"lon":-43.386892,"direcao":243.0,"velocidade":64.3},"distancia":20.95,"discrepancia":3.37},{"match_id":"T1_68","teste":{"lat":-22.971832,"lon":-43.392787,"direcao":181.0,"velocidade":28.4},"ref":{"lat":-22.971998,"lon":-43.392582,"direcao":185.0,"velocidade":31.7},"distancia":27.95,"discrepancia":19.6},{"match_id":"T1_69","teste":{"lat":-22.972557,"lon":-43.398379,"direcao":235.0,"velocidade":11.1},"ref":{"lat":-22.972667,"lon":-43.398265,"direcao":230.0,"velocidade":10.9},"distancia":16.91,"discrepancia":13.85},{"match_id":"T1_70","teste":{"lat":-22.972651,"lon":-43.392838,"direcao":180.0,"velocidade":7.2},"ref":{"lat":-22.972605,"lon":-43.39285,"direcao":191.0,"velocidade":7.3},"distancia":5.26,"discrepancia":5.26}],"D5":[{"match_id":"T5_1","teste":{"lat":-22.970995,"lon":-43.397126,"direcao":88.0,"velocidade":12.0},"ref":{"lat":-22.970985,"lon":-43.397197,"direcao":95.0,"velocidade":17.1},"distancia":7.35,"discrepancia":7.35},{"match_id":"T5_2","teste":{"lat":-22.972595,"lon":-43.392851,"direcao":88.0,"velocidade":0.0},"ref":{"lat":-22.97259,"lon":-43.392773,"direcao":167.0,"velocidade":0.0},"distancia":8.0,"discrepancia":8.0},{"match_id":"T5_3","teste":{"lat":-22.973481,"lon":-43.38011,"direcao":91.0,"velocidade":41.6},"ref":{"lat":-22.973445,"lon":-43.38056,"direcao":87.0,"velocidade":39.9},"distancia":46.24,"discrepancia":0.96},{"match_id":"T5_4","teste":{"lat":-22.973618,"lon":-43.365126,"direcao":89.0,"velocidade":33.0},"ref":{"lat":-22.973582,"lon":-43.365448,"direcao":91.0,"velocidade":38.9},"distancia":33.21,"discrepancia":6.73},{"match_id":"T5_5","teste":{"lat":-22.958278,"lon":-43.356987,"direcao":23.0,"velocidade":35.1},"ref":{"lat":-22.958562,"lon":-43.357115,"direcao":27.0,"velocidade":27.6},"distancia":34.19,"discrepancia":0.64},{"match_id":"T5_6","teste":{"lat":-22.938657,"lon":-43.346491,"direcao":94.0,"velocidade":44.8},"ref":{"lat":-22.938593,"lon":-43.346988,"direcao":95.0,"velocidade":44.5},"distancia":51.39,"discrepancia":1.78},{"match_id":"T5_7","teste":{"lat":-22.940802,"lon":-43.344053,"direcao":240.0,"velocidade":34.6},"ref":{"lat":-22.940578,"lon":-43.343718,"direcao":201.0,"velocidade":32.0},"distancia":42.39,"discrepancia":5.39},{"match_id":"T5_8","teste":{"lat":-22.949107,"lon":-43.339151,"direcao":173.0,"velocidade":42.1},"ref":{"lat":-22.948667,"lon":-43.339175,"direcao":172.0,"velocidade":42.2},"distancia":48.99,"discrepancia":2.16},{"match_id":"T5_9","teste":{"lat":-22.972598,"lon":-43.39861,"direcao":269.0,"velocidade":6.2},"ref":{"lat":-22.972415,"lon":-43.399008,"direcao":273.0,"velocidade":15.9},"distancia":45.54,"discrepancia":30.19},{"match_id":"T5_10","teste":{"lat":-22.981711,"lon":-43.38136,"direcao":164.0,"velocidade":3.1},"ref":{"lat":-22.98178,"lon":-43.381725,"direcao":54.0,"velocidade":1.1},"distancia":38.14,"discrepancia":35.81},{"match_id":"T5_11","teste":{"lat":-22.972492,"lon":-43.398225,"direcao":175.0,"velocidade":4.1},"ref":{"lat":-22.972485,"lon":-43.398155,"direcao":110.0,"velocidade":1.9},"distancia":7.21,"discrepancia":3.04},{"match_id":"T5_12","teste":{"lat":-22.971258,"lon":-43.385968,"direcao":310.0,"velocidade":19.2},"ref":{"lat":-22.971343,"lon":-43.385908,"direcao":298.0,"velocidade":10.2},"distancia":11.27,"discrepancia":0.98},{"match_id":"T5_13","teste":{"lat":-22.972629,"lon":-43.391243,"direcao":351.0,"velocidade":0.0},"ref":{"lat":-22.972425,"lon":-43.390992,"direcao":249.0,"velocidade":3.9},"distancia":34.28,"discrepancia":31.57},{"match_id":"T5_14","teste":{"lat":-22.972945,"lon":-43.397898,"direcao":273.0,"velocidade":44.3},"ref":{"lat":-22.97293,"lon":-43.398273,"direcao":271.0,"velocidade":42.2},"distancia":38.43,"discrepancia":2.39},{"match_id":"T5_15","teste":{"lat":-22.996566,"lon":-43.359903,"direcao":7.0,"velocidade":3.3},"ref":{"lat":-22.996573,"lon":-43.359808,"direcao":341.0,"velocidade":2.5},"distancia":9.76,"discrepancia":6.54},{"match_id":"T5_16","teste":{"lat":-22.971021,"lon":-43.39168,"direcao":92.0,"velocidade":32.1},"ref":{"lat":-22.970993,"lon":-43.39167,"direcao":97.0,"velocidade":22.9},"distancia":3.28,"discrepancia":3.28},{"match_id":"T5_17","teste":{"lat":-22.971656,"lon":-43.387671,"direcao":124.0,"velocidade":26.0},"ref":{"lat":-22.971713,"lon":-43.387675,"direcao":129.0,"velocidade":23.3},"distancia":6.35,"discrepancia":6.35},{"match_id":"T5_18","teste":{"lat":-22.973133,"lon":-43.385838,"direcao":140.0,"velocidade":27.5},"ref":{"lat":-22.973233,"lon":-43.385787,"direcao":138.0,"velocidade":24.5},"distancia":12.28,"discrepancia":2.16},{"match_id":"T5_19","teste":{"lat":-22.973411,"lon":-43.377667,"direcao":93.0,"velocidade":51.3},"ref":{"lat":-22.973417,"lon":-43.377375,"direcao":95.0,"velocidade":53.3},"distancia":29.9,"discrepancia":0.84},{"match_id":"T5_20","teste":{"lat":-22.978033,"lon":-43.36585,"direcao":182.0,"velocidade":49.8},"ref":{"lat":-22.97828,"lon":-43.365882,"direcao":185.0,"velocidade":52.7},"distancia":27.66,"discrepancia":0.81},{"match_id":"T5_21","teste":{"lat":-22.993394,"lon":-43.367935,"direcao":272.0,"velocidade":23.2},"ref":{"lat":-22.993408,"lon":-43.368093,"direcao":270.0,"velocidade":23.7},"distancia":16.25,"discrepancia":3.22},{"match_id":"T5_22","teste":{"lat":-22.986435,"lon":-43.379493,"direcao":342.0,"velocidade":6.6},"ref":{"lat":-22.986392,"lon":-43.379503,"direcao":342.0,"velocidade":6.4},"distancia":4.89,"discrepancia":1.28},{"match_id":"T5_23","teste":{"lat":-22.9818,"lon":-43.380825,"direcao":297.0,"velocidade":0.0},"ref":{"lat":-22.981798,"lon":-43.38088,"direcao":284.0,"velocidade":7.8},"distancia":5.63,"discrepancia":3.46},{"match_id":"T5_24","teste":{"lat":-22.984673,"lon":-43.380205,"direcao":152.0,"velocidade":10.4},"ref":{"lat":-22.984858,"lon":-43.380188,"direcao":167.0,"velocidade":3.9},"distancia":20.64,"discrepancia":16.67},{"match_id":"T5_25","teste":{"lat":-22.99053,"lon":-43.377983,"direcao":159.0,"velocidade":40.2},"ref":{"lat":-22.990732,"lon":-43.377897,"direcao":161.0,"velocidade":43.6},"distancia":24.12,"discrepancia":0.84},{"match_id":"T5_26","teste":{"lat":-23.000125,"lon":-43.384908,"direcao":269.0,"velocidade":71.8},"ref":{"lat":-23.00013,"lon":-43.385385,"direcao":268.0,"velocidade":72.0},"distancia":48.83,"discrepancia":8.89},{"match_id":"T5_27","teste":{"lat":-22.999497,"lon":-43.407394,"direcao":271.0,"velocidade":14.4},"ref":{"lat":-22.9995,"lon":-43.407527,"direcao":275.0,"velocidade":6.2},"distancia":13.62,"discrepancia":7.9},{"match_id":"T5_28","teste":{"lat":-23.002491,"lon":-43.423777,"direcao":249.0,"velocidade":51.7},"ref":{"lat":-23.002563,"lon":-43.424122,"direcao":250.0,"velocidade":52.3},"distancia":36.21,"discrepancia":7.32},{"match_id":"T5_29","teste":{"lat":-22.997899,"lon":-43.426397,"direcao":65.0,"velocidade":65.8},"ref":{"lat":-22.997745,"lon":-43.426075,"direcao":66.0,"velocidade":67.2},"distancia":37.14,"discrepancia":0.2},{"match_id":"T5_30","teste":{"lat":-22.97666,"lon":-43.405984,"direcao":35.0,"velocidade":72.7},"ref":{"lat":-22.976317,"lon":-43.405712,"direcao":35.0,"velocidade":73.8},"distancia":47.22,"discrepancia":6.53},{"match_id":"T5_31","teste":{"lat":-22.972485,"lon":-43.398226,"direcao":183.0,"velocidade":8.9},"ref":{"lat":-22.972532,"lon":-43.398187,"direcao":186.0,"velocidade":10.5},"distancia":6.58,"discrepancia":1.5},{"match_id":"T5_32","teste":{"lat":-22.982918,"lon":-43.380873,"direcao":344.0,"velocidade":0.0},"ref":{"lat":-22.982923,"lon":-43.38086,"direcao":154.0,"velocidade":0.0},"distancia":1.44,"discrepancia":1.44},{"match_id":"T5_33","teste":{"lat":-22.987035,"lon":-43.379337,"direcao":161.0,"velocidade":33.9},"ref":{"lat":-22.9869,"lon":-43.379327,"direcao":163.0,"velocidade":31.7},"distancia":15.05,"discrepancia":3.17},{"match_id":"T5_34","teste":{"lat":-22.972686,"lon":-43.39797,"direcao":159.0,"velocidade":8.6},"ref":{"lat":-22.972693,"lon":-43.398213,"direcao":205.0,"velocidade":9.1},"distancia":24.89,"discrepancia":12.6},{"match_id":"T5_35","teste":{"lat":-22.971008,"lon":-43.393195,"direcao":91.0,"velocidade":22.3},"ref":{"lat":-22.971113,"lon":-43.393042,"direcao":90.0,"velocidade":13.7},"distancia":19.54,"discrepancia":5.46},{"match_id":"T5_36","teste":{"lat":-22.973508,"lon":-43.386234,"direcao":89.0,"velocidade":47.7},"ref":{"lat":-22.973525,"lon":-43.385673,"direcao":88.0,"velocidade":30.0},"distancia":57.46,"discrepancia":3.5},{"match_id":"T5_37","teste":{"lat":-22.973576,"lon":-43.364914,"direcao":90.0,"velocidade":56.2},"ref":{"lat":-22.973808,"lon":-43.364213,"direcao":132.0,"velocidade":53.6},"distancia":76.26,"discrepancia":0.01},{"match_id":"T5_38","teste":{"lat":-22.948122,"lon":-43.355504,"direcao":30.0,"velocidade":98.9},"ref":{"lat":-22.947058,"lon":-43.354892,"direcao":26.0,"velocidade":97.5},"distancia":133.88,"discrepancia":2.51},{"match_id":"T5_39","teste":{"lat":-22.906928,"lon":-43.312367,"direcao":78.0,"velocidade":36.3},"ref":{"lat":-22.906922,"lon":-43.311938,"direcao":87.0,"velocidade":34.3},"distancia":43.95,"discrepancia":4.73},{"match_id":"T5_40","teste":{"lat":-22.890575,"lon":-43.296956,"direcao":50.0,"velocidade":89.0},"ref":{"lat":-22.889853,"lon":-43.295912,"direcao":49.0,"velocidade":93.7},"distancia":133.73,"discrepancia":6.86},{"match_id":"T5_41","teste":{"lat":-22.887655,"lon":-43.284701,"direcao":86.0,"velocidade":25.4},"ref":{"lat":-22.887738,"lon":-43.284317,"direcao":121.0,"velocidade":24.8},"distancia":40.41,"discrepancia":5.55},{"match_id":"T5_42","teste":{"lat":-22.972882,"lon":-43.39879,"direcao":339.0,"velocidade":0.0},"ref":{"lat":-22.972943,"lon":-43.398788,"direcao":321.0,"velocidade":6.2},"distancia":6.79,"discrepancia":3.35},{"match_id":"T5_43","teste":{"lat":-22.972383,"lon":-43.398241,"direcao":93.0,"velocidade":0.0},"ref":{"lat":-22.97226,"lon":-43.397663,"direcao":84.0,"velocidade":2.4},"distancia":60.73,"discrepancia":59.06},{"match_id":"T5_44","teste":{"lat":-22.965049,"lon":-43.353669,"direcao":339.0,"velocidade":3.5},"ref":{"lat":-22.96503,"lon":-43.353723,"direcao":259.0,"velocidade":2.7},"distancia":5.92,"discrepancia":4.2},{"match_id":"T5_45","teste":{"lat":-22.956161,"lon":-43.356638,"direcao":339.0,"velocidade":69.3},"ref":{"lat":-22.955815,"lon":-43.356712,"direcao":337.0,"velocidade":69.5},"distancia":39.21,"discrepancia":0.65},{"match_id":"T5_46","teste":{"lat":-22.923406,"lon":-43.33505,"direcao":67.0,"velocidade":72.8},"ref":{"lat":-22.92327,"lon":-43.334657,"direcao":66.0,"velocidade":71.6},"distancia":43.0,"discrepancia":2.89},{"match_id":"T5_47","teste":{"lat":-22.906574,"lon":-43.305882,"direcao":50.0,"velocidade":71.3},"ref":{"lat":-22.90634,"lon":-43.305607,"direcao":46.0,"velocidade":71.6},"distancia":38.35,"discrepancia":1.34},{"match_id":"T5_48","teste":{"lat":-22.879445,"lon":-43.278126,"direcao":47.0,"velocidade":70.4},"ref":{"lat":-22.879197,"lon":-43.277837,"direcao":43.0,"velocidade":70.1},"distancia":40.46,"discrepancia":1.43},{"match_id":"T5_49","teste":{"lat":-22.868946,"lon":-43.292393,"direcao":286.0,"velocidade":60.5},"ref":{"lat":-22.868843,"lon":-43.292738,"direcao":286.0,"velocidade":63.3},"distancia":37.16,"discrepancia":2.77},{"match_id":"T5_50","teste":{"lat":-22.855897,"lon":-43.307602,"direcao":21.0,"velocidade":22.7},"ref":{"lat":-22.855735,"lon":-43.307507,"direcao":18.0,"velocidade":24.8},"distancia":20.48,"discrepancia":7.29},{"match_id":"T5_51","teste":{"lat":-22.845797,"lon":-43.312053,"direcao":333.0,"velocidade":47.1},"ref":{"lat":-22.845545,"lon":-43.312172,"direcao":334.0,"velocidade":46.5},"distancia":30.56,"discrepancia":4.56},{"match_id":"T5_52","teste":{"lat":-22.837354,"lon":-43.314948,"direcao":270.0,"velocidade":38.9},"ref":{"lat":-22.837285,"lon":-43.315147,"direcao":267.0,"velocidade":38.9},"distancia":21.79,"discrepancia":0.18},{"match_id":"T5_53","teste":{"lat":-22.830044,"lon":-43.319788,"direcao":33.0,"velocidade":0.0},"ref":{"lat":-22.83027,"lon":-43.319815,"direcao":339.0,"velocidade":1.9},"distancia":25.28,"discrepancia":24.75},{"match_id":"T5_54","teste":{"lat":-22.972527,"lon":-43.398128,"direcao":173.0,"velocidade":7.6},"ref":{"lat":-22.972498,"lon":-43.397748,"direcao":192.0,"velocidade":6.0},"distancia":39.04,"discrepancia":29.6},{"match_id":"T5_55","teste":{"lat":-22.97275,"lon":-43.392829,"direcao":169.0,"velocidade":8.1},"ref":{"lat":-22.972662,"lon":-43.392807,"direcao":216.0,"velocidade":6.3},"distancia":10.04,"discrepancia":0.04},{"match_id":"T5_56","teste":{"lat":-22.972723,"lon":-43.398684,"direcao":94.0,"velocidade":12.4},"ref":{"lat":-22.972963,"lon":-43.398752,"direcao":38.0,"velocidade":5.4},"distancia":27.58,"discrepancia":17.69}],"D10":[{"match_id":"T10_1","teste":{"lat":-22.956625,"lon":-43.338318,"direcao":191.0,"velocidade":36.2},"ref":{"lat":-22.955945,"lon":-43.338208,"direcao":226.0,"velocidade":17.1},"distancia":76.45,"discrepancia":24.63},{"match_id":"T10_2","teste":{"lat":-22.956625,"lon":-43.338318,"direcao":191.0,"velocidade":36.2},"ref":{"lat":-22.955945,"lon":-43.338208,"direcao":226.0,"velocidade":17.1},"distancia":76.45,"discrepancia":24.63},{"match_id":"T10_3","teste":{"lat":-22.877373,"lon":-43.270979,"direcao":274.0,"velocidade":0.3},"ref":{"lat":-22.878135,"lon":-43.271408,"direcao":343.0,"velocidade":1.9},"distancia":95.45,"discrepancia":93.31},{"match_id":"T10_4","teste":{"lat":-22.939494,"lon":-43.342355,"direcao":63.0,"velocidade":0.0},"ref":{"lat":-22.939425,"lon":-43.342538,"direcao":0.0,"velocidade":0.5},"distancia":20.25,"discrepancia":19.83},{"match_id":"T10_5","teste":{"lat":-22.887465,"lon":-43.284501,"direcao":270.0,"velocidade":50.1},"ref":{"lat":-22.887558,"lon":-43.283465,"direcao":268.0,"velocidade":51.8},"distancia":106.63,"discrepancia":7.56},{"match_id":"T10_6","teste":{"lat":-22.881458,"lon":-43.28738,"direcao":270.0,"velocidade":0.0},"ref":{"lat":-22.881378,"lon":-43.287502,"direcao":118.0,"velocidade":33.8},"distancia":15.34,"discrepancia":15.34},{"match_id":"T10_7","teste":{"lat":-22.903231,"lon":-43.304262,"direcao":196.0,"velocidade":80.8},"ref":{"lat":-22.901815,"lon":-43.303842,"direcao":197.0,"velocidade":86.3},"distancia":163.22,"discrepancia":0.76},{"match_id":"T10_8","teste":{"lat":-22.951579,"lon":-43.356961,"direcao":187.0,"velocidade":70.4},"ref":{"lat":-22.950173,"lon":-43.356657,"direcao":195.0,"velocidade":68.5},"distancia":159.41,"discrepancia":5.08},{"match_id":"T10_9","teste":{"lat":-22.979608,"lon":-43.365869,"direcao":187.0,"velocidade":63.5},"ref":{"lat":-22.978373,"lon":-43.36544,"direcao":202.0,"velocidade":63.8},"distancia":144.18,"discrepancia":2.74},{"match_id":"T10_10","teste":{"lat":-22.99403,"lon":-43.376518,"direcao":235.0,"velocidade":5.8},"ref":{"lat":-22.99367,"lon":-43.376125,"direcao":240.0,"velocidade":50.8},"distancia":56.75,"discrepancia":6.14},{"match_id":"T10_11","teste":{"lat":-22.983445,"lon":-43.378302,"direcao":12.0,"velocidade":20.8},"ref":{"lat":-22.984028,"lon":-43.378423,"direcao":14.0,"velocidade":27.3},"distancia":66.0,"discrepancia":12.56},{"match_id":"T10_12","teste":{"lat":-22.990533,"lon":-43.377998,"direcao":158.0,"velocidade":42.2},"ref":{"lat":-22.98981,"lon":-43.378293,"direcao":160.0,"velocidade":36.4},"distancia":85.88,"discrepancia":1.45},{"match_id":"T10_13","teste":{"lat":-23.000055,"lon":-43.382087,"direcao":269.0,"velocidade":37.1},"ref":{"lat":-23.000072,"lon":-43.381128,"direcao":269.0,"velocidade":44.1},"distancia":98.18,"discrepancia":3.32},{"match_id":"T10_14","teste":{"lat":-23.000105,"lon":-43.396408,"direcao":271.0,"velocidade":44.5},"ref":{"lat":-23.000185,"lon":-43.395553,"direcao":261.0,"velocidade":5.1},"distancia":87.96,"discrepancia":25.96},{"match_id":"T10_15","teste":{"lat":-23.002459,"lon":-43.423764,"direcao":252.0,"velocidade":36.5},"ref":{"lat":-23.002112,"lon":-43.42268,"direcao":249.0,"velocidade":70.6},"distancia":117.47,"discrepancia":1.53},{"match_id":"T10_16","teste":{"lat":-23.004623,"lon":-43.434664,"direcao":45.0,"velocidade":72.7},"ref":{"lat":-23.005658,"lon":-43.435648,"direcao":5.0,"velocidade":41.1},"distancia":152.93,"discrepancia":10.68},{"match_id":"T10_17","teste":{"lat":-22.983349,"lon":-43.411129,"direcao":35.0,"velocidade":75.3},"ref":{"lat":-22.9848,"lon":-43.412305,"direcao":39.0,"velocidade":82.3},"distancia":201.31,"discrepancia":4.31},{"match_id":"T10_18","teste":{"lat":-22.972452,"lon":-43.398142,"direcao":85.0,"velocidade":6.2},"ref":{"lat":-22.972678,"lon":-43.398223,"direcao":31.0,"velocidade":8.7},"distancia":26.46,"discrepancia":7.84},{"match_id":"T10_19","teste":{"lat":-22.972638,"lon":-43.397974,"direcao":174.0,"velocidade":6.1},"ref":{"lat":-22.972695,"lon":-43.397935,"direcao":203.0,"velocidade":3.0},"distancia":7.49,"discrepancia":0.09},{"match_id":"T10_20","teste":{"lat":-22.971042,"lon":-43.39363,"direcao":90.0,"velocidade":31.8},"ref":{"lat":-22.97091,"lon":-43.39291,"direcao":96.0,"velocidade":23.8},"distancia":75.16,"discrepancia":21.1},{"match_id":"T10_21","teste":{"lat":-22.973511,"lon":-43.388196,"direcao":91.0,"velocidade":51.8},"ref":{"lat":-22.973488,"lon":-43.387217,"direcao":81.0,"velocidade":45.2},"distancia":100.26,"discrepancia":5.95},{"match_id":"T10_22","teste":{"lat":-22.973589,"lon":-43.372433,"direcao":91.0,"velocidade":0.0},"ref":{"lat":-22.97361,"lon":-43.372273,"direcao":89.0,"velocidade":11.8},"distancia":16.55,"discrepancia":5.08},{"match_id":"T10_23","teste":{"lat":-22.985767,"lon":-43.366102,"direcao":181.0,"velocidade":28.6},"ref":{"lat":-22.985922,"lon":-43.36612,"direcao":186.0,"velocidade":5.2},"distancia":17.33,"discrepancia":15.53},{"match_id":"T10_24","teste":{"lat":-22.972722,"lon":-43.398155,"direcao":349.0,"velocidade":4.3},"ref":{"lat":-22.972455,"lon":-43.398195,"direcao":240.0,"velocidade":1.2},"distancia":29.97,"discrepancia":23.86},{"match_id":"T10_25","teste":{"lat":-22.931269,"lon":-43.353368,"direcao":358.0,"velocidade":0.0},"ref":{"lat":-22.931245,"lon":-43.353337,"direcao":344.0,"velocidade":0.0},"distancia":4.15,"discrepancia":4.15},{"match_id":"T10_26","teste":{"lat":-22.981467,"lon":-43.381387,"direcao":344.0,"velocidade":0.0},"ref":{"lat":-22.981462,"lon":-43.38147,"direcao":202.0,"velocidade":0.0},"distancia":8.51,"discrepancia":8.51},{"match_id":"T10_27","teste":{"lat":-22.889245,"lon":-43.283806,"direcao":160.0,"velocidade":29.9},"ref":{"lat":-22.888347,"lon":-43.283908,"direcao":81.0,"velocidade":0.0},"distancia":100.4,"discrepancia":75.48},{"match_id":"T10_28","teste":{"lat":-22.907945,"lon":-43.314529,"direcao":219.0,"velocidade":85.5},"ref":{"lat":-22.909287,"lon":-43.315337,"direcao":205.0,"velocidade":84.7},"distancia":170.64,"discrepancia":5.17}]};
+
+let mapaInstance = null;
+let currentMapMarkers = [];
+let currentMapLines = [];
+
+function initMapa() {
+  if (mapaInstance) {
+    mapaInstance.remove();
+  }
+  
+  mapaInstance = L.map('mapa-direcoes').setView([-28.26, -52.406], 15);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    attribution: '© OpenStreetMap contributors'
+  }).addTo(mapaInstance);
+  
+  // Mostrar D1 por padrão
+  setTimeout(() => showMapGroup('D1'), 500);
+}
+
+window.clearMapa = function() {
+  currentMapMarkers.forEach(m => mapaInstance.removeLayer(m));
+  currentMapLines.forEach(l => mapaInstance.removeLayer(l));
+  currentMapMarkers = [];
+  currentMapLines = [];
+}
+
+window.showMapGroup = function(grupo) {
+  // Atualizar botões
+  document.querySelectorAll('.group-btn').forEach(btn => {
+    btn.classList.remove('active');
+    // Adicionar active ao botão do grupo selecionado
+    if (btn.textContent.includes(grupo)) {
+      btn.classList.add('active');
+    }
+  });
+  
+  window.clearMapa();
+  
+  const dados = mapaGruposData[grupo];
+  if (!dados || dados.length === 0) {
+    document.getElementById('mapa-stats-text').textContent = 'Nenhum dado disponível para este grupo';
+    return;
+  }
+  
+  // Estatísticas
+  const totalMatches = dados.length;
+  const distMedia = dados.reduce((sum, d) => sum + d.distancia, 0) / totalMatches;
+  const discMedia = dados.reduce((sum, d) => sum + d.discrepancia, 0) / totalMatches;
+  
+  document.getElementById('mapa-stats-text').textContent = 
+    `${totalMatches} matches | Distância média: ${distMedia.toFixed(2)}m | Discrepância média: ${discMedia.toFixed(2)}m`;
+  
+  // Plotar pontos
+  dados.forEach((dado, index) => {
+    // Marcadores
+    const markerTeste = L.marker([dado.teste.lat, dado.teste.lon], {
+      icon: L.divIcon({
+        className: 'custom-marker-teste',
+        html: '<div style="background: #ff6b6b; width: 10px; height: 10px; border-radius: 50%; border: 2px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.3);"></div>',
+        iconSize: [14, 14]
+      })
+    }).addTo(mapaInstance);
+    
+    const markerRef = L.marker([dado.ref.lat, dado.ref.lon], {
+      icon: L.divIcon({
+        className: 'custom-marker-ref',
+        html: '<div style="background: #4ecdc4; width: 10px; height: 10px; border-radius: 50%; border: 2px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.3);"></div>',
+        iconSize: [14, 14]
+      })
+    }).addTo(mapaInstance);
+    
+    // Popups
+    const diffAngular = angDiff(dado.teste.direcao, dado.ref.direcao);
+    
+    markerTeste.bindPopup(`
+      <strong>Teste</strong><br>
+      Lat: ${dado.teste.lat.toFixed(6)}<br>
+      Lon: ${dado.teste.lon.toFixed(6)}<br>
+      Direção: ${dado.teste.direcao.toFixed(1)}°<br>
+      Velocidade: ${dado.teste.velocidade.toFixed(1)} km/h
+    `);
+    
+    markerRef.bindPopup(`
+      <strong>Referência</strong><br>
+      Lat: ${dado.ref.lat.toFixed(6)}<br>
+      Lon: ${dado.ref.lon.toFixed(6)}<br>
+      Direção: ${dado.ref.direcao.toFixed(1)}°<br>
+      Velocidade: ${dado.ref.velocidade.toFixed(1)} km/h<br>
+      Dif. Angular: ${diffAngular.toFixed(1)}°
+    `);
+    
+    currentMapMarkers.push(markerTeste, markerRef);
+    
+    // Linhas de direção
+    const dist = 80; // metros
+    const p1_end = destPoint(dado.teste.lat, dado.teste.lon, dado.teste.direcao, dist);
+    const p2_end = destPoint(dado.ref.lat, dado.ref.lon, dado.ref.direcao, dist);
+    
+    const lineTeste = L.polyline([[dado.teste.lat, dado.teste.lon], p1_end], {
+      color: '#ff6b6b',
+      weight: 2,
+      opacity: 0.7
+    }).addTo(mapaInstance);
+    
+    const lineRef = L.polyline([[dado.ref.lat, dado.ref.lon], p2_end], {
+      color: '#4ecdc4',
+      weight: 2,
+      opacity: 0.7
+    }).addTo(mapaInstance);
+    
+    currentMapLines.push(lineTeste, lineRef);
+  });
+  
+  // Ajustar zoom para mostrar todos os pontos
+  if (dados.length > 0) {
+    const bounds = L.latLngBounds();
+    dados.forEach(dado => {
+      bounds.extend([dado.teste.lat, dado.teste.lon]);
+      bounds.extend([dado.ref.lat, dado.ref.lon]);
+    });
+    mapaInstance.fitBounds(bounds, {padding: [20, 20]});
+  }
+}
+
+// Funções auxiliares
+window.angDiff = function(a1, a2) {
+  return Math.abs(((a1 - a2 + 180) % 360) - 180);
+}
+
+window.destPoint = function(lat, lon, brng, dist) {
+  const R = 6371e3;
+  const δ = dist / R;
+  const θ = brng * Math.PI/180;
+  const φ1 = lat * Math.PI/180;
+  const λ1 = lon * Math.PI/180;
+  
+  const φ2 = Math.asin(Math.sin(φ1)*Math.cos(δ) + Math.cos(φ1)*Math.sin(δ)*Math.cos(θ));
+  const λ2 = λ1 + Math.atan2(Math.sin(θ)*Math.sin(δ)*Math.cos(φ1), Math.cos(δ)-Math.sin(φ1)*Math.sin(φ2));
+  return [φ2*180/Math.PI, λ2*180/Math.PI];
+}
+
+// Inicialização será feita pelo wrapper no arquivo HTML
+
+    // Inicializar o mapa após definir as funções
+    setTimeout(() => window.initMapa(), 100);
+  } else {
+    setTimeout(initMapaWhenReady, 100);
+  }
+}
+document.addEventListener("DOMContentLoaded", initMapaWhenReady);
+</script>
