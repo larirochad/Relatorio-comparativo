@@ -332,11 +332,6 @@ Para adicionar funcionalidades:
 
 Este projeto é proprietário. Todos os direitos reservados.
 
-## 📧 Suporte
-
-Para suporte e dúvidas:
-- Email: sistema@analise.com
-- Documentação: Disponível no menu "About" da aplicação
 
 ## 🎉 Recursos Extras
 
@@ -362,5 +357,4 @@ Para suporte e dúvidas:
 
 ---
 
-**Desenvolvido com ❤️ usando Streamlit**
 
