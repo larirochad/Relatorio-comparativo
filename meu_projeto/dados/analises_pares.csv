@@ -1,0 +1,11 @@
+par_id,placa,imei_tm10,imei_ref,tipo_ref,problema_gps,problema_vel,problema_dir,observacoes_gerais,qt_viagens,distancia_km,inicio_analise
+1,ENG_004,867488068383602,4675644778,TM-07,False,True,False,TM10 pegou variação de ignição,49,2.4,2025-09-29 14:20:00
+2,ENG_039,867488067684034,4675530620,TM-07,True,False,True,Nunca teve conexão 4G,84,788.4,2025-09-29 16:54:00
+3,ENG_042,867488068383644,4675662268,TM-07,False,False,False,Análise completa sem problemas,156,1245.8,2025-09-30 08:15:00
+4,ENG_046,867488068383651,4675678932,TM-08,True,True,False,Múltiplos problemas detectados,92,567.3,2025-09-30 10:30:00
+5,ENG_048,867488068383669,4675689123,TM-07,False,True,True,Problema de velocidade em paradas,68,423.6,2025-10-01 09:00:00
+6,ENG_146,867488068383677,4675701234,TM-08,True,False,False,GPS com dispersão alta,134,987.2,2025-10-01 14:45:00
+7,ENG_014,867488068383685,4675712345,TM-07,False,False,True,Problema apenas em direção,78,345.9,2025-10-02 11:20:00
+8,ENG_111,867488068383693,4675723456,TM-08,True,True,True,Todos os tipos de problema,201,1543.7,2025-10-02 16:00:00
+9,ENG_009,867488068383701,4675734567,TM-07,False,False,False,Sem problemas identificados,89,678.4,2025-10-03 08:30:00
+

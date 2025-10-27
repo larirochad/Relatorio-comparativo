@@ -1,0 +1,104 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual environments
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Streamlit
+.streamlit/
+.streamlit/secrets.toml
+
+# Dados sensíveis (descomente se não quiser versionar)
+# dados/*.csv
+# !dados/.gitkeep
+
+# Comentários (mantenha se quiser versionar, comente se não)
+# comentarios.json
+
+# Imagens e prints (geralmente muito pesadas)
+prints/**/*.png
+prints/**/*.jpg
+prints/**/*.jpeg
+prints/**/*.gif
+prints/**/*.bmp
+prints/**/*.webp
+prints/**/*.pdf
+
+# Mantém estrutura de pastas
+!prints/.gitkeep
+!prints/*/.gitkeep
+!prints/**/.gitkeep
+
+# Metadados podem ser versionados ou não
+# prints/metadados.json
+
+# HTMLs gerados (geralmente grandes)
+htmls/*.html
+!htmls/.gitkeep
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Sistema
+Thumbs.db
+desktop.ini
+
+# Jupyter Notebooks (se usar)
+.ipynb_checkpoints/
+*.ipynb
+
+# Logs
+*.log
+logs/
+
+# Testes
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+
+# Arquivos temporários
+*.tmp
+*.temp
+*.bak
+*.backup
+
+# Arquivos de configuração local
+.env
+.env.local
+config.local.py
+
+# Backups
+backups/
+*.zip
+*.tar.gz
